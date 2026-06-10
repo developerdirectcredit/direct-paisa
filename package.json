@@ -16,8 +16,12 @@
     "react": "^19.2.6",
     "react-countup": "^6.5.3",
     "react-dom": "^19.2.6",
+<<<<<<< HEAD
     "react-hook-form": "^7.78.0",
     "react-hot-toast": "^2.6.0",
+=======
+    "react-icons": "^5.6.0",
+>>>>>>> 8b58d49 (Added banner slider and premium footer)
     "react-router-dom": "^7.17.0",
     "swiper": "^12.2.0"
   },
