@@ -11,8 +11,11 @@ export default function GetAppPopup() {
           alt="Direct Credit App"
           className="w-full h-auto"
         />
-
+           <div>
+            <h1>  ku</h1>
+           </div>
       </div>
     </div>
   );
 }
+

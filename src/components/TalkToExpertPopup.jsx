@@ -24,7 +24,7 @@ export default function TalkToExpertPopup() {
           <p className="font-bold text-xl">
             Call Us:
             <span className="text-blue-600 ml-1">
-              1800 570 3888
+              +91 9010031003
             </span>
           </p>
         </div>
@@ -37,16 +37,42 @@ export default function TalkToExpertPopup() {
           <p className="font-bold text-xl">
             Call Us:
             <span className="text-blue-600 ml-1">
-              1800 258 5616
+              +91 9010031003
             </span>
           </p>
         </div>
 
-        <p className="text-gray-600 leading-7">
-          Our advisors are available 7 days a week,
+        {/* <p className="text-gray-600 leading-7">
+            <strong> Direct Credit Office</strong>
+            Vision Business Park,
+             2nd Floor, Tower A, I.T Square,
+            Knowledge Park - 3, Greater Noida,
+            Gautam Buddha Nagar, UP - 201306 
+            Our advisors are available 7 days a week,
           <strong> 9:30 am - 6:30 pm </strong>
           to assist you with the best offers or help resolve any queries.
-        </p>
+        </p> */}
+           <p className="text-gray-600 leading-7">
+  <strong className="block text-black mb-2">
+    Direct Credit Office
+  </strong>
+
+  Vision Business Park,<br />
+  2nd Floor, Tower A, I.T Square,<br />
+  Knowledge Park - 3, Greater Noida,<br />
+  Gautam Buddha Nagar, UP - 201306
+
+  <strong className="block text-black mt-4 mb-2">
+    Our Advisors
+  </strong>
+
+  Available 7 days a week,
+  <strong> 9:30 AM - 6:30 PM </strong>
+  to assist you with the best offers or help resolve any queries.
+</p>
+
+
+
 
       </div>
     </div>

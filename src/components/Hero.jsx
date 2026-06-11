@@ -13,11 +13,11 @@ export default function Hero() {
         <div>
               
               <h2 className="text-[42px] md:text-[52px] font-serif text-[#4a4a4a] leading-tight"> 
-            India's best platform for
+            Instant Loans with
           </h2> 
 
           <h1 className="text-[42px] md:text-[56px] font-bold text-gray-900 leading-tight mt-3">
-            Loans, Cards & Investments
+            Expert Financial Guidance
           </h1>
 
           <div className="flex flex-wrap gap-12 mt-12">
@@ -29,10 +29,10 @@ export default function Hero() {
 
               <div>
                 <p className="text-xl font-medium text-gray-800">
-                  One Stop for all
+                  Trusted Loan Solutions
                 </p>
                 <p className="text-xl font-medium text-gray-800">
-                  Financial Solutions
+                  Fast Secure & Reliable
                 </p>
               </div>
             </div>
