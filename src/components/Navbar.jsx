@@ -1,6 +1,5 @@
 
 import { useState } from "react";
-
 import TalkToExpertPopup from "./TalkToExpertPopup";
 import GetAppPopup from "./GetAppPopup";
 import {
@@ -17,11 +16,12 @@ import {
   Menu,
   X,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
   const [openMenu, setOpenMenu] = useState(null);
   const [mobileMenu, setMobileMenu] = useState(false);
-
+ const navigate = useNavigate();
 const [showExpertCard, setShowExpertCard] = useState(false);
 const [showAppPopup, setShowAppPopup] = useState(false);// get app state
 
@@ -246,10 +246,17 @@ const [showAppPopup, setShowAppPopup] = useState(false);// get app state
 
         </nav>
 
-        {/* Desktop Sign In */}
+        {/* Desktop Sign In
         <button className="hidden lg:block border border-blue-600 text-blue-600 px-6 py-2 rounded-md hover:bg-blue-600 hover:text-white transition">
           Sign In
-        </button>
+        </button> */}
+
+        <button
+  onClick={() => navigate("/signin")}
+  className="hidden lg:block border border-blue-600 text-blue-600 px-6 py-2 rounded-md hover:bg-blue-600 hover:text-white transition"
+>
+  Sign In
+</button>
 
         {/* Mobile Menu Button */}
         <button
