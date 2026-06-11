@@ -8,7 +8,7 @@ import Testimonials from "../components/Testimonials";
 import Calculators from "../components/Calculators";
 import Partners from "../components/Partners";
 import Footer from "../components/Footer";
-
+import AppDownloadSection from "../components/AppDownloadSection";
 export default function Home() {
   return (
     <>
@@ -22,6 +22,8 @@ export default function Home() {
       <Calculators />
       <Partners />
       <Footer />
+    
+
     </>
   );
 }
