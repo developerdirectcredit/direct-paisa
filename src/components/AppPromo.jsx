@@ -4,7 +4,7 @@ export default function AppPromo() {
       <div className="max-w-6xl mx-auto rounded-3xl border p-10 grid md:grid-cols-2 gap-8">
 
         <img
-          src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c"
+          src="/images/direct-credit-app.png"
           className="rounded-xl"
         />
 
@@ -28,3 +28,27 @@ export default function AppPromo() {
     </section>
   );
 }
+
+
+// export default function AppPromo() {
+//   return (
+//     <section className="bg-white py-20">
+//       <div className="max-w-6xl mx-auto px-4">
+
+//         <div className="rounded-3xl border border-gray-200 overflow-hidden shadow-sm">
+ 
+//           <img
+//             src="/images/direct-credit-app.png"
+//             alt="Direct Credit App"
+//             // className="w-full h-auto"
+//              className="mx-auto"
+//           /> 
+
+    
+
+//         </div>
+
+//       </div>
+//     </section>
+//   );
+// }
