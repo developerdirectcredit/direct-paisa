@@ -1,42 +1,40 @@
+// export default function CreditCards() {
+//   return (
+//     <section className="max-w-7xl mx-auto px-4 py-10">
+//       <img
+//         src="/images/how-direct-credit-helps.png"
+//         alt="How Direct Credit Helps"
+//         className="w-full rounded-2xl shadow-lg"
+//       />
+//     </section>
+//   );
+// }
+
 export default function CreditCards() {
-  const cards = [
-    {
-      name:"PaisaSave Card",
-      cashback:"6% Cashback"
-    },
-    {
-      name:"DUET Card",
-      cashback:"1% Cashback"
-    }
-  ];
-
   return (
-    <section className="max-w-7xl mx-auto py-20">
+    <section className="max-w-7xl mx-auto px-4 py-16">
 
-      <h2 className="text-4xl font-bold text-center mb-12">
-        Featured Credit Cards
-      </h2>
+      {/* Heading */}
+      <div className="mb-8">
+        <h2 className="text-3xl md:text-5xl font-bold text-gray-900">
+          How Direct Credit Helps
+        </h2>
 
-      <div className="grid md:grid-cols-2 gap-8">
-
-        {cards.map((card,index)=>(
-          <div key={index}
-          className="bg-white rounded-2xl shadow p-8">
-            <h3 className="text-2xl font-bold">
-              {card.name}
-            </h3>
-
-            <p className="mt-4">
-              {card.cashback}
-            </p>
-
-            <button className="text-blue-600 mt-4">
-              Know More →
-            </button>
-          </div>
-        ))}
-
+        <p className="mt-3 text-gray-600 text-lg">
+          From initial inquiry to final disbursement, we simplify the lending
+          journey with expert guidance and seamless support.
+        </p>
       </div>
+
+      {/* Poster */}
+      <div className="rounded-2xl overflow-hidden shadow-lg">
+        <img
+          src="/images/how-direct-credit-helps.png"
+          alt="How Direct Credit Helps"
+          className="w-full h-auto"
+        />
+      </div>
+
     </section>
-  )
+  );
 }
