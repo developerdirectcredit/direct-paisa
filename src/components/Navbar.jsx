@@ -63,14 +63,14 @@ const [showAppPopup, setShowAppPopup] = useState(false);// get app state
 
 
       {/* Main Navbar */}
-      <div className="max-w-7xl mx-auto flex justify-between items-center px-4 md:px-6 py-4">
+      <div className="max-w-7xl mx-auto flex justify-between items-center px-4 md:px-6 py-1">
 
         {/* Logo */}
         <img
           src="/logo.png"
           alt="Logo"
-          className="h-20 md:h-24 object-contain cursor-pointer"
-          
+          //className="h-20 md:h-24 object-contain cursor-pointer" change navbar size and hieght
+           className="h-12 md:h-20 object-contain cursor-pointer"
         />
 
         {/* Desktop Menu */}

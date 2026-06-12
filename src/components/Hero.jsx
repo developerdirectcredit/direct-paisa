@@ -6,13 +6,15 @@ import BannerSlider from "./BannerSlider";
 
 export default function Hero() {
   return (
-    <section className="bg-white">
-      <div className="max-w-7xl mx-auto px-6 py-16 grid lg:grid-cols-2 gap-10 items-center">
+     <section className="bg-white">
+   
+      <div className="max-w-7xl mx-auto px-6 py-8 grid lg:grid-cols-2 gap-10 items-center">
 
         {/* Left Side Content */}
         <div>
               
-              <h2 className="text-[42px] md:text-[52px] font-serif text-[#4a4a4a] leading-tight"> 
+              {/* <h2 className="text-[42px] md:text-[52px] font-serif text-[#4a4a4a] leading-tight">  */}
+               <h2 className="text-[32px] md:text-[44px] font-serif text-[#4a4a4a] leading-tight">
             Instant Loans with
           </h2> 
 

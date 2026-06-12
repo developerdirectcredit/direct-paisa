@@ -20,7 +20,7 @@ const reviews = [
   {
     name: "Lalit Mavi",
     date: "22 Jan 2026",
-    title: "My Trust in Paisabazaar has Increased",
+    title: "My Trust in direct credit has Increased",
     review:
       "The executive who assisted me was extremely professional, polite, and knowledgeable. They patiently understood my concern, explained the process clearly, and guided me step by step. My trust has increased even more because of this positive experience.",
   },
