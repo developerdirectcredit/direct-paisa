@@ -1,17 +1,36 @@
+import { Link } from "react-router-dom";
+
 export default function Calculators() {
   const data = [
-    "Personal Loan EMI",
-    "Business Loan EMI",
-    "Home Loan EMI",
-    "FD Calculator",
-    "GST Calculator",
-    "NPS Calculator",
-  ];
+  {
+    title: "Personal Loan EMI",
+    path: "/personal-loan-emi",
+  },
+  {
+    title: "Business Loan EMI",
+    path: "/business-loan-emi",
+  },
+  {
+    title: "Home Loan EMI",
+    path: "/home-loan-emi",
+  },
+  {
+    title: "FD Calculator",
+    path: "/fd-calculator",
+  },
+  {
+    title: "GST Calculator",
+    path: "/gst-calculator",
+  },
+  {
+    title: "NPS Calculator",
+    path: "/nps-calculator",
+  },
+];
 
   return (
     <section className="bg-[#f8fafc] py-12 sm:py-16 lg:py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
         <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
           Calculators
         </h2>
@@ -22,9 +41,9 @@ export default function Calculators() {
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 lg:gap-6">
-
           {data.map((item, index) => (
-            <div
+            <Link
+              to={item.path}
               key={index}
               className="
                 bg-white
@@ -42,15 +61,14 @@ export default function Calculators() {
               "
             >
               <span className="text-base sm:text-lg font-medium text-gray-800">
-                {item}
+                {item.title}
               </span>
 
               <span className="text-xl sm:text-2xl text-blue-600 font-bold">
                 →
               </span>
-            </div>
+            </Link>
           ))}
-
         </div>
       </div>
     </section>
