@@ -1,11 +1,16 @@
 
-import { useState } from "react";
+
+
+// add a drop daown code with code claude ai
+
+import { useState, useRef } from "react";
 import TalkToExpertPopup from "./TalkToExpertPopup";
 import GetAppPopup from "./GetAppPopup";
 import {
   PhoneCall,
   Download,
   ChevronDown,
+  ChevronRight,
   BadgeIndianRupee,
   Home,
   Briefcase,
@@ -15,15 +20,350 @@ import {
   BarChart3,
   Menu,
   X,
+  TrendingUp,
+  Landmark,
+  Coins,
+  Wheat,
+  Building2,
+  Globe,
+  ShieldCheck,
+  SlidersHorizontal,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
+// ─── Menu Data (ek jagah se manage karo) ────────────────────────────────────
+const menuConfig = [
+  {
+    id: "score",
+    label: "Credit Score",
+    items: [
+      {
+        icon: BadgeIndianRupee,
+        title: "Credit Score FREE",
+        desc: "Know Your Score Instantly",
+        path: "/credit-score",
+      },
+      {
+        icon: BarChart3,
+        title: "FREE CIBIL Score",
+        desc: "Check Your CIBIL Report",
+        path: "/cibil-score",
+      },
+      {
+        icon: ShieldCheck,
+        title: "Improve Credit Score",
+        desc: "Tips & Strategies",
+        path: "/improve-score",
+      },
+    ],
+  },
+  {
+    id: "loan",
+    label: "Loans",
+    items: [
+      {
+        icon: BadgeIndianRupee,
+        title: "Personal Loan",
+        desc: "Upto ₹40L, instant approval",
+        path: "/loans/personal",
+      },
+      {
+        icon: Home,
+        title: "Home Loan",
+        desc: "Best rates from top banks",
+        path: "/loans/home",
+      },
+      {
+        icon: Briefcase,
+        title: "Business Loan",
+        desc: "For MSMEs & startups",
+        path: "/loans/business",
+      },
+      {
+        icon: Landmark,
+        title: "Loan Against Property",
+        desc: "Unlock your asset value",
+        path: "/loans/lap",
+      },
+      {
+        icon: Coins,
+        title: "Gold Loan",
+        desc: "Quick cash against gold",
+        path: "/loans/gold",
+      },
+      {
+        icon: MoreHorizontal,
+        title: "Other Loans",
+        desc: "Education, Vehicle & more",
+        path: "/loans/other",
+      },
+    ],
+  },
+  {
+    id: "card",
+    label: "Credit Cards",
+    items: [
+      {
+        icon: CreditCard,
+        title: "Best Credit Cards",
+        desc: "Top picks for rewards",
+        path: "/credit-cards/best",
+      },
+      {
+        icon: Globe,
+        title: "Best Forex Cards",
+        desc: "Travel abroad hassle-free",
+        path: "/credit-cards/forex",
+      },
+      {
+        icon: BarChart3,
+        title: "CIBIL for Credit Card",
+        desc: "Check eligibility first",
+        path: "/credit-cards/cibil",
+      },
+      {
+        icon: ShieldCheck,
+        title: "Card Eligibility",
+        desc: "Know before you apply",
+        path: "/credit-cards/eligibility",
+      },
+      {
+        icon: SlidersHorizontal,
+        title: "Compare Cards",
+        desc: "Side-by-side comparison",
+        path: "/credit-cards/compare",
+      },
+    ],
+  },
+  {
+    id: "calculator",
+    label: "Calculators",
+    cols: 2,
+    items: [
+      {
+        icon: Calculator,
+        title: "Personal Loan EMI",
+        desc: "",
+        path: "/calculators/personal-loan",
+      },
+      {
+        icon: Calculator,
+        title: "Home Loan EMI",
+        desc: "",
+        path: "/calculators/home-loan",
+      },
+      {
+        icon: Calculator,
+        title: "Business Loan EMI",
+        desc: "",
+        path: "/calculators/business-loan",
+      },
+      {
+        icon: Calculator,
+        title: "Loan Against Property",
+        desc: "",
+        path: "/calculators/lap",
+      },
+      {
+        icon: Coins,
+        title: "Gold Loan EMI",
+        desc: "",
+        path: "/calculators/gold-loan",
+      },
+      {
+        icon: TrendingUp,
+        title: "FD Calculator",
+        desc: "",
+        path: "/calculators/fd",
+      },
+      {
+        icon: Wheat,
+        title: "Mudra Loan EMI",
+        desc: "",
+        path: "/calculators/mudra",
+      },
+      {
+        icon: Building2,
+        title: "Term Loan EMI",
+        desc: "",
+        path: "/calculators/term-loan",
+      },
+    ],
+  },
+];
+
+// ─── Desktop Dropdown ─────────────────────────────────────────────────────────
+function DesktopDropdown({ menu, navigate }) {
+  const isTwoCol = menu.cols === 2;
+
+  return (
+    <div
+      className={`absolute top-full left-0 mt-3 bg-white shadow-2xl rounded-2xl border border-gray-100 p-5 z-50 ${
+        isTwoCol ? "w-[480px]" : "w-80"
+      }`}
+    >
+      {/* Arrow pointer */}
+      <div className="absolute -top-2 left-6 w-4 h-4 bg-white border-l border-t border-gray-100 rotate-45" />
+
+      {isTwoCol ? (
+        <>
+          <p className="text-xs font-semibold text-blue-600 uppercase tracking-wide mb-4 px-1">
+            Loan EMI Calculators
+          </p>
+          <div className="grid grid-cols-2 gap-2">
+            {menu.items.map((item) => {
+              const Icon = item.icon;
+              return (
+                <div
+                  key={item.title}
+                  onClick={() => navigate(item.path)}
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-blue-50 cursor-pointer group transition-colors"
+                >
+                  <div className="w-8 h-8 rounded-lg bg-blue-50 group-hover:bg-blue-100 flex items-center justify-center flex-shrink-0 transition-colors">
+                    <Icon size={15} className="text-blue-600" />
+                  </div>
+                  <span className="text-sm font-medium text-gray-700 group-hover:text-blue-600 transition-colors">
+                    {item.title}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </>
+      ) : (
+        <div className="space-y-1">
+          {menu.items.map((item) => {
+            const Icon = item.icon;
+            return (
+              <div
+                key={item.title}
+                onClick={() => navigate(item.path)}
+                className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-blue-50 cursor-pointer group transition-colors"
+              >
+                <div className="w-9 h-9 rounded-xl bg-blue-50 group-hover:bg-blue-600 flex items-center justify-center flex-shrink-0 transition-colors">
+                  <Icon
+                    size={18}
+                    className="text-blue-600 group-hover:text-white transition-colors"
+                  />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-gray-800 group-hover:text-blue-600 transition-colors">
+                    {item.title}
+                  </p>
+                  {item.desc && (
+                    <p className="text-xs text-gray-400 mt-0.5">{item.desc}</p>
+                  )}
+                </div>
+                <ChevronRight
+                  size={14}
+                  className="text-gray-300 group-hover:text-blue-400 transition-colors flex-shrink-0"
+                />
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Mobile Accordion Item ────────────────────────────────────────────────────
+function MobileAccordion({ menu, navigate, onClose }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="border-b border-gray-100 last:border-0">
+      {/* Header */}
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between px-4 py-4 text-left"
+      >
+        <span className="font-semibold text-gray-800 text-[15px]">
+          {menu.label}
+        </span>
+        <ChevronDown
+          size={18}
+          className={`text-gray-400 transition-transform duration-300 ${
+            open ? "rotate-180" : ""
+          }`}
+        />
+      </button>
+
+      {/* Dropdown items */}
+      {open && (
+        <div className="pb-3 px-2 space-y-1">
+          {menu.items.map((item) => {
+            const Icon = item.icon;
+            return (
+              <div
+                key={item.title}
+                onClick={() => {
+                  navigate(item.path);
+                  onClose();
+                }}
+                className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-blue-50 active:bg-blue-100 cursor-pointer group transition-colors"
+              >
+                <div className="w-9 h-9 rounded-xl bg-gray-100 group-hover:bg-blue-600 flex items-center justify-center flex-shrink-0 transition-colors">
+                  <Icon
+                    size={17}
+                    className="text-gray-500 group-hover:text-white transition-colors"
+                  />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-800 group-hover:text-blue-600 transition-colors">
+                    {item.title}
+                  </p>
+                  {item.desc && (
+                    <p className="text-xs text-gray-400 mt-0.5">{item.desc}</p>
+                  )}
+                </div>
+                <ChevronRight size={14} className="text-gray-300 flex-shrink-0" />
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Main Navbar ──────────────────────────────────────────────────────────────
 export default function Navbar() {
   const [openMenu, setOpenMenu] = useState(null);
   const [mobileMenu, setMobileMenu] = useState(false);
- const navigate = useNavigate();
-const [showExpertCard, setShowExpertCard] = useState(false);
-const [showAppPopup, setShowAppPopup] = useState(false);// get app state
+  const [showExpertCard, setShowExpertCard] = useState(false);
+  const [showAppPopup, setShowAppPopup] = useState(false);
+  const navigate = useNavigate();
+  const closeTimer = useRef(null);
+  const expertTimer = useRef(null);
+  const appTimer = useRef(null);
+
+  const handleMenuEnter = (id) => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    setOpenMenu(id);
+  };
+
+  const handleMenuLeave = () => {
+    closeTimer.current = setTimeout(() => setOpenMenu(null), 150);
+  };
+
+  const handleExpertEnter = () => {
+    if (expertTimer.current) clearTimeout(expertTimer.current);
+    setShowExpertCard(true);
+  };
+
+  const handleExpertLeave = () => {
+    expertTimer.current = setTimeout(() => setShowExpertCard(false), 150);
+  };
+
+  const handleAppEnter = () => {
+    if (appTimer.current) clearTimeout(appTimer.current);
+    setShowAppPopup(true);
+  };
+
+  const handleAppLeave = () => {
+    appTimer.current = setTimeout(() => setShowAppPopup(false), 150);
+  };
 
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
@@ -31,36 +371,32 @@ const [showAppPopup, setShowAppPopup] = useState(false);// get app state
       {/* Top Bar */}
       <div className="hidden md:flex justify-end items-center px-8 py-2 text-sm border-b bg-gray-50">
 
-       <div   
-  className="relative"
-  onMouseEnter={() => setShowExpertCard(true)}
-  onMouseLeave={() => setShowExpertCard(false)}
->
-  <div className="flex items-center gap-2 text-blue-600 cursor-pointer">
-    <PhoneCall size={16} />
-    Talk to Expert
-  </div>
-
-  {showExpertCard && <TalkToExpertPopup />}
-</div>
+        <div
+          className="relative"
+          onMouseEnter={handleExpertEnter}
+          onMouseLeave={handleExpertLeave}
+        >
+          <div className="flex items-center gap-2 text-blue-600 cursor-pointer hover:text-blue-700 transition-colors">
+            <PhoneCall size={15} />
+            Talk to Expert
+          </div>
+          {showExpertCard && <TalkToExpertPopup />}
+        </div>
 
         <span className="mx-4 text-gray-300">|</span>
 
-       <div
-  className="relative"
-  onMouseEnter={() => setShowAppPopup(true)}
-  onMouseLeave={() => setShowAppPopup(false)}
->
-  <div className="flex items-center gap-2 text-blue-600 cursor-pointer font-medium">
-    <Download size={16} />
-    Get The App
-  </div>
-
-  {showAppPopup && <GetAppPopup />}
-</div>
-
-    </div>
-
+        <div
+          className="relative"
+          onMouseEnter={handleAppEnter}
+          onMouseLeave={handleAppLeave}
+        >
+          <div className="flex items-center gap-2 text-blue-600 font-medium cursor-pointer hover:text-blue-700 transition-colors">
+            <Download size={15} />
+            Get The App
+          </div>
+          {showAppPopup && <GetAppPopup />}
+        </div>
+      </div>
 
       {/* Main Navbar */}
       <div className="max-w-7xl mx-auto flex justify-between items-center px-4 md:px-6 py-1">
@@ -68,276 +404,106 @@ const [showAppPopup, setShowAppPopup] = useState(false);// get app state
         {/* Logo */}
         <img
           src="/logo.png"
-          alt="Logo"
-          //className="h-20 md:h-24 object-contain cursor-pointer" change navbar size and hieght
-           className="h-12 md:h-20 object-contain cursor-pointer"
+          alt="Direct Credit Logo"
+          className="h-12 md:h-20 object-contain cursor-pointer"
+          onClick={() => navigate("/")}
         />
 
         {/* Desktop Menu */}
-        <nav className="hidden lg:flex items-center gap-8 font-medium text-gray-800">
+        <nav className="hidden lg:flex items-center gap-1 font-medium text-gray-800">
+          {menuConfig.map((menu) => (
+            <div
+              key={menu.id}
+              className="relative"
+              onMouseEnter={() => handleMenuEnter(menu.id)}
+              onMouseLeave={handleMenuLeave}
+            >
+              <button
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  openMenu === menu.id
+                    ? "text-blue-600 bg-blue-50"
+                    : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                }`}
+              >
+                {menu.label}
+                <ChevronDown
+                  size={15}
+                  className={`transition-transform duration-200 ${
+                    openMenu === menu.id ? "rotate-180 text-blue-600" : "text-gray-400"
+                  }`}
+                />
+              </button>
 
-          {/* CREDIT SCORE */}
-          <div
-            className="relative"
-            onMouseEnter={() => setOpenMenu("score")}
-            onMouseLeave={() => setOpenMenu(null)}
-          >
-            <button className="flex items-center gap-1 hover:text-blue-600">
-              Credit Score
-              <ChevronDown size={18} />
-            </button>
-
-            {openMenu === "score" && (
-              <div className="absolute top-full left-0 mt-2 w-80 bg-white shadow-xl rounded-xl p-5 border">
-                <div className="space-y-5">
-
-                  <div className="flex gap-3 cursor-pointer hover:text-blue-600">
-                    <BadgeIndianRupee />
-                    <div>
-                      <p className="font-semibold">Credit Score FREE</p>
-                      <span className="text-sm text-gray-500">
-                        Know Your Score
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-3 cursor-pointer hover:text-blue-600">
-                    <BarChart3 />
-                    <div>
-                      <p className="font-semibold">FREE CIBIL Score</p>
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* LOANS */}
-          <div
-            className="relative"
-            onMouseEnter={() => setOpenMenu("loan")}
-            onMouseLeave={() => setOpenMenu(null)}
-          >
-            <button className="flex items-center gap-1 hover:text-blue-600">
-              Loans
-              <ChevronDown size={18} />
-            </button>
-
-            {openMenu === "loan" && (
-              <div className="absolute top-full left-0 mt-2 w-80 bg-white shadow-xl rounded-xl p-5 border">
-                <div className="space-y-4">
-
-                  <div className="flex gap-3 hover:text-blue-600 cursor-pointer">
-                    <BadgeIndianRupee />
-                    <span>Personal Loan</span>
-                  </div>
-
-                  <div className="flex gap-3 hover:text-blue-600 cursor-pointer">
-                    <Home />
-                    <span>Home Loan</span>
-                  </div>
-
-                  <div className="flex gap-3 hover:text-blue-600 cursor-pointer">
-                    <Briefcase />
-                    <span>Business Loan</span>
-                  </div>
-
-                  <div className="flex gap-3 hover:text-blue-600 cursor-pointer">
-                    <MoreHorizontal />
-                    <span>Other Options</span>
-                  </div>
-
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* CREDIT CARDS */}
-          <div
-            className="relative"
-            onMouseEnter={() => setOpenMenu("card")}
-            onMouseLeave={() => setOpenMenu(null)}
-          >
-            <button className="flex items-center gap-1 hover:text-blue-600">
-              Credit Cards
-              <ChevronDown size={18} />
-            </button>
-
-            {openMenu === "card" && (
-              <div className="absolute top-full left-0 mt-2 w-96 bg-white shadow-xl rounded-xl p-5 border">
-
-                <div className="space-y-4">
-
-                  <div className="flex gap-3 hover:text-blue-600 cursor-pointer">
-                    <CreditCard />
-                    <span>Best Credit Cards</span>
-                  </div>
-
-                  <div className="flex gap-3 hover:text-blue-600 cursor-pointer">
-                    <CreditCard />
-                    <span>Best Forex Cards</span>
-                  </div>
-
-                  <div className="flex gap-3 hover:text-blue-600 cursor-pointer">
-                    <CreditCard />
-                    <span>CIBIL Score for Credit Card</span>
-                  </div>
-
-                  <div className="flex gap-3 hover:text-blue-600 cursor-pointer">
-                    <CreditCard />
-                    <span>Credit Card Eligibility</span>
-                  </div>
-
-                  <div className="flex gap-3 hover:text-blue-600 cursor-pointer">
-                    <CreditCard />
-                    <span>Compare Credit Cards</span>
-                  </div>
-
-                </div>
-
-              </div>
-            )}
-          </div>
-
-          {/* CALCULATORS */}
-          <div
-            className="relative"
-            onMouseEnter={() => setOpenMenu("calculator")}
-            onMouseLeave={() => setOpenMenu(null)}
-          >
-            <button className="flex items-center gap-1 hover:text-blue-600">
-              Calculators
-              <ChevronDown size={18} />
-            </button>
-
-            {openMenu === "calculator" && (
-              <div className="absolute top-full left-0 mt-2 w-[450px] bg-white shadow-xl rounded-xl p-5 border">
-
-                <div className="space-y-4">
-
-                  <h3 className="font-semibold text-blue-600">
-                    Loan EMI Calculators
-                  </h3>
-
-                  {[
-                    "Personal Loan EMI Calculator",
-                    "Home Loan EMI Calculator",
-                    "Business Loan EMI Calculator",
-                    "Loan Against Property EMI Calculator",
-                    "Gold Loan EMI Calculator",
-                    "Term Loan EMI Calculator",
-                    "Tractor Loan EMI Calculator",
-                    "Mudra Loan EMI Calculator",
-                  ].map((item) => (
-                    <div
-                      key={item}
-                      className="flex gap-3 hover:text-blue-600 cursor-pointer"
-                    >
-                      <Calculator size={18} />
-                      <span>{item}</span>
-                    </div>
-                  ))}
-                </div>
-
-              </div>
-            )}
-          </div>
-
+              {openMenu === menu.id && (
+                <DesktopDropdown menu={menu} navigate={navigate} />
+              )}
+            </div>
+          ))}
         </nav>
 
-        {/* Desktop Sign In
-        <button className="hidden lg:block border border-blue-600 text-blue-600 px-6 py-2 rounded-md hover:bg-blue-600 hover:text-white transition">
-          Sign In
-        </button> */}
-
+        {/* Sign In Button */}
         <button
-  onClick={() => navigate("/signin")}
-  className="hidden lg:block border border-blue-600 text-blue-600 px-6 py-2 rounded-md hover:bg-blue-600 hover:text-white transition"
->
-  Sign In
-</button>
-
-        {/* Mobile Menu Button */}
-        <button
-          className="lg:hidden"
-          onClick={() => setMobileMenu(!mobileMenu)}
+          onClick={() => navigate("/signin")}
+          className="hidden lg:block bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors shadow-sm"
         >
-          {mobileMenu ? <X size={28} /> : <Menu size={28} />}
+          Sign In
+        </button>
+
+        {/* Mobile Menu Toggle */}
+        <button
+          className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+          onClick={() => setMobileMenu(!mobileMenu)}
+          aria-label="Toggle menu"
+        >
+          {mobileMenu ? (
+            <X size={24} className="text-gray-700" />
+          ) : (
+            <Menu size={24} className="text-gray-700" />
+          )}
         </button>
       </div>
 
       {/* Mobile Menu */}
       {mobileMenu && (
-        <div className="lg:hidden border-t bg-white shadow-lg">
+        <div className="lg:hidden border-t border-gray-100 bg-white shadow-lg max-h-[80vh] overflow-y-auto">
 
-          <div className="p-4 space-y-4">
+          {/* Mobile Top Bar links */}
+          <div className="flex gap-4 px-4 py-3 bg-blue-50 border-b border-blue-100">
+            <div className="flex items-center gap-2 text-blue-600 text-sm font-medium cursor-pointer">
+              <PhoneCall size={15} />
+              Talk to Expert
+            </div>
+            <span className="text-blue-200">|</span>
+            <div className="flex items-center gap-2 text-blue-600 text-sm font-medium cursor-pointer">
+              <Download size={15} />
+              Get The App
+            </div>
+          </div>
 
-            <details>
-              <summary className="font-semibold cursor-pointer">
-                Credit Score
-              </summary>
+          {/* Accordion Menus */}
+          {menuConfig.map((menu) => (
+            <MobileAccordion
+              key={menu.id}
+              menu={menu}
+              navigate={navigate}
+              onClose={() => setMobileMenu(false)}
+            />
+          ))}
 
-              <div className="pl-4 mt-3 space-y-2 text-sm">
-                <div>Know Your Score</div>
-                <div>Credit Score FREE</div>
-                <div>FREE CIBIL Score</div>
-              </div>
-            </details>
-
-            <details>
-              <summary className="font-semibold cursor-pointer">
-                Loans
-              </summary>
-
-              <div className="pl-4 mt-3 space-y-2 text-sm">
-                <div>Personal Loan</div>
-                <div>Home Loan</div>
-                <div>Business Loan</div>
-                <div>Other Options</div>
-              </div>
-            </details>
-
-            <details>
-              <summary className="font-semibold cursor-pointer">
-                Credit Cards
-              </summary>
-
-              <div className="pl-4 mt-3 space-y-2 text-sm">
-                <div>Best Credit Cards</div>
-                <div>Best Forex Cards</div>
-                <div>CIBIL Score for Credit Card</div>
-                <div>Credit Card Eligibility</div>
-                <div>Compare Credit Cards</div>
-              </div>
-            </details>
-
-            <details>
-              <summary className="font-semibold cursor-pointer">
-                Calculators
-              </summary>
-
-              <div className="pl-4 mt-3 space-y-2 text-sm">
-                <div>Personal Loan EMI Calculator</div>
-                <div>Home Loan EMI Calculator</div>
-                <div>Business Loan EMI Calculator</div>
-                <div>Loan Against Property EMI Calculator</div>
-                <div>Gold Loan EMI Calculator</div>
-                <div>Term Loan EMI Calculator</div>
-                <div>Tractor Loan EMI Calculator</div>
-                <div>Mudra Loan EMI Calculator</div>
-              </div>
-            </details>
-
-            <button className="w-full bg-blue-600 text-white py-3 rounded-lg">
+          {/* Sign In */}
+          <div className="p-4">
+            <button
+              onClick={() => {
+                navigate("/signin");
+                setMobileMenu(false);
+              }}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-xl font-semibold text-sm transition-colors"
+            >
               Sign In
             </button>
-
           </div>
         </div>
       )}
-
-   
     </header>
-    );
-    }
+  );
+}
