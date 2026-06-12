@@ -201,7 +201,7 @@ const [showAppPopup, setShowAppPopup] = useState(false);// get app state
           </div>
 
           {/* CALCULATORS */}
-          <div
+          {/* <div
             className="relative"
             onMouseEnter={() => setOpenMenu("calculator")}
             onMouseLeave={() => setOpenMenu(null)}
@@ -242,7 +242,75 @@ const [showAppPopup, setShowAppPopup] = useState(false);// get app state
 
               </div>
             )}
+          </div> */}
+          {/* CALCULATORS */}
+<div
+  className="relative"
+  onMouseEnter={() => setOpenMenu("calculator")}
+  onMouseLeave={() => setOpenMenu(null)}
+>
+  <button className="flex items-center gap-1 hover:text-blue-600">
+    Calculators
+    <ChevronDown size={18} />
+  </button>
+
+  {openMenu === "calculator" && (
+    <div className="absolute top-full left-0 mt-2 w-[450px] bg-white shadow-xl rounded-xl p-5 border">
+      <div className="space-y-4">
+        <h3 className="font-semibold text-blue-600">
+          Loan EMI Calculators
+        </h3>
+
+        {[
+           {
+    title: "Personal Loan EMI Calculator",
+    path: "/personal-loan-emi",
+  },
+  {
+    title: "Home Loan EMI Calculator",
+    path: "/home-loan-emi",
+  },
+  {
+    title: "Business Loan EMI Calculator",
+    path: "/business-loan-emi",
+  },
+  {
+    title: "Loan Against Property EMI Calculator",
+    path: "/lap-loan-emi",
+  },
+  {
+    title: "Gold Loan EMI Calculator",
+    path: "/gold-loan-emi",
+  },
+  {
+    title: "Term Loan EMI Calculator",
+    path: "/term-loan-emi",
+  },
+  {
+    title: "Tractor Loan EMI Calculator",
+    path: "/tractor-loan-emi",
+  },
+  {
+    title: "Mudra Loan EMI Calculator",
+    path: "/mudra-loan-emi",
+  },
+        ].map((item) => (
+          <div
+            key={item.title}
+            onClick={() => {
+              navigate(item.path);
+              setOpenMenu(null);
+            }}
+            className="flex items-center gap-3 cursor-pointer hover:text-blue-600"
+          >
+            <Calculator size={18} />
+            <span>{item.title}</span>
           </div>
+        ))}
+      </div>
+    </div>
+  )}
+</div>
 
         </nav>
 
