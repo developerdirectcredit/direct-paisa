@@ -1,8 +1,3 @@
-
-
-
-// add a drop daown code with code claude ai
-
 import { useState, useRef } from "react";
 import TalkToExpertPopup from "./TalkToExpertPopup";
 import GetAppPopup from "./GetAppPopup";
@@ -434,126 +429,11 @@ export default function Navbar() {
                 />
               </button>
 
-            {openMenu === "loan" && (
-              <div className="absolute top-full left-0 mt-2 w-80 bg-white shadow-xl rounded-xl p-5 border">
-                <div className="space-y-4">
-
-                  <div className="flex gap-3 hover:text-blue-600 cursor-pointer">
-                    <BadgeIndianRupee />
-                    <span>Personal Loan</span>
-                  </div>
-
-                  <div className="flex gap-3 hover:text-blue-600 cursor-pointer">
-                    <Home />
-                    <span>Home Loan</span>
-                  </div>
-
-                  <div className="flex gap-3 hover:text-blue-600 cursor-pointer">
-                    <Briefcase />
-                    <span>Business Loan</span>
-                  </div>
-
-                  <div className="flex gap-3 hover:text-blue-600 cursor-pointer">
-                    <MoreHorizontal />
-                    <span>Other Options</span>
-                  </div>
-
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* CREDIT CARDS */}
-          <div
-            className="relative"
-            onMouseEnter={() => setOpenMenu("card")}
-            onMouseLeave={() => setOpenMenu(null)}
-          >
-            <button className="flex items-center gap-1 hover:text-blue-600">
-              Credit Cards
-              <ChevronDown size={18} />
-            </button>
-
-            {openMenu === "card" && (
-              <div className="absolute top-full left-0 mt-2 w-96 bg-white shadow-xl rounded-xl p-5 border">
-
-                <div className="space-y-4">
-
-                  <div className="flex gap-3 hover:text-blue-600 cursor-pointer">
-                    <CreditCard />
-                    <span>Best Credit Cards</span>
-                  </div>
-
-                  <div className="flex gap-3 hover:text-blue-600 cursor-pointer">
-                    <CreditCard />
-                    <span>Best Forex Cards</span>
-                  </div>
-
-                  <div className="flex gap-3 hover:text-blue-600 cursor-pointer">
-                    <CreditCard />
-                    <span>CIBIL Score for Credit Card</span>
-                  </div>
-
-                  <div className="flex gap-3 hover:text-blue-600 cursor-pointer">
-                    <CreditCard />
-                    <span>Credit Card Eligibility</span>
-                  </div>
-
-                  <div className="flex gap-3 hover:text-blue-600 cursor-pointer">
-                    <CreditCard />
-                    <span>Compare Credit Cards</span>
-                  </div>
-
-                </div>
-
-              </div>
-            )}
-          </div>
-
-          {/* CALCULATORS */}
-          <div
-            className="relative"
-            onMouseEnter={() => setOpenMenu("calculator")}
-            onMouseLeave={() => setOpenMenu(null)}
-          >
-            <button className="flex items-center gap-1 hover:text-blue-600">
-              Calculators
-              <ChevronDown size={18} />
-            </button>
-
-            {openMenu === "calculator" && (
-              <div className="absolute top-full left-0 mt-2 w-[450px] bg-white shadow-xl rounded-xl p-5 border">
-
-                <div className="space-y-4">
-
-                  <h3 className="font-semibold text-blue-600">
-                    Loan EMI Calculators
-                  </h3>
-
-                  {[
-                    "Personal Loan EMI Calculator",
-                    "Home Loan EMI Calculator",
-                    "Business Loan EMI Calculator",
-                    "Loan Against Property EMI Calculator",
-                    "Gold Loan EMI Calculator",
-                    "Term Loan EMI Calculator",
-                    "Tractor Loan EMI Calculator",
-                    "Mudra Loan EMI Calculator",
-                  ].map((item) => (
-                    <div
-                      key={item}
-                      className="flex gap-3 hover:text-blue-600 cursor-pointer"
-                    >
-                      <Calculator size={18} />
-                      <span>{item}</span>
-                    </div>
-                  ))}
-                </div>
-
-              </div>
-            )}
-          </div>
-
+              {openMenu === menu.id && (
+                <DesktopDropdown menu={menu} navigate={navigate} />
+              )}
+            </div>
+          ))}
         </nav>
 
         {/* Sign In Button */}
@@ -622,3 +502,610 @@ export default function Navbar() {
     </header>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
