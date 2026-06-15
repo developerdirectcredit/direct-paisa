@@ -1,6 +1,8 @@
 
+//  ==   Loan Products dikhana.     
 
-
+/*
+== image icons ke liye hta diye
 import {
   Wallet,
   CreditCard,
@@ -20,6 +22,42 @@ const products = [
   { title: "FD", icon: Coins },
   { title: "UPI Card", icon: Smartphone },
 ];
+*/
+
+// == insert a new array element of imagee
+
+const products = [
+  {
+    title: "Personal Loan",
+    icon: "/icons/personal-loan.png",
+  },
+  {
+    title: "Credit Card",
+    icon: "/icons/credit-card.png",
+  },
+  {
+    title: "Business Loan",
+    icon: "/icons/business-loan.png",
+  },
+  {
+    title: "Home Loan",
+    icon: "/icons/home-loan.png",
+  },
+  {
+    title: "Loan Against Property",
+    icon: "/icons/property-loan.png",
+  },
+  {
+    title: "FD",
+    icon: "/icons/fd.png",
+  },
+  {
+    title: "UPI Card",
+    icon: "/icons/upi-card.png",
+  },
+];
+
+
 
 export default function ProductGrid() {
   return (
@@ -30,7 +68,7 @@ export default function ProductGrid() {
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-5 md:gap-8">
         {products.map((item, index) => {
-          const Icon = item.icon;
+          // const Icon = item.icon;
 
           return (
             <div
@@ -64,20 +102,21 @@ export default function ProductGrid() {
                   group-hover:bg-blue-600
                 "
               >
-                <Icon
-                  size={30}
+                
+                <img
+                  src={item.icon}
+                  alt={item.title}
                   className="
-                    text-blue-700
-                    transition-all
-                    duration-300
-                    group-hover:text-white
-                  "
+                    w-8
+                    h-8
+                  object-contain
+                    "
                 />
-              </div>
+                 </div>
 
-              {/* Title */}
-              <h3
-                className="
+                {/* Title */}
+                <h3
+                  className="
                   mt-4
                   text-sm
                   md:text-base
@@ -85,13 +124,13 @@ export default function ProductGrid() {
                   text-gray-800
                   leading-5
                 "
-              >
-                {item.title}
-              </h3>
-            </div>
-          );
+                >
+                  {item.title}
+                </h3>
+              </div>
+              );
         })}
-      </div>
+            </div>
     </section>
   );
 }
