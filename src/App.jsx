@@ -113,6 +113,7 @@ import HomeLoan from "./pages/loans/HomeLoan";
 import BusinessLoan from "./pages/loans/BusinessLoan";
 
 // Credit Score pages
+import CreditScore from "./pages/CreditScore";
 import CibilScore from "./pages/CibilScore";
 
 function App() {
@@ -129,6 +130,7 @@ function App() {
         <Route path="/loans/business" element={<BusinessLoan />} />
 
         {/* Credit Score */}
+        <Route path="/credit-score" element={<CreditScore />} />
         <Route path="/cibil-score" element={<CibilScore />} />
         {/* <Route path="/credit-score" element={<CibilScore />} /> */}
 
