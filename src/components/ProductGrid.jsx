@@ -1,6 +1,8 @@
 
 //  ==   Loan Products dikhana.     
 
+import { useNavigate } from "react-router-dom";
+
 /*
 == image icons ke liye hta diye
 import {
@@ -31,7 +33,6 @@ const products = [
   {
     title: "Personal Loan",
     icon: "/icons/personal-loan.png",
-    path: "/loans/personal",
   },
   {
     title: "Credit Card",
@@ -64,8 +65,6 @@ const products = [
 
 
 export default function ProductGrid() {
-  const navigate = useNavigate();
-
   return (
     
    // <section className="max-w-7xl mx-auto px-4 py-6">
@@ -87,67 +86,36 @@ export default function ProductGrid() {
             <div
 
               key={index}
-              onClick={() => navigate(item.path)}
-            //   className="
-            //   group
-            //   bg-white
-            //  rounded-2xl
-            //  p-5 md:p-6
-            //   cursor-pointer
-            //   text-center
-            //   transition-all
-            //   duration-300
-            //   hover:-translate-y-2
-            //     hover:shadow-xl
-            //    "
-               className="
-               group
-             bg-white
-           rounded-xl
-           p-3
-cursor-pointer
-text-center
-transition-all
-duration-300
-hover:-translate-y-1
-hover:shadow-lg
-"
+              className="
+                group
+                bg-white
+                rounded-2xl
+                p-5 md:p-6
+                cursor-pointer
+                text-center
+                transition-all
+                duration-300
+                hover:-translate-y-2
+                hover:shadow-xl
+              "
             >
+              {/* Icon Circle */}
               <div
-
-
-                /* Icon Circle */
-                // className="
-                //   w-16
-                //   h-16
-                //   mx-auto
-                //   rounded-full
-                //   bg-blue-50
-                //   flex
-                //   items-center
-                //   justify-center
-                //   transition-all
-                //   duration-300
-                //   group-hover:bg-blue-600
-                 // "
-                 // icon size kam karne ke liye
-
-                  
-className="
-w-14
-h-14
-mx-auto
-rounded-xl
-bg-gray-100
-flex
-items-center
-justify-center
-"
->
-  
-
-              
-
+                className="
+                  w-16
+                  h-16
+                  mx-auto
+                  rounded-full
+                  bg-blue-50
+                  flex
+                  items-center
+                  justify-center
+                  transition-all
+                  duration-300
+                  group-hover:bg-blue-600
+                "
+              >
+                
                 <img
                   src={item.icon}
                   alt={item.title}
