@@ -25,11 +25,13 @@ const products = [
 */
 
 // == insert a new array element of imagee
+import { useNavigate } from "react-router-dom";
 
 const products = [
   {
     title: "Personal Loan",
     icon: "/icons/personal-loan.png",
+    path: "/loans/personal",
   },
   {
     title: "Credit Card",
@@ -38,10 +40,12 @@ const products = [
   {
     title: "Business Loan",
     icon: "/icons/business-loan.png",
+    path:  "/loans/business"
   },
   {
     title: "Home Loan",
     icon: "/icons/home-loan.png",
+    path:  "/loans/home"
   },
   {
     title: "Loan Against Property",
@@ -60,77 +64,123 @@ const products = [
 
 
 export default function ProductGrid() {
-  return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
-      <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-8 md:mb-12">
-        Loans & Cards
-      </h2>
+  const navigate = useNavigate();
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-5 md:gap-8">
+  return (
+    
+   // <section className="max-w-7xl mx-auto px-4 py-6">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-6">
+
+      {/*  heading small karne ke liye */}
+        
+         <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">
+         Loans & Cards
+           </h2>
+
+      {/* <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-5 md:gap-8"> */}
+        {/* <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4"> */}
+        <div className="grid grid-cols-4 md:grid-cols-8 md:grid-cols-4 lg:grid-cols-7 gap-4">
         {products.map((item, index) => {
           // const Icon = item.icon;
 
           return (
             <div
+
               key={index}
-              className="
-                group
-                bg-white
-                rounded-2xl
-                p-5 md:p-6
-                cursor-pointer
-                text-center
-                transition-all
-                duration-300
-                hover:-translate-y-2
-                hover:shadow-xl
-              "
+              onClick={() => navigate(item.path)}
+            //   className="
+            //   group
+            //   bg-white
+            //  rounded-2xl
+            //  p-5 md:p-6
+            //   cursor-pointer
+            //   text-center
+            //   transition-all
+            //   duration-300
+            //   hover:-translate-y-2
+            //     hover:shadow-xl
+            //    "
+               className="
+               group
+             bg-white
+           rounded-xl
+           p-3
+cursor-pointer
+text-center
+transition-all
+duration-300
+hover:-translate-y-1
+hover:shadow-lg
+"
             >
-              {/* Icon Circle */}
               <div
-                className="
-                  w-16
-                  h-16
-                  mx-auto
-                  rounded-full
-                  bg-blue-50
-                  flex
-                  items-center
-                  justify-center
-                  transition-all
-                  duration-300
-                  group-hover:bg-blue-600
-                "
-              >
-                
+
+
+                /* Icon Circle */
+                // className="
+                //   w-16
+                //   h-16
+                //   mx-auto
+                //   rounded-full
+                //   bg-blue-50
+                //   flex
+                //   items-center
+                //   justify-center
+                //   transition-all
+                //   duration-300
+                //   group-hover:bg-blue-600
+                 // "
+                 // icon size kam karne ke liye
+
+                  
+className="
+w-14
+h-14
+mx-auto
+rounded-xl
+bg-gray-100
+flex
+items-center
+justify-center
+"
+>
+  
+
+              
+
                 <img
                   src={item.icon}
                   alt={item.title}
-                  className="
-                    w-8
-                    h-8
-                  object-contain
-                    "
-                />
-                 </div>
+                  // className="
+                  //   w-8
+                  //   h-8
+                  // object-contain
+                  //   "
+                  //== image size
+                     className="w-7 h-7 object-contain"
 
-                {/* Title */}
-                <h3
-                  className="
-                  mt-4
-                  text-sm
-                  md:text-base
-                  font-semibold
-                  text-gray-800
-                  leading-5
-                "
-                >
-                  {item.title}
-                </h3>
+                />
               </div>
-              );
-        })}
+
+              {/* Title */}
+              <h3
+                // className="
+                //   mt-4
+                //   text-sm
+                //   md:text-base
+                //   font-semibold
+                //   text-gray-800
+                //   leading-5
+                // "
+                //  Title chhota karo
+                  className="mt-2 text-sm font-medium text-gray-700"
+              >
+                {item.title}
+              </h3>
             </div>
+          );
+        })}
+      </div>
     </section>
   );
 }
