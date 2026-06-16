@@ -13,8 +13,9 @@ export default function Home() {
   return (
     <>
       <Navbar />
+  
       <Hero />
-      <ProductGrid />
+     <ProductGrid />
       <AppPromo />
       <CreditCards />
       <WhyChooseUs />
