@@ -693,7 +693,10 @@
 import { useState } from "react";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
+import LoanAplicationFlow from "../../components/loan-flow/LoanAplicationFlow";
 import { CheckCircle, ArrowRight, Zap, Clock, Search, Shield, Star } from "lucide-react";
+
+
 
 const features = [
   { icon: Zap,    color: "bg-blue-50 text-blue-600",   title: "Compare 30+ Lenders Instantly",  desc: "Evaluate interest rates, tenure & more in one place." },
@@ -728,6 +731,7 @@ export default function PersonalLoan() {
   const [submitted, setSubmitted] = useState(false);
   const [agreed, setAgreed]       = useState(true);
   const [errors, setErrors]       = useState({});
+  const [showLoanFlow, setShowLoanFlow] = useState(false);
 
   const validate = () => {
     const e = {};
@@ -739,11 +743,11 @@ export default function PersonalLoan() {
     return e;
   };
 
-  const handleSubmit = () => {
-    const e = validate();
-    if (Object.keys(e).length > 0) { setErrors(e); return; }
-    setSubmitted(true);
-  };
+  // const handleSubmit = () => {
+  //   const e = validate();
+  //   if (Object.keys(e).length > 0) { setErrors(e); return; }
+  //   setSubmitted(true);
+  // };
 
   return (
     <div className="min-h-screen bg-white">
@@ -910,12 +914,27 @@ export default function PersonalLoan() {
                     </div>
 
                     {/* Submit */}
-                    <button
+                    {/* <button
                       onClick={handleSubmit}
                       className="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold py-4 rounded-xl transition-colors flex items-center justify-center gap-2 text-sm mt-5"
                     >
                       Check Eligibility <ArrowRight size={17} />
-                    </button>
+                    </button> */}
+                   <button
+  onClick={() => {
+    const e = validate();
+
+    if (Object.keys(e).length > 0) {
+      setErrors(e);
+      return;
+    }
+
+    setShowLoanFlow(true);
+  }}
+  className="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold py-4 rounded-xl transition-colors flex items-center justify-center gap-2 text-sm mt-5"
+>
+  Check Eligibility <ArrowRight size={17} />
+</button>
 
                     {/* Terms */}
                     <div className="flex items-start gap-2 mt-3">
@@ -1045,6 +1064,14 @@ export default function PersonalLoan() {
       </section>
 
       <Footer />
+
+      {showLoanFlow && (
+  <LoanAplicationFlow
+    initialName={form.name}
+    initialMobile={form.mobile}
+    onClose={() => setShowLoanFlow(false)}
+  />
+)}
     </div>
   );
 }
