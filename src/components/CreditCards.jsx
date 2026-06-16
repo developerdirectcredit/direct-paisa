@@ -1,14 +1,4 @@
-// export default function CreditCards() {
-//   return (
-//     <section className="max-w-7xl mx-auto px-4 py-10">
-//       <img
-//         src="/images/how-direct-credit-helps.png"
-//         alt="How Direct Credit Helps"
-//         className="w-full rounded-2xl shadow-lg"
-//       />
-//     </section>
-//   );
-// }
+
 
 export default function CreditCards() {
   return (
