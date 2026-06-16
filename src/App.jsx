@@ -101,6 +101,7 @@
 
 // using claude ai code
 
+
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 // Existing pages
@@ -116,6 +117,7 @@ import BusinessLoan from "./pages/loans/BusinessLoan";
 import CreditScore from "./pages/CreditScore";
 import CibilScore from "./pages/CibilScore";
 import ImproveScore from "./pages/ImproveScore";
+import EmiCalculator from "./pages/EmiCalculator";
 
 function App() {
   return (
@@ -138,6 +140,43 @@ function App() {
 
         {/* Baaki pages aane wale hain — abhi 404 fallback */}
         <Route path="*" element={<ComingSoon />} />
+
+        {/* emi calculator  */}
+
+        <Route
+  path="/calculators/personal-loan"
+  element={<EmiCalculator loanType="Personal Loan" />}
+/>
+
+<Route
+  path="/calculators/home-loan"
+  element={<EmiCalculator loanType="Home Loan" />}
+/>
+
+<Route
+  path="/calculators/business-loan"
+  element={<EmiCalculator loanType="Business Loan" />}
+/>
+
+<Route
+  path="/calculators/gold-loan"
+  element={<EmiCalculator loanType="Gold Loan" />}
+/>
+
+<Route
+  path="/calculators/mudra-loan"
+  element={<EmiCalculator loanType="Mudra Loan" />}
+/>
+
+<Route
+  path="/calculators/term-loan"
+  element={<EmiCalculator loanType="Term Loan" />}
+/>
+
+<Route
+  path="/calculators/lap"
+  element={<EmiCalculator loanType="Loan Against Property Loan" />}
+/>
       </Routes>
     </BrowserRouter>
   );

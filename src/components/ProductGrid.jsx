@@ -1,6 +1,8 @@
 
 //  ==   Loan Products dikhana.     
 
+import { useNavigate } from "react-router-dom";
+
 /*
 == image icons ke liye hta diye
 import {
@@ -30,6 +32,7 @@ const products = [
   {
     title: "Personal Loan",
     icon: "/icons/personal-loan.png",
+    path:"/loans/personal-quote"
   },
   {
     title: "Credit Card",
@@ -60,6 +63,7 @@ const products = [
 
 
 export default function ProductGrid() {
+   const navigate =useNavigate();
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
       <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-8 md:mb-12">
@@ -73,6 +77,7 @@ export default function ProductGrid() {
           return (
             <div
               key={index}
+              onClick={()=> item.path && navigate(item.path)}
               className="
                 group
                 bg-white
