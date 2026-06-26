@@ -1,4 +1,6 @@
 import { ChevronUp } from "lucide-react";
+import { Link } from "react-router-dom";
+
 
 export default function Footer() {
   const scrollToTop = () => {
@@ -75,12 +77,65 @@ export default function Footer() {
             </h3>
 
             <ul className="space-y-3 text-gray-400">
-              <li>About Us</li>
-              <li>Careers</li>
-              <li>Awards</li>
-              <li>Contact Us</li>
-              <li>Privacy Policy</li>
-              <li>Terms & Conditions</li>
+              {/* <li>About Us</li> */}
+              <li>
+              <Link to="/about" className="hover:text-white transition-colors">
+                About Us
+              </Link>
+            </li>
+                <li>
+                <Link
+                  to="/careers"
+                  className="hover:text-white transition-colors"
+                >
+                  Careers
+                </Link>
+              </li>
+              
+              <li>
+                <Link
+                  to="/awards"
+                  className="hover:text-white transition-colors"
+                >
+                  Awards
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/culture"
+                  className="hover:text-white transition-colors"
+                >
+                  Culture
+                </Link>
+              </li>
+              {/* <li>Contact Us</li> */}
+               <li>
+                <Link
+                  to="/contact-us"
+                  className="hover:text-white transition-colors"
+                >
+                  Contact Us
+                </Link>
+                </li>
+                <li>
+                <Link
+                  to="/privacy-policy"
+                  className="hover:text-white transition-colors"
+                >
+                  Privacy Policy
+                </Link>
+                </li>
+              {/* <li>Privacy Policy</li> */}
+              {/* <li>Terms & Conditions</li> */}
+
+                <li>
+                <Link
+                  to="/terms-conditions"
+                  className="hover:text-white transition-colors"
+                >
+                  Terms & Conditions
+                </Link>
+              </li>
             </ul>
           </div>
 
