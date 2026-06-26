@@ -14,17 +14,34 @@ import Login from "./pages/Login";
 import PersonalLoan from "./pages/loans/PersonalLoan";
 import HomeLoan from "./pages/loans/HomeLoan";
 import BusinessLoan from "./pages/loans/BusinessLoan";
-
+import InstantPersonalLoan from "./pages/loans/InstantPersonalLoan";
+import LoanAgainstProperty from "./pages/loans/LoanAgainstProperty";
+import CreditCards from "./pages/CreditCards";
+import EducationLoan from "./pages/loans/EducationLoan";
+import StartupLoan from "./pages/loans/StartupLoan";
+import LeaseRentalLoan from "./pages/loans/LeaseRentalLoan";
+import AgriLoan from "./pages/loans/AgriLoan"; 
+import BankGuarantee from "./pages/loans/BankGuarantee";
+import Cgtmse from "./pages/loans/Cgtmse";
+import ForeignCurrencyLoan from "./pages/loans/ForeignCurrencyLoan";
+import HospitalLoan from "./pages/loans/HospitalLoan";
+import InvoiceDiscounting from "./pages/loans/InvoiceDiscounting";
+ import SchoolCollegeLoan from "./pages/loans/SchoolCollegeLoan";
+import PcfcLoan from "./pages/loans/PcfcLoan";
+import ProfessionalLoan from "./pages/loans/ProfessionalLoan";
+import ProjectLoan from "./pages/loans/ProjectLoan";
 // Credit Score pages
 import CreditScore from "./pages/CreditScore";
 import CibilScore from "./pages/CibilScore";
 import ImproveScore from "./pages/ImproveScore";
 import EmiCalculator from "./pages/EmiCalculator";
 
+
 function App() {
   return (
     <BrowserRouter>
        <ScrollToTop />
+    
       <Routes>
         {/* Main */}
         <Route path="/" element={<Home />} />
@@ -34,7 +51,22 @@ function App() {
         <Route path="/loans/personal" element={<PersonalLoan />} />
         <Route path="/loans/home" element={<HomeLoan />} />
         <Route path="/loans/business" element={<BusinessLoan />} />
-
+         <Route path="/loans/instant-personal" element={<InstantPersonalLoan />} />
+        <Route path="/loans-against-property" element={<LoanAgainstProperty />} />
+        <Route path="/credit-cards" element={<CreditCards />} />
+        <Route path="/loans/education" element={<EducationLoan />} />
+        <Route path="/loans/startup" element={<StartupLoan />} />
+        <Route path="/loans/lease-rental-loan" element={<LeaseRentalLoan />} />
+        <Route path="/loans/agri" element={<AgriLoan />} />
+        <Route path="/loans/bank-guarantee" element={<BankGuarantee />} />
+        <Route path="/loans/cgtmse" element={<Cgtmse />} />
+        <Route path="/loans/foreign-currency-loan" element={<ForeignCurrencyLoan />} />
+        <Route path="/loans/hospital-loan" element={<HospitalLoan />} />
+        <Route path="/loans/invoice-discounting" element={<InvoiceDiscounting />} />
+        <Route path="/loans/school-college-loan" element={<SchoolCollegeLoan />} />
+        <Route path="/loans/pcfc" element={<PcfcLoan />} />
+        <Route path="/loans/professional" element={<ProfessionalLoan />} />
+           <Route path="/loans/project" element={<ProjectLoan />} />
         {/* Credit Score */}
         <Route path="/credit-score" element={<CreditScore />} />
         <Route path="/cibil-score" element={<CibilScore />} />

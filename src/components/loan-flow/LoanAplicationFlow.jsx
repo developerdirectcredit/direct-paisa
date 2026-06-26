@@ -1,7 +1,14 @@
+
+
+
+// ==== // ye code  purana hai jisem bahut sare bank ka loan amout show rha hai 
+
+// == add loan offer a UTM link change 
+
 import { useState, useRef, useEffect } from "react";
 import {
   CheckCircle, ArrowRight, ArrowLeft, AlertCircle,
-  Phone, Mail, X,
+  Phone, Mail, X, ExternalLink,
 } from "lucide-react";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -9,8 +16,11 @@ import {
 const PAN_REGEX = /^[A-Z]{5}[0-9]{4}[A-Z]$/;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+const BAJAJ_LINK =
+  "https://www.bajajfinservmarkets.in/apply-for-personal-loan-finservmarkets/?utm_source=ERefferalAffiliate&utm_medium=SOL&utm_campaign=Open&utm_content=DirectCredit&utm_term=june26SC1_";
+
 function todayMinusYears(years) {
-  const d = new Date();
+  const d = new Date(); //---------------- acces current date------
   d.setFullYear(d.getFullYear() - years);
   return d.toISOString().split("T")[0];
 }
@@ -45,11 +55,9 @@ function OtpInputBlock({ length = 4, onComplete, resendKey }) {
 
   useEffect(() => {
     r0.current?.focus();
-    //setSec(30);
-   // setDigits(Array(length).fill(""));
     const t = setInterval(() => setSec((s) => (s > 0 ? s - 1 : 0)), 1000);
     return () => clearInterval(t);
-  }, [resendKey]); 
+  }, [resendKey]);
 
   const handleChange = (val, idx) => {
     const v = val.replace(/\D/g, "").slice(0, 1);
@@ -275,7 +283,7 @@ function StepBasicDetails({ data, setData, onNext }) {
   );
 }
 
-// ─── STEP 2 — Mobile OTP Verification ────────────────────────────────────────
+// ─── STEP 2 — Mobile OTP ─────────────────────────────────────────────────────
 
 function StepMobileOtp({ data, onNext, onBack }) {
   const [verifying, setVerifying] = useState(false);
@@ -315,7 +323,7 @@ function StepMobileOtp({ data, onNext, onBack }) {
   );
 }
 
-// ─── STEP 3 — Email OTP Verification ─────────────────────────────────────────
+// ─── STEP 3 — Email OTP ───────────────────────────────────────────────────────
 
 function StepEmailOtp({ data, onNext, onBack }) {
   const [verifying, setVerifying] = useState(false);
@@ -506,7 +514,7 @@ function StepLoanDetails({ data, setData, onNext, onBack }) {
   );
 }
 
-// ─── STEP 6 — Income Details ─────────────────────────────────────────────────
+// ─── STEP 6 — Income Details ──────────────────────────────────────────────────
 
 function StepIncomeDetails({ data, setData, onNext, onBack }) {
   const [incomeType, setIncomeType] = useState(data.incomeType || "Salaried");
@@ -540,7 +548,6 @@ function StepIncomeDetails({ data, setData, onNext, onBack }) {
   const validate = () => {
     const e = {};
     if (!fields.monthlyIncome || Number(fields.monthlyIncome) < 15000) e.monthlyIncome = "Minimum monthly income is ₹15,000";
-
     if (incomeType === "Salaried") {
       if (!fields.companyName.trim()) e.companyName = "Enter your company name";
       if (!fields.companyType) e.companyType = "Select company type";
@@ -608,55 +615,27 @@ function StepIncomeDetails({ data, setData, onNext, onBack }) {
             />
             {errors.companyName && <p className="text-red-500 text-xs mt-1">{errors.companyName}</p>}
           </div>
-
           <div className="mb-4">
             <label className="text-xs font-semibold text-gray-600 mb-1.5 block">Company Type</label>
-            <select
-              value={fields.companyType}
-              onChange={(e) => update("companyType", e.target.value)}
-              className={inputClass("companyType")}
-            >
+            <select value={fields.companyType} onChange={(e) => update("companyType", e.target.value)} className={inputClass("companyType")}>
               <option value="">Select company type</option>
               {companyTypes.map((t) => <option key={t} value={t}>{t}</option>)}
             </select>
             {errors.companyType && <p className="text-red-500 text-xs mt-1">{errors.companyType}</p>}
           </div>
-
           <div className="mb-3">
             <label className="text-xs font-semibold text-gray-600 mb-1.5 block">Employment Start Date</label>
-            <input
-              type="date"
-              value={fields.employmentStartDate}
-              max={new Date().toISOString().split("T")[0]}
-              onChange={(e) => update("employmentStartDate", e.target.value)}
-              className={inputClass("employmentStartDate")}
-            />
+            <input type="date" value={fields.employmentStartDate} max={new Date().toISOString().split("T")[0]} onChange={(e) => update("employmentStartDate", e.target.value)} className={inputClass("employmentStartDate")} />
             {errors.employmentStartDate && <p className="text-red-500 text-xs mt-1">{errors.employmentStartDate}</p>}
           </div>
-
           <div className="flex items-center gap-2 mb-4">
-            <input
-              type="checkbox"
-              id="currentlyWorking"
-              checked={fields.currentlyWorking}
-              onChange={(e) => update("currentlyWorking", e.target.checked)}
-              className="accent-blue-600 w-4 h-4 cursor-pointer"
-            />
-            <label htmlFor="currentlyWorking" className="text-sm text-gray-600 cursor-pointer">
-              I am currently working here
-            </label>
+            <input type="checkbox" id="currentlyWorking" checked={fields.currentlyWorking} onChange={(e) => update("currentlyWorking", e.target.checked)} className="accent-blue-600 w-4 h-4 cursor-pointer" />
+            <label htmlFor="currentlyWorking" className="text-sm text-gray-600 cursor-pointer">I am currently working here</label>
           </div>
-
           {!fields.currentlyWorking && (
             <div className="mb-4">
               <label className="text-xs font-semibold text-gray-600 mb-1.5 block">Employment End Date</label>
-              <input
-                type="date"
-                value={fields.employmentEndDate}
-                max={new Date().toISOString().split("T")[0]}
-                onChange={(e) => update("employmentEndDate", e.target.value)}
-                className={inputClass("employmentEndDate")}
-              />
+              <input type="date" value={fields.employmentEndDate} max={new Date().toISOString().split("T")[0]} onChange={(e) => update("employmentEndDate", e.target.value)} className={inputClass("employmentEndDate")} />
               {errors.employmentEndDate && <p className="text-red-500 text-xs mt-1">{errors.employmentEndDate}</p>}
             </div>
           )}
@@ -665,64 +644,30 @@ function StepIncomeDetails({ data, setData, onNext, onBack }) {
         <>
           <div className="mb-4">
             <label className="text-xs font-semibold text-gray-600 mb-1.5 block">Business Name</label>
-            <input
-              type="text"
-              value={fields.businessName}
-              onChange={(e) => update("businessName", e.target.value)}
-              placeholder="Enter your business name"
-              className={inputClass("businessName")}
-            />
+            <input type="text" value={fields.businessName} onChange={(e) => update("businessName", e.target.value)} placeholder="Enter your business name" className={inputClass("businessName")} />
             {errors.businessName && <p className="text-red-500 text-xs mt-1">{errors.businessName}</p>}
           </div>
-
           <div className="mb-4">
             <label className="text-xs font-semibold text-gray-600 mb-1.5 block">Business Type</label>
-            <select
-              value={fields.businessType}
-              onChange={(e) => update("businessType", e.target.value)}
-              className={inputClass("businessType")}
-            >
+            <select value={fields.businessType} onChange={(e) => update("businessType", e.target.value)} className={inputClass("businessType")}>
               <option value="">Select business type</option>
               {businessTypes.map((t) => <option key={t} value={t}>{t}</option>)}
             </select>
             {errors.businessType && <p className="text-red-500 text-xs mt-1">{errors.businessType}</p>}
           </div>
-
           <div className="mb-3">
             <label className="text-xs font-semibold text-gray-600 mb-1.5 block">Business Start Date</label>
-            <input
-              type="date"
-              value={fields.businessStartDate}
-              max={new Date().toISOString().split("T")[0]}
-              onChange={(e) => update("businessStartDate", e.target.value)}
-              className={inputClass("businessStartDate")}
-            />
+            <input type="date" value={fields.businessStartDate} max={new Date().toISOString().split("T")[0]} onChange={(e) => update("businessStartDate", e.target.value)} className={inputClass("businessStartDate")} />
             {errors.businessStartDate && <p className="text-red-500 text-xs mt-1">{errors.businessStartDate}</p>}
           </div>
-
           <div className="flex items-center gap-2 mb-4">
-            <input
-              type="checkbox"
-              id="businessCurrentlyRunning"
-              checked={fields.businessCurrentlyRunning}
-              onChange={(e) => update("businessCurrentlyRunning", e.target.checked)}
-              className="accent-blue-600 w-4 h-4 cursor-pointer"
-            />
-            <label htmlFor="businessCurrentlyRunning" className="text-sm text-gray-600 cursor-pointer">
-              This business is currently running
-            </label>
+            <input type="checkbox" id="businessCurrentlyRunning" checked={fields.businessCurrentlyRunning} onChange={(e) => update("businessCurrentlyRunning", e.target.checked)} className="accent-blue-600 w-4 h-4 cursor-pointer" />
+            <label htmlFor="businessCurrentlyRunning" className="text-sm text-gray-600 cursor-pointer">This business is currently running</label>
           </div>
-
           {!fields.businessCurrentlyRunning && (
             <div className="mb-4">
               <label className="text-xs font-semibold text-gray-600 mb-1.5 block">Business End Date</label>
-              <input
-                type="date"
-                value={fields.businessEndDate}
-                max={new Date().toISOString().split("T")[0]}
-                onChange={(e) => update("businessEndDate", e.target.value)}
-                className={inputClass("businessEndDate")}
-              />
+              <input type="date" value={fields.businessEndDate} max={new Date().toISOString().split("T")[0]} onChange={(e) => update("businessEndDate", e.target.value)} className={inputClass("businessEndDate")} />
               {errors.businessEndDate && <p className="text-red-500 text-xs mt-1">{errors.businessEndDate}</p>}
             </div>
           )}
@@ -742,22 +687,141 @@ function StepIncomeDetails({ data, setData, onNext, onBack }) {
   );
 }
 
-// ─── STEP 7 — Final Success ───────────────────────────────────────────────────
+// ─── STEP 7 — Bank Offers (NEW) ───────────────────────────────────────────────
 
-function StepSuccess({ data }) {
+const BANK_OFFERS = [
+  {
+    id: "bajaj",
+    name: "Bajaj Finserv",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Bajaj_finserv.svg/200px-Bajaj_finserv.svg.png",
+    maxAmount: "Upto ₹40 Lakhs",
+    roi: "11% p.a",
+    emi: "₹4,399",
+    approval: "High",
+    badge: "Flat 50% off on PF · till 3rd July",
+    link: BAJAJ_LINK,
+  },
+  {
+    id: "kredit",
+    name: "KreditBee",
+    logo: null,
+    logoText: "KB",
+    logoColor: "bg-yellow-400",
+    maxAmount: "Upto ₹5 Lakhs",
+    roi: "17% p.a",
+    emi: "₹4,944",
+    approval: "High",
+    badge: "Flat 50% off on PF · till 3rd July",
+    link: BAJAJ_LINK,
+  },
+  {
+    id: "zype",
+    name: "Zype",
+    logo: null,
+    logoText: "Z",
+    logoColor: "bg-blue-500",
+    maxAmount: "Upto ₹5 Lakhs",
+    roi: "18% p.a",
+    emi: "₹4,992",
+    approval: "High",
+    badge: null,
+    link: BAJAJ_LINK,
+  },
+];
+
+function ApprovalBar({ level }) {
+  const pct = level === "High" ? 85 : level === "Medium" ? 50 : 25;
+  const color = level === "High" ? "bg-green-500" : level === "Medium" ? "bg-yellow-400" : "bg-red-400";
   return (
-    <div className="text-center py-6">
-      <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-        <CheckCircle size={32} className="text-green-500" />
+    <div>
+      <div className="w-24 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+        <div className={`h-full rounded-full ${color}`} style={{ width: `${pct}%` }} />
       </div>
-      <h3 className="text-lg font-bold text-gray-800 mb-2">Application Submitted!</h3>
-      <p className="text-gray-500 text-sm mb-1">
-        Hi <span className="font-semibold text-gray-700">{data.fullName?.split(" ")[0]}</span>,
-      </p>
-      <p className="text-gray-500 text-sm mb-6 max-w-sm mx-auto leading-relaxed">
-        Your loan application for <strong>₹{Number(data.loanAmount).toLocaleString("en-IN")}</strong> over{" "}
-        <strong>{data.loanTenure} months</strong> has been received. Our team will call you on{" "}
-        <span className="font-semibold text-gray-700">+91 {data.phone}</span> within 24 hours with the best offers.
+      <span className={`text-xs font-bold mt-0.5 block ${level === "High" ? "text-green-600" : "text-yellow-600"}`}>{level}</span>
+    </div>
+  );
+}
+
+function StepBankOffers({ data }) {
+  return (
+    <div>
+      {/* Cashback banner */}
+      <div className="bg-gray-900 text-white rounded-xl px-4 py-3 flex items-center gap-3 mb-5">
+        <span className="text-yellow-400 font-bold text-xs border border-yellow-400 rounded px-2 py-0.5 whitespace-nowrap">Limited Period Offer</span>
+        <div className="flex-1">
+          <span className="text-yellow-400 font-extrabold text-lg">₹1,000</span>
+          <span className="text-white text-sm ml-2">Cashback on Loan Disbursal</span>
+        </div>
+        <span className="text-2xl">🪙</span>
+      </div>
+
+      <h2 className="text-base font-bold text-gray-900 mb-4">
+        {BANK_OFFERS.length} Personalised Loan Offers For You
+      </h2>
+
+      <div className="space-y-3">
+        {BANK_OFFERS.map((offer) => (
+          <div key={offer.id} className="border border-gray-200 rounded-2xl overflow-hidden">
+            <div className="px-4 py-4">
+              <div className="flex items-start gap-3">
+                {/* Logo */}
+                <div className="flex-shrink-0">
+                  {offer.logo ? (
+                    <img src={offer.logo} alt={offer.name} className="w-10 h-10 object-contain rounded-lg border border-gray-100 p-1" />
+                  ) : (
+                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-white font-bold text-sm ${offer.logoColor}`}>
+                      {offer.logoText}
+                    </div>
+                  )}
+                  <p className="text-xs font-bold text-gray-800 mt-1 text-center w-10 leading-tight">{offer.name}</p>
+                  <p className="text-xs text-blue-600 text-center w-10 leading-tight">{offer.maxAmount}</p>
+                </div>
+
+                {/* Details */}
+                <div className="flex-1 grid grid-cols-3 gap-2 text-center">
+                  <div>
+                    <p className="text-xs text-gray-400 mb-0.5">ROI Starting at</p>
+                    <p className="text-sm font-bold text-gray-900">{offer.roi}</p>
+                    <p className="text-xs text-blue-500 underline cursor-pointer">Charges View</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-400 mb-0.5">Monthly EMI</p>
+                    <p className="text-sm font-bold text-gray-900">{offer.emi}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-400 mb-0.5">Approval Chance ⓘ</p>
+                    <ApprovalBar level={offer.approval} />
+                  </div>
+                </div>
+
+                {/* CTA */}
+                <div className="flex-shrink-0">
+                  <a
+                    href={offer.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl flex items-center gap-1 whitespace-nowrap transition-colors"
+                  >
+                    Apply Now <ExternalLink size={11} />
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {/* Badge */}
+            {offer.badge && (
+              <div className="bg-gray-50 border-t border-gray-100 px-4 py-2">
+                <span className="text-xs text-gray-500 bg-white border border-gray-200 rounded-full px-3 py-1 inline-block">
+                  {offer.badge}
+                </span>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      <p className="text-xs text-gray-400 text-center mt-4 leading-relaxed">
+        Clicking "Apply Now" will redirect you to the lender's official website. Your data is safe & secure.
       </p>
     </div>
   );
@@ -774,6 +838,7 @@ export default function LoanAplicationFlow({ initialName = "", initialMobile = "
   const restart = () => { setStepIndex(0); setData({ fullName: initialName, phone: initialMobile }); };
 
   const isLowScoreTerminal = stepIndex === 3 && data.cibilScore !== undefined && data.cibilScore < 630;
+  // Show progress bar on steps 0–5, hide on CIBIL fail and bank offers (step 6)
   const showProgress = stepIndex <= 5 && !isLowScoreTerminal;
 
   return (
@@ -792,8 +857,9 @@ export default function LoanAplicationFlow({ initialName = "", initialMobile = "
         {stepIndex === 3 && <StepCibilCheck data={data} setData={setData} onNext={next} onRestart={restart} />}
         {stepIndex === 4 && <StepLoanDetails data={data} setData={setData} onNext={next} onBack={back} />}
         {stepIndex === 5 && <StepIncomeDetails data={data} setData={setData} onNext={next} onBack={back} />}
-        {stepIndex === 6 && <StepSuccess data={data} />}
+        {stepIndex === 6 && <StepBankOffers data={data} />}
       </div>
     </div>
   );
 }
+ 

@@ -78,7 +78,7 @@ const menuConfig = [
         icon: Landmark,
         title: "Loan Against Property",
         desc: "Unlock your asset value",
-        path: "/loans/lap",
+        path: "/loans-against-property",
       },
       {
         icon: Coins,
@@ -91,6 +91,13 @@ const menuConfig = [
         title: "Other Loans",
         desc: "Education, Vehicle & more",
         path: "/loans/other",
+      },
+
+      {
+        icon: ShieldCheck,
+        title: "Bank Guarantee",
+        desc: "Financial, Performance, Bid Bond & more",
+        path: "/loans/bank-guarantee",
       },
     ],
   },
@@ -193,9 +200,8 @@ function DesktopDropdown({ menu, navigate }) {
 
   return (
     <div
-      className={`absolute top-full left-0 mt-3 bg-white shadow-2xl rounded-2xl border border-gray-100 p-5 z-50 ${
-        isTwoCol ? "w-[480px]" : "w-80"
-      }`}
+      className={`absolute top-full left-0 mt-3 bg-white shadow-2xl rounded-2xl border border-gray-100 p-5 z-50 ${isTwoCol ? "w-[480px]" : "w-80"
+        }`}
     >
       {/* Arrow pointer */}
       <div className="absolute -top-2 left-6 w-4 h-4 bg-white border-l border-t border-gray-100 rotate-45" />
@@ -278,9 +284,8 @@ function MobileAccordion({ menu, navigate, onClose }) {
         </span>
         <ChevronDown
           size={18}
-          className={`text-gray-400 transition-transform duration-300 ${
-            open ? "rotate-180" : ""
-          }`}
+          className={`text-gray-400 transition-transform duration-300 ${open ? "rotate-180" : ""
+            }`}
         />
       </button>
 
@@ -414,18 +419,16 @@ export default function Navbar() {
               onMouseLeave={handleMenuLeave}
             >
               <button
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  openMenu === menu.id
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${openMenu === menu.id
                     ? "text-blue-600 bg-blue-50"
                     : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-                }`}
+                  }`}
               >
                 {menu.label}
                 <ChevronDown
                   size={15}
-                  className={`transition-transform duration-200 ${
-                    openMenu === menu.id ? "rotate-180 text-blue-600" : "text-gray-400"
-                  }`}
+                  className={`transition-transform duration-200 ${openMenu === menu.id ? "rotate-180 text-blue-600" : "text-gray-400"
+                    }`}
                 />
               </button>
 
