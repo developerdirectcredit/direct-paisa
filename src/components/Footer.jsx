@@ -199,6 +199,6 @@ export default function Footer() {
       >
         <ChevronUp size={24} />
       </button>
-    </footer>
+    </footer> 
   );
 }
