@@ -4,7 +4,7 @@ export default function Calculators() {
   const data = [
   {
     title: "Personal Loan EMI",
-    path: "/personal-loan-emi",
+    path: "/calculators/personal-loan",
   },
   {
     title: "Business Loan EMI",
@@ -12,20 +12,20 @@ export default function Calculators() {
   },
   {
     title: "Home Loan EMI",
-    path: "/home-loan-emi",
+    path: "/calculators/home-loan",
   },
   {
-    title: "FD Calculator",
-    path: "/fd-calculator",
+    title: "Term Loan Calculator",
+    path: "/calculators/term-loan",
   },
   {
-    title: "GST Calculator",
-    path: "/gst-calculator",
+    title: "Loan Against Property",
+    path: "/calculators/lap",
   },
-  {
-    title: "NPS Calculator",
-    path: "/nps-calculator",
-  },
+  // {
+  //   title: "NPS Calculator",
+  //   path: "/nps-calculator",
+  // },
 ];
 
   return (
