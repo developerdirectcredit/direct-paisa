@@ -1,11 +1,8 @@
 
-<<<<<<< HEAD
-=======
 
 // using claude ai code
 
 
->>>>>>> 3749f4e70cb7d71ed209fee0556fe9e1f32d05e9
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ScrollToTop from "./components/ScrollToTop";
 import { AuthProvider } from "./context/AuthContext";
@@ -37,9 +34,26 @@ import Careers from "./pages/Careers";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import ContactUs from "./pages/ContactUs";
 import TermsConditions from "./pages/TermsConditions";
+import Awards from "./pages/awards";
 import Culture from "./pages/Culture";
-import CompleteProfile from "./pages/account/CompleteProfile";
+//import CompleteProfile from "./pages/account/CompleteProfile";
 import WarehouseFinance from "./pages/loans/WarehouseFinance";
+import InstantPersonalLoan from "./pages/loans/InstantPersonalLoan";
+import LoanAgainstProperty from "./pages/loans/LoanAgainstProperty";
+import CreditCards from "./pages/CreditCards";
+import EducationLoan from "./pages/loans/EducationLoan";
+import StartupLoan from "./pages/loans/StartupLoan";
+import LeaseRentalLoan from "./pages/loans/LeaseRentalLoan";
+import AgriLoan from "./pages/loans/AgriLoan";
+import BankGuarantee from "./pages/loans/BankGuarantee";
+import Cgtmse from "./pages/loans/Cgtmse";
+import ForeignCurrencyLoan from "./pages/loans/ForeignCurrencyLoan";
+import HospitalLoan from "./pages/loans/HospitalLoan";
+import InvoiceDiscounting from "./pages/loans/InvoiceDiscounting";
+import SchoolCollegeLoan from "./pages/loans/SchoolCollegeLoan";
+import PcfcLoan from "./pages/loans/PcfcLoan";
+import ProfessionalLoan from "./pages/loans/ProfessionalLoan";
+import ProjectLoan from "./pages/loans/ProjectLoan";
 
 function App() {
   return (

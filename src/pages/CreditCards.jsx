@@ -158,7 +158,7 @@ export default function CreditCards() {
       update("otp", ["", "", "", ""]);
       setTimeout(() => otpRefs.current[0]?.focus(), 100);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  
   }, [step]);
 
   // ── OTP input change: auto-shift to next box ──
