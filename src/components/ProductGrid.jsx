@@ -289,6 +289,11 @@ import { useNavigate } from "react-router-dom";
   icon: "/icons/project.png",
   path: "/loans/project"
 },
+{
+  title: "Warehouse Finance",
+  icon: "/icons/warehouse.png",
+  path: "/loans/warehouse-finance"
+},
   
   ]
 // kitne products pehle dikhane hain (View More se pehle)

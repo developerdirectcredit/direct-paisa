@@ -1,4 +1,11 @@
 
+<<<<<<< HEAD
+=======
+
+// using claude ai code
+
+
+>>>>>>> 3749f4e70cb7d71ed209fee0556fe9e1f32d05e9
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ScrollToTop from "./components/ScrollToTop";
 import { AuthProvider } from "./context/AuthContext";
@@ -31,8 +38,13 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import ContactUs from "./pages/ContactUs";
 import TermsConditions from "./pages/TermsConditions";
 import Culture from "./pages/Culture";
+<<<<<<< HEAD
 import Awards from "./pages/Awards";
 
+=======
+import CompleteProfile from "./pages/account/CompleteProfile";
+import WarehouseFinance from "./pages/loans/WarehouseFinance";
+>>>>>>> 3749f4e70cb7d71ed209fee0556fe9e1f32d05e9
 
 function App() {
   return (
@@ -59,7 +71,27 @@ function App() {
         <Route path="/loans/personal" element={<PersonalLoan />} />
         <Route path="/loans/home" element={<HomeLoan />} />
         <Route path="/loans/business" element={<BusinessLoan />} />
+<<<<<<< HEAD
 
+=======
+         <Route path="/loans/instant-personal" element={<InstantPersonalLoan />} />
+        <Route path="/loans-against-property" element={<LoanAgainstProperty />} />
+        <Route path="/credit-cards" element={<CreditCards />} />
+        <Route path="/loans/education" element={<EducationLoan />} />
+        <Route path="/loans/startup" element={<StartupLoan />} />
+        <Route path="/loans/lease-rental-loan" element={<LeaseRentalLoan />} />
+        <Route path="/loans/agri" element={<AgriLoan />} />
+        <Route path="/loans/bank-guarantee" element={<BankGuarantee />} />
+        <Route path="/loans/cgtmse" element={<Cgtmse />} />
+        <Route path="/loans/foreign-currency-loan" element={<ForeignCurrencyLoan />} />
+        <Route path="/loans/hospital-loan" element={<HospitalLoan />} />
+        <Route path="/loans/invoice-discounting" element={<InvoiceDiscounting />} />
+        <Route path="/loans/school-college-loan" element={<SchoolCollegeLoan />} />
+        <Route path="/loans/pcfc" element={<PcfcLoan />} />
+        <Route path="/loans/professional" element={<ProfessionalLoan />} />
+        <Route path="/loans/project" element={<ProjectLoan />} />
+        <Route path="/loans/warehouse-finance" element={<WarehouseFinance />} />
+>>>>>>> 3749f4e70cb7d71ed209fee0556fe9e1f32d05e9
         {/* Credit Score */}
         <Route path="/credit-score" element={<CreditScore />} />
         <Route path="/cibil-score" element={<CibilScore />} />
@@ -82,6 +114,11 @@ function App() {
 
 <Route
   path="/calculators/business-loan"
+  element={<EmiCalculator loanType="Business Loan" />}
+/>
+{/* same url put */}
+<Route
+  path="/business-loan-emi"
   element={<EmiCalculator loanType="Business Loan" />}
 />
 

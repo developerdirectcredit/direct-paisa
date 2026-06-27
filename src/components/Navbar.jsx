@@ -1,3 +1,6 @@
+
+
+// // after changing on 25 june 
 // import { useState, useRef } from "react";
 // import TalkToExpertPopup from "./TalkToExpertPopup";
 // import GetAppPopup from "./GetAppPopup";
@@ -23,8 +26,11 @@
 //   Globe,
 //   ShieldCheck,
 //   SlidersHorizontal,
+//   UserCircle,
+//   LogOut,
 // } from "lucide-react";
 // import { useNavigate } from "react-router-dom";
+// import { useAuth } from "../context/useAuth";
 
 // // ─── Menu Data (ek jagah se manage karo) ────────────────────────────────────
 // const menuConfig = [
@@ -78,20 +84,35 @@
 //         icon: Landmark,
 //         title: "Loan Against Property",
 //         desc: "Unlock your asset value",
-//         path: "/loans/lap",
+//         path: "/loans-against-property",
 //       },
-//       {
-//         icon: Coins,
-//         title: "Gold Loan",
-//         desc: "Quick cash against gold",
-//         path: "/loans/gold",
+          
+//         {
+//         icon: ShieldCheck,
+//         title: "Bank Guarantee",
+//         desc: "Financial, Performance, Bid Bond & more",
+//         path: "/loans/bank-guarantee",
 //       },
+
+
 //       {
 //         icon: MoreHorizontal,
 //         title: "Other Loans",
 //         desc: "Education, Vehicle & more",
 //         path: "/loans/other",
+//           subItems: [
+//     { title: "Education Loan", path: "/loans/education" },
+//     { title: "Lease Rental Discounting", path: "/loans/lease-rental-discounting" },
+//     { title: "Agri Loan", path: "/loans/agri" },
+//     { title: "Bank Guarantee Loan", path: "/loans/bank-guarantee" },
+//     { title: "CGTMSE Loan", path: "/loans/cgtmse" },
+//     { title: "Foreign Currency Term Loan", path: "/loans/foreign-currency-term" },
+//     { title: "Hospital Loan", path: "/loans/hospital" },
+//   ],
+
 //       },
+
+  
 //     ],
 //   },
 //   {
@@ -193,9 +214,8 @@
 
 //   return (
 //     <div
-//       className={`absolute top-full left-0 mt-3 bg-white shadow-2xl rounded-2xl border border-gray-100 p-5 z-50 ${
-//         isTwoCol ? "w-[480px]" : "w-80"
-//       }`}
+//       className={`absolute top-full left-0 mt-3 bg-white shadow-2xl rounded-2xl border border-gray-100 p-5 z-50 ${isTwoCol ? "w-[480px]" : "w-80"
+//         }`}
 //     >
 //       {/* Arrow pointer */}
 //       <div className="absolute -top-2 left-6 w-4 h-4 bg-white border-l border-t border-gray-100 rotate-45" />
@@ -278,9 +298,8 @@
 //         </span>
 //         <ChevronDown
 //           size={18}
-//           className={`text-gray-400 transition-transform duration-300 ${
-//             open ? "rotate-180" : ""
-//           }`}
+//           className={`text-gray-400 transition-transform duration-300 ${open ? "rotate-180" : ""
+//             }`}
 //         />
 //       </button>
 
@@ -332,6 +351,8 @@
 //   const closeTimer = useRef(null);
 //   const expertTimer = useRef(null);
 //   const appTimer = useRef(null);
+//   const { isLoggedIn, user, logout } = useAuth();
+//   const [userMenu, setUserMenu] = useState(false);
 
 //   const handleMenuEnter = (id) => {
 //     if (closeTimer.current) clearTimeout(closeTimer.current);
@@ -414,18 +435,16 @@
 //               onMouseLeave={handleMenuLeave}
 //             >
 //               <button
-//                 className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-//                   openMenu === menu.id
+//                 className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${openMenu === menu.id
 //                     ? "text-blue-600 bg-blue-50"
 //                     : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-//                 }`}
+//                   }`}
 //               >
 //                 {menu.label}
 //                 <ChevronDown
 //                   size={15}
-//                   className={`transition-transform duration-200 ${
-//                     openMenu === menu.id ? "rotate-180 text-blue-600" : "text-gray-400"
-//                   }`}
+//                   className={`transition-transform duration-200 ${openMenu === menu.id ? "rotate-180 text-blue-600" : "text-gray-400"
+//                     }`}
 //                 />
 //               </button>
 
@@ -436,13 +455,49 @@
 //           ))}
 //         </nav>
 
-//         {/* Sign In Button */}
-//         <button
-//           onClick={() => navigate("/signin")}
-//           className="hidden lg:block bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors shadow-sm"
-//         >
-//           Sign In
-//         </button>
+//         {/* Sign In Button / User Dropdown */}
+//         {isLoggedIn ? (
+//           <div
+//             className="hidden lg:block relative"
+//             onMouseEnter={() => setUserMenu(true)}
+//             onMouseLeave={() => setUserMenu(false)}
+//           >
+//             <button className="flex items-center gap-2 border border-blue-600 text-blue-600 px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-blue-50 transition-colors">
+//               <UserCircle size={18} />
+//               {user?.name}
+//               <ChevronDown size={15} />
+//             </button>
+
+//             {userMenu && (
+//               <div className="absolute top-full right-0 mt-2 w-48 bg-white shadow-2xl rounded-xl border border-gray-100 py-2 z-50">
+//                 <button
+//                   onClick={() => navigate("/account/profile")}
+//                   className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+//                 >
+//                   <UserCircle size={18} />
+//                   My Profile
+//                 </button>
+//                 <button
+//                   onClick={() => {
+//                     logout();
+//                     navigate("/");
+//                   }}
+//                   className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-500 hover:bg-red-50 transition-colors"
+//                 >
+//                   <LogOut size={18} />
+//                   Logout
+//                 </button>
+//               </div>
+//             )}
+//           </div>
+//         ) : (
+//           <button
+//             onClick={() => navigate("/signin")}
+//             className="hidden lg:block bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors shadow-sm"
+//           >
+//             Sign In
+//           </button>
+//         )}
 
 //         {/* Mobile Menu Toggle */}
 //         <button
@@ -485,25 +540,55 @@
 //             />
 //           ))}
 
-//           {/* Sign In */}
+//           {/* Sign In / User options */}
 //           <div className="p-4">
-//             <button
-//               onClick={() => {
-//                 navigate("/signin");
-//                 setMobileMenu(false);
-//               }}
-//               className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-xl font-semibold text-sm transition-colors"
-//             >
-//               Sign In
-//             </button>
+//             {isLoggedIn ? (
+//               <div className="space-y-2">
+//                 <button
+//                   onClick={() => {
+//                     navigate("/account/profile");
+//                     setMobileMenu(false);
+//                   }}
+//                   className="w-full flex items-center justify-center gap-2 border border-blue-600 text-blue-600 py-3.5 rounded-xl font-semibold text-sm"
+//                 >
+//                   <UserCircle size={18} />
+//                   My Profile
+//                 </button>
+//                 <button
+//                   onClick={() => {
+//                     logout();
+//                     navigate("/");
+//                     setMobileMenu(false);
+//                   }}
+//                   className="w-full flex items-center justify-center gap-2 bg-red-50 text-red-500 py-3.5 rounded-xl font-semibold text-sm"
+//                 >
+//                   <LogOut size={18} />
+//                   Logout
+//                 </button>
+//               </div>
+//             ) : (
+//               <button
+//                 onClick={() => {
+//                   navigate("/signin");
+//                   setMobileMenu(false);
+//                 }}
+//                 className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-xl font-semibold text-sm transition-colors"
+//               >
+//                 Sign In
+//               </button>
+//             )}
 //           </div>
 //         </div>
 //       )}
 //     </header>
 //   );
 // }
+ // == ye upaper vla code poora sahi hai but drop down nhi add vhi mai test kar rha hu
 
-// after changing on 25 june 
+ // test code for drop drop down
+
+
+ // after changing on 25 june 
 import { useState, useRef } from "react";
 import TalkToExpertPopup from "./TalkToExpertPopup";
 import GetAppPopup from "./GetAppPopup";
@@ -589,25 +674,33 @@ const menuConfig = [
         desc: "Unlock your asset value",
         path: "/loans-against-property",
       },
-      {
-        icon: Coins,
-        title: "Gold Loan",
-        desc: "Quick cash against gold",
-        path: "/loans/gold",
-      },
-      {
-        icon: MoreHorizontal,
-        title: "Other Loans",
-        desc: "Education, Vehicle & more",
-        path: "/loans/other",
-      },
-
-      {
+          
+        {
         icon: ShieldCheck,
         title: "Bank Guarantee",
         desc: "Financial, Performance, Bid Bond & more",
         path: "/loans/bank-guarantee",
       },
+
+
+      {
+        icon: MoreHorizontal,
+        title: "Other Loans",
+        desc: "Education, Vehicle & more",
+        path: "/loans/other",
+          subItems: [
+    { title: "Education Loan", path: "/loans/education" },
+    { title: "Lease Rental Discounting", path: "/loans/lease-rental-discounting" },
+    { title: "Agri Loan", path: "/loans/agri" },
+    { title: "Bank Guarantee Loan", path: "/loans/bank-guarantee-loan" },
+    { title: "CGTMSE Loan", path: "/loans/cgtmse" },
+    { title: "Foreign Currency Term Loan", path: "/loans/foreign-currency-term" },
+    { title: "Hospital Loan", path: "/loans/hospital" },
+  ],
+
+      },
+
+  
     ],
   },
   {
@@ -744,6 +837,55 @@ function DesktopDropdown({ menu, navigate }) {
         <div className="space-y-1">
           {menu.items.map((item) => {
             const Icon = item.icon;
+
+            // ─── ADDED: Agar item me subItems hain to right-side flyout submenu ───
+            if (item.subItems) {
+              return (
+                <div key={item.title} className="relative group/sub">
+                  <div
+                    onClick={() => navigate(item.path)}
+                    className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-blue-50 cursor-pointer group transition-colors"
+                  >
+                    <div className="w-9 h-9 rounded-xl bg-blue-50 group-hover:bg-blue-600 flex items-center justify-center flex-shrink-0 transition-colors">
+                      <Icon
+                        size={18}
+                        className="text-blue-600 group-hover:text-white transition-colors"
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-gray-800 group-hover:text-blue-600 transition-colors">
+                        {item.title}
+                      </p>
+                      {item.desc && (
+                        <p className="text-xs text-gray-400 mt-0.5">{item.desc}</p>
+                      )}
+                    </div>
+                    <ChevronRight
+                      size={14}
+                      className="text-gray-300 group-hover:text-blue-400 transition-colors flex-shrink-0"
+                    />
+                  </div>
+
+                  {/* Right-side flyout submenu (hover pe khulega) */}
+                  <div className="absolute top-0 left-full ml-2 w-72 bg-white shadow-2xl rounded-2xl border border-gray-100 p-3 z-50 hidden group-hover/sub:block">
+                    <p className="text-xs font-semibold text-blue-600 uppercase tracking-wide mb-2 px-1 flex items-center gap-1">
+                      <BadgeIndianRupee size={13} /> Loan Types
+                    </p>
+                    {item.subItems.map((sub) => (
+                      <div
+                        key={sub.path}
+                        onClick={() => navigate(sub.path)}
+                        className="px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600 cursor-pointer transition-colors"
+                      >
+                        {sub.title}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            }
+            // ─── END ADDED ───
+
             return (
               <div
                 key={item.title}
@@ -777,6 +919,53 @@ function DesktopDropdown({ menu, navigate }) {
   );
 }
 
+// ─── ADDED: Mobile Sub-Item (subItems wala — andar khulta hai) ───────────────
+function MobileSubItem({ item, Icon, navigate, onClose }) {
+  const [subOpen, setSubOpen] = useState(false);
+
+  return (
+    <div>
+      <div
+        onClick={() => setSubOpen(!subOpen)}
+        className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-blue-50 active:bg-blue-100 cursor-pointer group transition-colors"
+      >
+        <div className="w-9 h-9 rounded-xl bg-gray-100 group-hover:bg-blue-600 flex items-center justify-center flex-shrink-0 transition-colors">
+          <Icon size={17} className="text-gray-500 group-hover:text-white transition-colors" />
+        </div>
+        <div className="flex-1">
+          <p className="text-sm font-medium text-gray-800 group-hover:text-blue-600 transition-colors">
+            {item.title}
+          </p>
+          {item.desc && <p className="text-xs text-gray-400 mt-0.5">{item.desc}</p>}
+        </div>
+        <ChevronRight
+          size={14}
+          className={`text-gray-300 flex-shrink-0 transition-transform ${subOpen ? "rotate-90" : ""}`}
+        />
+      </div>
+
+      {/* Nested sub-items */}
+      {subOpen && (
+        <div className="pl-12 pr-2 py-1 space-y-1">
+          {item.subItems.map((sub) => (
+            <div
+              key={sub.path}
+              onClick={() => {
+                navigate(sub.path);
+                onClose();
+              }}
+              className="px-3 py-2.5 rounded-lg text-sm text-gray-600 hover:bg-blue-50 hover:text-blue-600 cursor-pointer transition-colors"
+            >
+              {sub.title}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+// ─── END ADDED ───
+
 // ─── Mobile Accordion Item ────────────────────────────────────────────────────
 function MobileAccordion({ menu, navigate, onClose }) {
   const [open, setOpen] = useState(false);
@@ -803,6 +992,21 @@ function MobileAccordion({ menu, navigate, onClose }) {
         <div className="pb-3 px-2 space-y-1">
           {menu.items.map((item) => {
             const Icon = item.icon;
+
+            // ─── ADDED: subItems wala item → nested mobile accordion ───
+            if (item.subItems) {
+              return (
+                <MobileSubItem
+                  key={item.title}
+                  item={item}
+                  Icon={Icon}
+                  navigate={navigate}
+                  onClose={onClose}
+                />
+              );
+            }
+            // ─── END ADDED ───
+
             return (
               <div
                 key={item.title}
