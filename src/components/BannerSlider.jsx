@@ -36,6 +36,7 @@ export default function BannerSlider() {
               src={banner}
               alt={`Banner ${index + 1}`}
               className="w-full rounded-[24px] object-cover"
+              
             />
           </SwiperSlide>
         ))}

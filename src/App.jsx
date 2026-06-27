@@ -38,13 +38,8 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import ContactUs from "./pages/ContactUs";
 import TermsConditions from "./pages/TermsConditions";
 import Culture from "./pages/Culture";
-<<<<<<< HEAD
-import Awards from "./pages/Awards";
-
-=======
 import CompleteProfile from "./pages/account/CompleteProfile";
 import WarehouseFinance from "./pages/loans/WarehouseFinance";
->>>>>>> 3749f4e70cb7d71ed209fee0556fe9e1f32d05e9
 
 function App() {
   return (
@@ -71,9 +66,6 @@ function App() {
         <Route path="/loans/personal" element={<PersonalLoan />} />
         <Route path="/loans/home" element={<HomeLoan />} />
         <Route path="/loans/business" element={<BusinessLoan />} />
-<<<<<<< HEAD
-
-=======
          <Route path="/loans/instant-personal" element={<InstantPersonalLoan />} />
         <Route path="/loans-against-property" element={<LoanAgainstProperty />} />
         <Route path="/credit-cards" element={<CreditCards />} />
@@ -91,7 +83,6 @@ function App() {
         <Route path="/loans/professional" element={<ProfessionalLoan />} />
         <Route path="/loans/project" element={<ProjectLoan />} />
         <Route path="/loans/warehouse-finance" element={<WarehouseFinance />} />
->>>>>>> 3749f4e70cb7d71ed209fee0556fe9e1f32d05e9
         {/* Credit Score */}
         <Route path="/credit-score" element={<CreditScore />} />
         <Route path="/cibil-score" element={<CibilScore />} />
