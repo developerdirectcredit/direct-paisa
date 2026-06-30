@@ -1,139 +1,489 @@
 
 
-// add vaidation in form section
+// // add new code
+
+// // src/pages/CreditCards.jsx
+// // ─────────────────────────────────────────────────────────────────────────────
+// // 3-step flow:
+// //   STEP 1  → User naam + mobile number daalta hai
+// //   STEP 2  → OTP verify  → login ho jaata hai (user state set)
+// //   STEP 3  → Bank offers, har bank par "Apply" button (UTM link kholta hai)
+// //
+// // Navbar aur Footer ab apne components se aate hain.
+// // Sign Out hata diya gaya hai.
+// // ─────────────────────────────────────────────────────────────────────────────
+
+// import Navbar from "../components/Navbar";
+// import Footer from "../components/Footer";
+// import { useState, useEffect, useRef } from "react";
+// import { useNavigate } from "react-router-dom";
+// import { ExternalLink } from "lucide-react";
+// import { getAllCards, buildUtmLink } from "../data/cardsData";
+
+// const STEPS = {
+//   DETAILS: "details", // naam + number
+//   OTP: "otp",
+//   PROCESSING: "processing",
+//   OFFERS: "offers",
+// };
+
+// const STEP_ORDER = [STEPS.DETAILS, STEPS.OTP, STEPS.PROCESSING, STEPS.OFFERS];
+
+// export default function CreditCards() {
+//   const navigate = useNavigate();
+//   const [step, setStep] = useState(STEPS.DETAILS);
+
+//   // logged-in user (null = not logged in). OTP verify hone par set hota hai.
+//   const [user, setUser] = useState(null);
+
+//   const [form, setForm] = useState({
+//     fullName: "",
+//     mobile: "",
+//     otp: ["", "", "", ""],
+//   });
+
+//   const [offers, setOffers] = useState([]);
+
+//   // OTP timer + refs
+//   const [otpTimer, setOtpTimer] = useState(0);
+//   const [otpError, setOtpError] = useState("");
+//   const otpRefs = useRef([]);
+
+//   const update = (field, value) => setForm((p) => ({ ...p, [field]: value }));
+
+//   // ── Back navigation (STEP_ORDER use, header back ya browser ke liye) ──
+//   // eslint-disable-next-line no-unused-vars
+//   const goBack = () => {
+//     const idx = STEP_ORDER.indexOf(step);
+//     if (idx <= 0) {
+//       navigate("/");
+//     } else {
+//       setOtpError("");
+//       setStep(STEP_ORDER[idx - 1]);
+//     }
+//   };
+
+//   // ── OTP countdown timer ──
+//   useEffect(() => {
+//     if (step !== STEPS.OTP) return;
+//     if (otpTimer <= 0) return;
+//     const id = setInterval(() => {
+//       setOtpTimer((t) => (t <= 1 ? 0 : t - 1));
+//     }, 1000);
+//     return () => clearInterval(id);
+//   }, [step, otpTimer]);
+
+//   // ── OTP step par aate hi timer start + first box focus ──
+//   useEffect(() => {
+//     if (step === STEPS.OTP) {
+//       setOtpTimer(30);
+//       setOtpError("");
+//       update("otp", ["", "", "", ""]);
+//       setTimeout(() => otpRefs.current[0]?.focus(), 100);
+//     }
+//   }, [step]);
+
+//   // ── OTP input change ──
+//   const handleOtpChange = (i, value) => {
+//     const digit = value.replace(/\D/g, "").slice(-1);
+//     const next = [...form.otp];
+//     next[i] = digit;
+//     update("otp", next);
+//     setOtpError("");
+//     if (digit && i < form.otp.length - 1) {
+//       otpRefs.current[i + 1]?.focus();
+//     }
+//   };
+
+//   const handleOtpKeyDown = (i, e) => {
+//     if (e.key === "Backspace" && !form.otp[i] && i > 0) {
+//       otpRefs.current[i - 1]?.focus();
+//     }
+//   };
+
+//   const handleOtpPaste = (e) => {
+//     e.preventDefault();
+//     const pasted = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 4);
+//     if (!pasted) return;
+//     const next = ["", "", "", ""];
+//     pasted.split("").forEach((d, idx) => (next[idx] = d));
+//     update("otp", next);
+//     const focusIdx = Math.min(pasted.length, 3);
+//     otpRefs.current[focusIdx]?.focus();
+//   };
+
+//   const resendOtp = () => {
+//     if (otpTimer > 0) return;
+//     setOtpTimer(30);
+//     setOtpError("");
+//     update("otp", ["", "", "", ""]);
+//     otpRefs.current[0]?.focus();
+//   };
+
+//   // ── OTP verify → LOGIN ho jaata hai ──
+//   const verifyOtp = () => {
+//     const code = form.otp.join("");
+//     if (code.length !== 4) {
+//       setOtpError("Please enter the complete 4-digit OTP");
+//       return;
+//     }
+//     // (Demo: koi bhi 4-digit OTP sahi maana ja raha. Real app me API verify karega.)
+//     setOtpError("");
+//     // Yahan user login ho gaya — naam + number store
+//     setUser({ name: form.fullName.trim(), mobile: form.mobile });
+//     setStep(STEPS.PROCESSING);
+//   };
+
+//   // ── Processing ke baad offers nikaalo ──
+//   useEffect(() => {
+//     if (step === STEPS.PROCESSING) {
+//       const timer = setTimeout(() => {
+//         setOffers(getAllCards());
+//         setStep(STEPS.OFFERS);
+//       }, 2200);
+//       return () => clearTimeout(timer);
+//     }
+//   }, [step]);
+
+//   // ── Apply click → UTM link naye tab me kholo ──
+//   const handleApply = (card) => {
+//     const link = buildUtmLink(card.applyUrl, card, {
+//       // user-specific tracking yahan add kar sakte ho:
+//       utm_id: user?.mobile || "",
+//     });
+//     window.open(link, "_blank", "noopener,noreferrer");
+//   };
+
+//   // ===== STEP 1: DETAILS (Name + Number) =====
+//   if (step === STEPS.DETAILS) {
+//     const nameValid = form.fullName.trim().length >= 2;
+//     const mobileValid = form.mobile.length === 10;
+//     const canContinue = nameValid && mobileValid;
+
+//     return (
+//       <div className="min-h-screen flex flex-col">
+//         <Navbar />
+//         <div className="flex flex-1">
+//           {/* Left panel — logo */}
+//           <div className="hidden md:flex md:w-2/5 bg-white border-r border-gray-100 flex-col items-center justify-center p-10">
+//             <img
+//               src="/logo.png"
+//               alt="Direct Credit — The MSME Experts"
+//               className="w-full max-w-xs object-contain"
+//             />
+//           </div>
+
+//           {/* Right form */}
+//           <div className="flex-1 flex items-center justify-center p-6 bg-gray-50">
+//             <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md border">
+//               <h1 className="text-2xl font-bold text-gray-800 mb-6">
+//                 Get your perfect Credit Card Now!
+//               </h1>
+
+//               {/* Name */}
+//               <label className="text-xs text-blue-600 font-medium">Full Name (as on PAN)</label>
+//               <input
+//                 value={form.fullName}
+//                 onChange={(e) =>
+//                   update("fullName", e.target.value.replace(/[^a-zA-Z\s]/g, ""))
+//                 }
+//                 placeholder="Enter your name"
+//                 className="w-full border-2 border-blue-500 rounded-lg px-4 py-3 mt-1 mb-1 outline-none"
+//               />
+//               {form.fullName && !nameValid && (
+//                 <p className="text-xs text-red-500 mb-2">Please enter your full name</p>
+//               )}
+
+//               {/* Mobile */}
+//               <label className="text-xs text-blue-600 font-medium mt-3 block">Mobile Number</label>
+//               <div className="flex items-center border-2 border-blue-500 rounded-lg px-3 py-3 mt-1 mb-2">
+//                 <span className="mr-2">🇮🇳 +91</span>
+//                 <input
+//                   type="tel"
+//                   maxLength={10}
+//                   value={form.mobile}
+//                   onChange={(e) => update("mobile", e.target.value.replace(/\D/g, ""))}
+//                   className="flex-1 outline-none"
+//                   placeholder="10-digit number"
+//                 />
+//                 <span className="text-gray-400 text-sm">{form.mobile.length} / 10</span>
+//               </div>
+//               <p className="text-xs text-gray-500 mb-4">
+//                 We'll check credit card offers against your number
+//               </p>
+
+//               <div className="border border-blue-300 rounded-lg text-center text-blue-600 text-sm py-2 mb-3">
+//                 + Get Assured ₹200 Cashback on every card +
+//               </div>
+
+//               <button
+//                 disabled={!canContinue}
+//                 onClick={() => setStep(STEPS.OTP)}
+//                 className="w-full bg-blue-500 hover:bg-blue-600 disabled:opacity-50 text-white font-semibold py-3 rounded-lg transition"
+//               >
+//                 Unlock Card Offers
+//               </button>
+//               <p className="text-[11px] text-gray-400 text-center mt-3">
+//                 By submitting this form, you agree to the Terms of Use & Privacy Policy
+//               </p>
+//             </div>
+//           </div>
+//         </div>
+//         <Footer />
+//       </div>
+//     );
+//   }
+
+//   // ===== STEP 2: OTP =====
+//   if (step === STEPS.OTP) {
+//     const otpComplete = form.otp.join("").length === 4;
+//     return (
+//       <div className="min-h-screen flex flex-col bg-gray-50">
+//         <Navbar />
+//         <div className="flex-1 flex items-center justify-center p-4">
+//           <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md relative">
+//             <button
+//               onClick={() => setStep(STEPS.DETAILS)}
+//               className="absolute top-4 right-4 text-gray-400 text-xl"
+//               aria-label="Close"
+//             >
+//               ✕
+//             </button>
+//             <h2 className="text-2xl font-bold text-center text-blue-700 mb-2">
+//               Verify Mobile Number
+//             </h2>
+//             <p className="text-center text-xs bg-gray-100 rounded py-1 mb-6">
+//               OTP sent on Mobile Number +91-xxx{form.mobile.slice(-4)}
+//             </p>
+//             <div className="flex justify-center gap-4 mb-2">
+//               {form.otp.map((digit, i) => (
+//                 <input
+//                   key={i}
+//                   ref={(el) => (otpRefs.current[i] = el)}
+//                   type="tel"
+//                   inputMode="numeric"
+//                   maxLength={1}
+//                   value={digit}
+//                   onChange={(e) => handleOtpChange(i, e.target.value)}
+//                   onKeyDown={(e) => handleOtpKeyDown(i, e)}
+//                   onPaste={handleOtpPaste}
+//                   className={`w-12 h-12 border-b-2 text-center text-xl outline-none transition-colors ${
+//                     otpError ? "border-red-400" : "border-gray-300 focus:border-blue-500"
+//                   }`}
+//                 />
+//               ))}
+//             </div>
+
+//             {otpError && (
+//               <p className="text-center text-xs text-red-500 mb-2">{otpError}</p>
+//             )}
+
+//             <p className="text-center text-xs text-gray-500 mb-4">
+//               {otpTimer > 0 ? (
+//                 <>
+//                   Resend OTP in{" "}
+//                   <span className="font-semibold text-blue-600">
+//                     {otpTimer < 10 ? `0${otpTimer}` : otpTimer}
+//                   </span>{" "}
+//                   seconds
+//                 </>
+//               ) : (
+//                 <button
+//                   onClick={resendOtp}
+//                   className="text-blue-600 font-semibold hover:underline"
+//                 >
+//                   Resend OTP
+//                 </button>
+//               )}
+//             </p>
+
+//             <label className="flex items-center gap-2 text-sm mb-4">
+//               <input type="checkbox" defaultChecked /> Remember Me
+//             </label>
+//             <button
+//               onClick={verifyOtp}
+//               disabled={!otpComplete}
+//               className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-lg transition"
+//             >
+//               Verify & Login
+//             </button>
+//             <p className="text-[11px] text-gray-400 text-center mt-3">
+//               Demo: koi bhi 4-digit number daalo, login ho jaayega
+//             </p>
+//           </div>
+//         </div>
+//         <Footer />
+//       </div>
+//     );
+//   }
+
+//   // ===== STEP 3a: PROCESSING =====
+//   if (step === STEPS.PROCESSING) {
+//     return (
+//       <div className="min-h-screen flex flex-col">
+//         <Navbar />
+//         <div className="flex-1 flex flex-col items-center justify-center bg-white">
+//           <div className="bg-green-100 text-green-700 rounded-lg px-5 py-2 text-sm mb-10">
+//             🪙 Apply today to get ₹200 Cashback
+//           </div>
+//           <div className="text-7xl mb-8 animate-pulse">💳</div>
+//           <h2 className="text-xl font-bold text-gray-800">
+//             Processing {user?.name ? `${user.name}'s` : "Your"} Profile
+//           </h2>
+//           <p className="text-sm text-gray-500 mt-2">Trusted by over 2 million happy users.</p>
+//         </div>
+//         <Footer />
+//       </div>
+//     );
+//   }
+
+//   // ===== STEP 3b: OFFERS =====
+//   return (
+//     <div className="min-h-screen bg-gray-50 flex flex-col">
+//       <Navbar />
+
+//       <div className="max-w-3xl mx-auto px-4 py-8 flex-1 w-full">
+//         {/* Welcome message — login hone par naam ke saath */}
+//         {user && (
+//           <div className="bg-white border rounded-xl px-5 py-4 mb-6">
+//             <p className="text-lg font-semibold text-gray-800">
+//               Welcome, {user.name} 👋
+//             </p>
+//             <p className="text-sm text-gray-500">
+//               Yahan aapke liye best card offers hain. Apply par tap karke aage badhein.
+//             </p>
+//           </div>
+//         )}
+
+//         {/* cashback banner */}
+//         <div className="bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-xl p-5 mb-6 flex items-center justify-between">
+//           <span className="font-bold">Apply &amp; EARN HUGE CASHBACKS</span>
+//           <span className="text-sm">₹200 + ₹750 Cashback</span>
+//         </div>
+
+//         <h2 className="text-lg font-semibold mb-4">
+//           {offers.length} Card Offer{offers.length !== 1 ? "s" : ""}
+//         </h2>
+
+//         <div className="space-y-5">
+//           {offers.map((card) => (
+//             <div key={card.id} className="bg-white border rounded-xl p-5">
+//               <span className="inline-block border border-orange-400 text-orange-500 text-xs rounded px-2 py-0.5 mb-3">
+//                 {card.tag}
+//               </span>
+//               <div className="flex gap-5 flex-col sm:flex-row">
+//                 <div className="w-40 h-24 bg-gradient-to-br from-gray-800 to-gray-600 rounded-lg flex items-center justify-center text-white text-xs flex-shrink-0">
+//                   {card.image ? (
+//                     <img
+//                       src={card.image}
+//                       alt={card.name}
+//                       className="w-full h-full object-cover rounded-lg"
+//                     />
+//                   ) : (
+//                     "CARD"
+//                   )}
+//                 </div>
+//                 <div className="flex-1">
+//                   <h3 className="font-bold text-gray-800">{card.name}</h3>
+//                   <p className="text-sm text-gray-500 mt-1">1st Year Fee: {card.firstYearFee}</p>
+//                   <p className="text-sm text-gray-600 mt-1">{card.joiningBenefit}</p>
+//                   <ul className="text-sm text-gray-600 mt-2 space-y-1">
+//                     {card.benefits.map((b, i) => (
+//                       <li key={i}>• {b}</li>
+//                     ))}
+//                   </ul>
+//                   <div className="flex gap-3 mt-4">
+//                     <button className="text-blue-600 text-sm">+ More Details</button>
+//                     {/* Apply → UTM link kholta hai */}
+//                     <button
+//                       onClick={() => handleApply(card)}
+//                       className="bg-blue-600 hover:bg-blue-700 text-white text-sm rounded px-4 py-2 inline-flex items-center gap-1.5"
+//                     >
+//                       Apply Now
+//                       <ExternalLink size={14} />
+//                     </button>
+//                   </div>
+//                 </div>
+//               </div>
+//             </div>
+//           ))}
+//         </div>
+//       </div>
+//       <Footer />
+//     </div>
+//   );
+// }
+
+//== ab tracking ka code add kar rhe hai
 
 
 // src/pages/CreditCards.jsx
+// ─────────────────────────────────────────────────────────────────────────────
+// 3-step flow + ANALYTICS TRACKING
+//   STEP 1  → User naam + mobile number daalta hai
+//   STEP 2  → OTP verify  → login ho jaata hai
+//   STEP 3  → Bank offers, har bank par "Apply" button (UTM link kholta hai)
+//
+// Tracking events lage hue hain (track() ki lines).
+// Abhi backend nahi hai to ye console me dikhenge (F12 → Console).
+// ─────────────────────────────────────────────────────────────────────────────
+
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
-import { getCardsByIncome } from "../data/cardsData";
+import { ExternalLink } from "lucide-react";
+import { getAllCards, buildUtmLink } from "../data/cardsData";
+import { track } from "../lib/analytics"; // ← tracking import
 
 const STEPS = {
-  LANDING: "landing",
+  DETAILS: "details", // naam + number
   OTP: "otp",
-  EMPLOYMENT: "employment",
-  BANK: "bank",
-  INCOME: "income",
-  PINCODE: "pincode",
-  PERSONAL: "personal",
   PROCESSING: "processing",
   OFFERS: "offers",
 };
 
-// Step order (back navigation ke liye)
-const STEP_ORDER = [
-  STEPS.LANDING,
-  STEPS.OTP,
-  STEPS.EMPLOYMENT,
-  STEPS.BANK,
-  STEPS.INCOME,
-  STEPS.PINCODE,
-  STEPS.PERSONAL,
-  STEPS.PROCESSING,
-  STEPS.OFFERS,
-];
-
-// ─── Company Header (har page par logo + back icon) ──────────────────────────
-function CompanyHeader({ onBack, navigate }) {
-  return (
-    <div className="bg-white border-b border-gray-200 px-4 md:px-6 py-2 flex items-center gap-3 sticky top-0 z-50">
-      {/* Back icon */}
-      <button
-        onClick={onBack}
-        aria-label="Go back"
-        className="p-2 rounded-lg hover:bg-gray-100 transition-colors text-gray-700"
-      >
-        <ArrowLeft size={22} />
-      </button>
-
-      {/* Logo (click par home) */}
-      <img
-        src="/logo.png"
-        alt="Direct Credit Logo"
-        className="h-10 md:h-14 object-contain cursor-pointer"
-        onClick={() => navigate("/")}
-      />
-    </div>
-  );
-}
-
-// Left side promo panel (steps 3-7 me dikhta hai)
-function SidePanel({ emoji, title, subtitle }) {
-  return (
-    <div className="hidden md:flex md:w-2/5 flex-col bg-white">
-      <div className="bg-blue-600 text-white px-8 py-10 text-center">
-        <div className="flex justify-center mb-4">
-          <div className="bg-white/90 rounded text-xs font-bold px-2 py-1 text-blue-700">
-            Direct Credit
-          </div>
-        </div>
-        <div className="text-5xl mb-4">{emoji}</div>
-        <h2 className="text-2xl font-bold mb-3">{title}</h2>
-        <p className="text-sm text-blue-100 max-w-xs mx-auto">{subtitle}</p>
-        <div className="bg-white text-gray-800 rounded-xl mt-6 p-4 flex items-center gap-3 max-w-xs mx-auto">
-          <div className="text-blue-600 text-2xl">🛡️</div>
-          <div className="text-left">
-            <div className="font-bold text-sm">India's Most Trusted</div>
-            <div className="text-xs text-gray-500">Credit Card Platform</div>
-          </div>
-        </div>
-      </div>
-      <div className="px-8 py-8 text-sm text-gray-600 space-y-3">
-        <p className="font-semibold text-gray-700">Why take a card from us:</p>
-        <p>💵 Trusted by over <b>2 Million</b> happy customers</p>
-        <p>🏦 Match you with <b>15+ leading banks</b></p>
-        <p>👤 Filter through <b>100+ card options</b></p>
-      </div>
-    </div>
-  );
-}
-
-// Progress bar (right side header)
-function Progress({ percent }) {
-  return (
-    <div className="mb-6">
-      <p className="text-blue-600 font-semibold text-sm mb-2">{percent}% Completed</p>
-      <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
-        <div
-          className="h-full bg-blue-500 rounded-full transition-all duration-500"
-          style={{ width: `${percent}%` }}
-        />
-      </div>
-    </div>
-  );
-}
+const STEP_ORDER = [STEPS.DETAILS, STEPS.OTP, STEPS.PROCESSING, STEPS.OFFERS];
 
 export default function CreditCards() {
   const navigate = useNavigate();
-  const [step, setStep] = useState(STEPS.LANDING);
+  const [step, setStep] = useState(STEPS.DETAILS);
+
+  // logged-in user (null = not logged in). OTP verify hone par set hota hai.
+  const [user, setUser] = useState(null);
+
   const [form, setForm] = useState({
+    fullName: "",
     mobile: "",
     otp: ["", "", "", ""],
-    employmentType: "Salaried",
-    primaryBank: "",
-    annualIncome: "",
-    pincode: "",
-    fullName: "",
-    email: "",
   });
+
   const [offers, setOffers] = useState([]);
+
+  // form_start sirf ek baar fire ho — iske liye flag
+  const formStartedRef = useRef(false);
 
   // OTP timer + refs
   const [otpTimer, setOtpTimer] = useState(0);
   const [otpError, setOtpError] = useState("");
   const otpRefs = useRef([]);
 
-  // Bank "View All" toggle
-  const [showAllBanks, setShowAllBanks] = useState(false);
-
   const update = (field, value) => setForm((p) => ({ ...p, [field]: value }));
 
-  // ── Back navigation: ek step peeche jao, LANDING par ho to home ──
+  // ── TRACK: form_start — user pehli baar koi input me type kare ──
+  const handleFirstInput = () => {
+    if (!formStartedRef.current) {
+      formStartedRef.current = true;
+      track("form_start"); // form bharna shuru hua
+    }
+  };
+
+  // ── Back navigation ──
+  // eslint-disable-next-line no-unused-vars
   const goBack = () => {
     const idx = STEP_ORDER.indexOf(step);
     if (idx <= 0) {
-      navigate("/"); // already landing -> home
+      navigate("/");
     } else {
       setOtpError("");
       setStep(STEP_ORDER[idx - 1]);
@@ -158,31 +508,33 @@ export default function CreditCards() {
       update("otp", ["", "", "", ""]);
       setTimeout(() => otpRefs.current[0]?.focus(), 100);
     }
-  
   }, [step]);
 
-  // ── OTP input change: auto-shift to next box ──
+  // ── TRACK: offers_viewed — jab offers page khule ──
+  useEffect(() => {
+    if (step === STEPS.OFFERS) {
+      track("offers_viewed", { count: offers.length });
+    }
+  }, [step, offers.length]);
+
+  // ── OTP input change ──
   const handleOtpChange = (i, value) => {
-    const digit = value.replace(/\D/g, "").slice(-1); // sirf last digit
+    const digit = value.replace(/\D/g, "").slice(-1);
     const next = [...form.otp];
     next[i] = digit;
     update("otp", next);
     setOtpError("");
-
-    // agar digit aaya hai to next box par focus
     if (digit && i < form.otp.length - 1) {
       otpRefs.current[i + 1]?.focus();
     }
   };
 
-  // ── OTP keydown: backspace par peeche jao ──
   const handleOtpKeyDown = (i, e) => {
     if (e.key === "Backspace" && !form.otp[i] && i > 0) {
       otpRefs.current[i - 1]?.focus();
     }
   };
 
-  // ── OTP paste support (4 digits ek saath) ──
   const handleOtpPaste = (e) => {
     e.preventDefault();
     const pasted = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 4);
@@ -194,80 +546,139 @@ export default function CreditCards() {
     otpRefs.current[focusIdx]?.focus();
   };
 
-  // ── Resend OTP ──
   const resendOtp = () => {
     if (otpTimer > 0) return;
     setOtpTimer(30);
     setOtpError("");
     update("otp", ["", "", "", ""]);
     otpRefs.current[0]?.focus();
+    track("otp_resend", { mobile: form.mobile }); // ← TRACK: resend
   };
 
-  // ── OTP verify (validation) ──
+  // ── OTP verify → LOGIN ho jaata hai ──
   const verifyOtp = () => {
     const code = form.otp.join("");
     if (code.length !== 4) {
       setOtpError("Please enter the complete 4-digit OTP");
+      track("otp_failed", { reason: "incomplete" }); // ← TRACK: galat OTP
       return;
     }
-    // (Real app me yahan API se OTP verify hoga. Demo me sahi maan lete hain.)
+    // (Demo: koi bhi 4-digit OTP sahi maana ja raha. Real app me API verify karega.)
     setOtpError("");
-    setStep(STEPS.EMPLOYMENT);
+    setUser({ name: form.fullName.trim(), mobile: form.mobile });
+
+    track("login_success", { name: form.fullName.trim() }); // ← TRACK: login hua
+    track("form_complete"); // ← TRACK: form pura bhara
+
+    setStep(STEPS.PROCESSING);
   };
 
-  // Processing ke baad income ke according offers nikaalo
+  // ── Processing ke baad offers nikaalo ──
   useEffect(() => {
     if (step === STEPS.PROCESSING) {
       const timer = setTimeout(() => {
-        setOffers(getCardsByIncome(form.annualIncome));
+        setOffers(getAllCards());
         setStep(STEPS.OFFERS);
-      }, 2500);
+      }, 2200);
       return () => clearTimeout(timer);
     }
-  }, [step, form.annualIncome]);
+  }, [step]);
 
-  // ===== STEP 1: LANDING =====
-  if (step === STEPS.LANDING) {
+  // ── Apply click → TRACK + UTM link naye tab me kholo ──
+  const handleApply = (card) => {
+    // ← TRACK: kis bank ke Apply par click hua (sabse important event)
+    track("card_apply_click", {
+      cardId: card.id,
+      bankCode: card.bankCode,
+      cardName: card.name,
+    });
+
+    const link = buildUtmLink(card.applyUrl, card, {
+      utm_id: user?.mobile || "",
+    });
+    window.open(link, "_blank", "noopener,noreferrer");
+  };
+
+  // ── More Details click → TRACK ──
+  const handleDetails = (card) => {
+    track("card_details_click", {
+      cardId: card.id,
+      bankCode: card.bankCode,
+    });
+  };
+
+  // ===== STEP 1: DETAILS (Name + Number) =====
+  if (step === STEPS.DETAILS) {
+    const nameValid = form.fullName.trim().length >= 2;
+    const mobileValid = form.mobile.length === 10;
+    const canContinue = nameValid && mobileValid;
+
     return (
       <div className="min-h-screen flex flex-col">
-        <CompanyHeader onBack={goBack} navigate={navigate} />
+        <Navbar />
         <div className="flex flex-1">
-          {/* Left gold panel */}
-          <div className="hidden md:flex md:w-2/5 bg-gradient-to-b from-yellow-600 to-yellow-800 text-white flex-col items-center justify-center p-10">
-            <h2 className="text-3xl font-bold mb-2">Get up to</h2>
-            <p className="text-5xl font-extrabold text-yellow-200 mb-4">10% CASHBACK</p>
-            <div className="border border-yellow-300 rounded-full px-5 py-2 text-sm">
-              🎁 Every spend is rewarding
-            </div>
+          {/* Left panel — logo */}
+          <div className="hidden md:flex md:w-2/5 bg-white border-r border-gray-100 flex-col items-center justify-center p-10">
+            <img
+              src="/logo.png"
+              alt="Direct Credit — The MSME Experts"
+              className="w-full max-w-xs object-contain"
+            />
           </div>
+
           {/* Right form */}
           <div className="flex-1 flex items-center justify-center p-6 bg-gray-50">
             <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md border">
               <h1 className="text-2xl font-bold text-gray-800 mb-6">
                 Get your perfect Credit Card Now!
               </h1>
-              <label className="text-xs text-blue-600 font-medium">Enter Mobile Number</label>
+
+              {/* Name */}
+              <label className="text-xs text-blue-600 font-medium">Full Name (as on PAN)</label>
+              <input
+                value={form.fullName}
+                onChange={(e) => {
+                  handleFirstInput(); // ← TRACK form_start
+                  update("fullName", e.target.value.replace(/[^a-zA-Z\s]/g, ""));
+                }}
+                placeholder="Enter your name"
+                className="w-full border-2 border-blue-500 rounded-lg px-4 py-3 mt-1 mb-1 outline-none"
+              />
+              {form.fullName && !nameValid && (
+                <p className="text-xs text-red-500 mb-2">Please enter your full name</p>
+              )}
+
+              {/* Mobile */}
+              <label className="text-xs text-blue-600 font-medium mt-3 block">Mobile Number</label>
               <div className="flex items-center border-2 border-blue-500 rounded-lg px-3 py-3 mt-1 mb-2">
                 <span className="mr-2">🇮🇳 +91</span>
                 <input
                   type="tel"
                   maxLength={10}
                   value={form.mobile}
-                  onChange={(e) => update("mobile", e.target.value.replace(/\D/g, ""))}
+                  onChange={(e) => {
+                    handleFirstInput(); // ← TRACK form_start
+                    update("mobile", e.target.value.replace(/\D/g, ""));
+                  }}
                   className="flex-1 outline-none"
-                  placeholder=""
+                  placeholder="10-digit number"
                 />
                 <span className="text-gray-400 text-sm">{form.mobile.length} / 10</span>
               </div>
               <p className="text-xs text-gray-500 mb-4">
                 We'll check credit card offers against your number
               </p>
+
               <div className="border border-blue-300 rounded-lg text-center text-blue-600 text-sm py-2 mb-3">
                 + Get Assured ₹200 Cashback on every card +
               </div>
+
               <button
-                disabled={form.mobile.length !== 10}
-                onClick={() => setStep(STEPS.OTP)}
+                disabled={!canContinue}
+                onClick={() => {
+                  track("otp_requested", { mobile: form.mobile }); // ← TRACK
+                  setStep(STEPS.OTP);
+                }}
                 className="w-full bg-blue-500 hover:bg-blue-600 disabled:opacity-50 text-white font-semibold py-3 rounded-lg transition"
               >
                 Unlock Card Offers
@@ -278,6 +689,7 @@ export default function CreditCards() {
             </div>
           </div>
         </div>
+        <Footer />
       </div>
     );
   }
@@ -287,11 +699,11 @@ export default function CreditCards() {
     const otpComplete = form.otp.join("").length === 4;
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
-        <CompanyHeader onBack={goBack} navigate={navigate} />
+        <Navbar />
         <div className="flex-1 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md relative">
             <button
-              onClick={() => setStep(STEPS.LANDING)}
+              onClick={() => setStep(STEPS.DETAILS)}
               className="absolute top-4 right-4 text-gray-400 text-xl"
               aria-label="Close"
             >
@@ -322,12 +734,10 @@ export default function CreditCards() {
               ))}
             </div>
 
-            {/* Error message */}
             {otpError && (
               <p className="text-center text-xs text-red-500 mb-2">{otpError}</p>
             )}
 
-            {/* Timer / Resend */}
             <p className="text-center text-xs text-gray-500 mb-4">
               {otpTimer > 0 ? (
                 <>
@@ -357,314 +767,63 @@ export default function CreditCards() {
             >
               Verify & Login
             </button>
+            <p className="text-[11px] text-gray-400 text-center mt-3">
+              Demo: koi bhi 4-digit number daalo, login ho jaayega
+            </p>
           </div>
         </div>
+        <Footer />
       </div>
     );
   }
 
-  // ===== STEP 3: EMPLOYMENT =====
-  if (step === STEPS.EMPLOYMENT) {
-    const options = [
-      { value: "Salaried", label: "Salaried", desc: "Receives fixed monthly income", icon: "💼" },
-      { value: "Self-Employed", label: "Self-Employed", desc: "Working professional (Doctor, CA, etc.)", icon: "👨‍⚕️" },
-      { value: "Business Owner", label: "Business Owner", desc: "Runs a business", icon: "🏢" },
-    ];
-    return (
-      <div className="min-h-screen flex flex-col">
-        <CompanyHeader onBack={goBack} navigate={navigate} />
-        <div className="flex flex-1">
-          <SidePanel
-            emoji="💳"
-            title="Let's find your best card!"
-            subtitle="Your work profile helps us unlock cards with the best approval odds for you."
-          />
-          <div className="flex-1 p-8 md:p-16 bg-white">
-            <Progress percent={17} />
-            <h1 className="text-3xl font-bold mb-8">Employment Type</h1>
-            <div className="space-y-4 max-w-xl">
-              {options.map((opt) => (
-                <button
-                  key={opt.value}
-                  onClick={() => update("employmentType", opt.value)}
-                  className={`w-full flex items-center gap-4 border-2 rounded-xl p-5 text-left transition ${
-                    form.employmentType === opt.value
-                      ? "border-blue-500 bg-blue-50"
-                      : "border-gray-200 hover:border-gray-300"
-                  }`}
-                >
-                  <span className="text-2xl">{opt.icon}</span>
-                  <div className="flex-1">
-                    <p className={`font-semibold ${form.employmentType === opt.value ? "text-blue-600" : ""}`}>
-                      {opt.label}
-                    </p>
-                    <p className="text-sm text-gray-500">{opt.desc}</p>
-                  </div>
-                  <span className={`w-5 h-5 rounded-full border-2 ${
-                    form.employmentType === opt.value ? "border-blue-500 bg-blue-500" : "border-gray-300"
-                  }`} />
-                </button>
-              ))}
-            </div>
-            <button
-              onClick={() => setStep(STEPS.BANK)}
-              className="mt-8 w-full max-w-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg"
-            >
-              Continue
-            </button>
-            <p className="text-green-600 text-sm mt-4 text-center max-w-xl">🛡️ Your details are secured with us</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // ===== STEP 4: BANK =====
-  if (step === STEPS.BANK) {
-    // Pehle 8 banks default dikhte hain, View All par baaki bhi
-    const allBanks = [
-      "HDFC", "Axis", "SBI", "ICICI", "Kotak", "Citi", "IndusInd", "Yes",
-      "PNB", "Bank of Baroda", "Canara", "Union Bank", "IDFC First",
-      "RBL", "Standard Chartered", "AU Small Finance", "Federal", "Bandhan",
-    ];
-    const banks = showAllBanks ? allBanks : allBanks.slice(0, 8);
-    return (
-      <div className="min-h-screen flex flex-col">
-        <CompanyHeader onBack={goBack} navigate={navigate} />
-        <div className="flex flex-1">
-          <SidePanel
-            emoji="🏛️"
-            title=""
-            subtitle="Your bank choice helps us see if you have any 'hidden' relationship perks"
-          />
-          <div className="flex-1 p-8 md:p-16 bg-white">
-            <Progress percent={33} />
-            <h1 className="text-3xl font-bold mb-8">Choose Your Primary Bank</h1>
-            <div className="grid grid-cols-2 gap-4 max-w-xl">
-              {banks.map((bank) => (
-                <button
-                  key={bank}
-                  onClick={() => update("primaryBank", bank)}
-                  className={`flex items-center justify-between border-2 rounded-xl px-5 py-4 transition ${
-                    form.primaryBank === bank ? "border-blue-500 bg-blue-50" : "border-gray-200 hover:border-gray-300"
-                  }`}
-                >
-                  <span className="font-medium">{bank}</span>
-                  <span className={`w-5 h-5 rounded-full border-2 flex-shrink-0 ${
-                    form.primaryBank === bank ? "border-blue-500 bg-blue-500" : "border-gray-300"
-                  }`} />
-                </button>
-              ))}
-            </div>
-            <button
-              onClick={() => setShowAllBanks((p) => !p)}
-              className="text-blue-600 font-semibold mt-4 block"
-            >
-              {showAllBanks ? "Show Less" : "View All Banks"}
-            </button>
-            <button
-              disabled={!form.primaryBank}
-              onClick={() => setStep(STEPS.INCOME)}
-              className="mt-8 w-full max-w-xl bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white font-semibold py-3 rounded-lg"
-            >
-              Continue
-            </button>
-            <p className="text-green-600 text-sm mt-4 text-center max-w-xl">🛡️ Your details are secured with us</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // ===== STEP 5: INCOME =====
-  if (step === STEPS.INCOME) {
-    return (
-      <div className="min-h-screen flex flex-col">
-        <CompanyHeader onBack={goBack} navigate={navigate} />
-        <div className="flex flex-1">
-          <SidePanel
-            emoji="🪙"
-            title="We need your monthly income"
-            subtitle="We need your income to calculate exactly how much you can save every month"
-          />
-          <div className="flex-1 p-8 md:p-16 bg-white">
-            <Progress percent={50} />
-            <h1 className="text-3xl font-bold mb-8">Your Gross Annual Income</h1>
-            <div className="max-w-xl">
-              <label className="text-xs text-gray-500">Gross Annual Income</label>
-              <div className="flex items-center border-2 border-blue-500 rounded-lg px-4 py-3 mt-1">
-                <span className="mr-2 text-gray-600">₹</span>
-                <input
-                  type="number"
-                  value={form.annualIncome}
-                  onChange={(e) => update("annualIncome", e.target.value)}
-                  className="flex-1 outline-none"
-                  placeholder="0"
-                />
-              </div>
-              <p className="text-xs text-gray-500 mt-2">Enter your Annual Income as per your latest ITR</p>
-            </div>
-            <button
-              disabled={!form.annualIncome}
-              onClick={() => setStep(STEPS.PINCODE)}
-              className="mt-8 w-full max-w-xl bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white font-semibold py-3 rounded-lg"
-            >
-              Continue
-            </button>
-            <p className="text-green-600 text-sm mt-4 text-center max-w-xl">🛡️ Your details are secured with us</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // ===== STEP 6: PINCODE =====
-  if (step === STEPS.PINCODE) {
-    return (
-      <div className="min-h-screen flex flex-col">
-        <CompanyHeader onBack={goBack} navigate={navigate} />
-        <div className="flex flex-1">
-          <SidePanel
-            emoji="📍"
-            title="Just a few more taps!"
-            subtitle="We use your pincode to ensure we only show cards available in your city."
-          />
-          <div className="flex-1 p-8 md:p-16 bg-white">
-            <Progress percent={67} />
-            <h1 className="text-3xl font-bold mb-8">Current Address PIN Code</h1>
-            <div className="max-w-xl">
-              <label className="text-xs text-gray-500">Present Pin Code</label>
-              <div className="flex items-center border-2 border-gray-300 rounded-lg px-4 py-3 mt-1">
-                <input
-                  type="tel"
-                  maxLength={6}
-                  value={form.pincode}
-                  onChange={(e) => update("pincode", e.target.value.replace(/\D/g, ""))}
-                  className="flex-1 outline-none"
-                />
-                <span className="text-gray-400 text-sm">{form.pincode.length}/6</span>
-              </div>
-            </div>
-            <button
-              disabled={form.pincode.length !== 6}
-              onClick={() => setStep(STEPS.PERSONAL)}
-              className="mt-8 w-full max-w-xl bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white font-semibold py-3 rounded-lg"
-            >
-              Continue
-            </button>
-            <p className="text-green-600 text-sm mt-4 text-center max-w-xl">🛡️ Your details are secured with us</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // ===== STEP 7: PERSONAL DETAILS =====
-  if (step === STEPS.PERSONAL) {
-    const domains = ["@gmail.com", "@hotmail.com", "@yahoo.com", "@yahoo.in"];
-    // Simple email validation
-    const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email);
-    return (
-      <div className="min-h-screen flex flex-col">
-        <CompanyHeader onBack={goBack} navigate={navigate} />
-        <div className="flex flex-1">
-          <SidePanel
-            emoji="🧑"
-            title="Almost there!"
-            subtitle="We need a few more details to fetch your best card offers"
-          />
-          <div className="flex-1 p-8 md:p-16 bg-white">
-            <Progress percent={83} />
-            <h1 className="text-3xl font-bold mb-8">Personal Details</h1>
-            <div className="max-w-xl space-y-5">
-              <div>
-                <label className="text-xs text-blue-600">Full Name (as on PAN)</label>
-                <input
-                  value={form.fullName}
-                  onChange={(e) =>
-                    update("fullName", e.target.value.replace(/[^a-zA-Z\s]/g, ""))
-                  }
-                  className="w-full border-2 border-blue-500 rounded-lg px-4 py-3 mt-1 outline-none"
-                />
-                <p className="text-xs text-gray-500 mt-1">Please enter your Full Name as per PAN card (letters only)</p>
-              </div>
-              <div>
-                <input
-                  placeholder="Email"
-                  value={form.email}
-                  onChange={(e) => update("email", e.target.value)}
-                  className="w-full border-2 border-gray-300 rounded-lg px-4 py-3 outline-none focus:border-blue-500"
-                />
-                {form.email && !emailValid && (
-                  <p className="text-xs text-red-500 mt-1">Please enter a valid email address</p>
-                )}
-                <div className="flex gap-2 mt-2 flex-wrap">
-                  {domains.map((d) => (
-                    <button
-                      key={d}
-                      onClick={() => {
-                        const base = form.email.split("@")[0];
-                        update("email", base + d);
-                      }}
-                      className="border border-blue-400 text-blue-600 text-xs rounded px-3 py-1"
-                    >
-                      {d}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-            <button
-              disabled={!form.fullName || !emailValid}
-              onClick={() => setStep(STEPS.PROCESSING)}
-              className="mt-8 w-full max-w-xl bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white font-semibold py-3 rounded-lg"
-            >
-              Unlock Offers
-            </button>
-            <p className="text-green-600 text-sm mt-4 text-center max-w-xl">🛡️ Your details are secured with us</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // ===== STEP 8: PROCESSING =====
+  // ===== STEP 3a: PROCESSING =====
   if (step === STEPS.PROCESSING) {
     return (
       <div className="min-h-screen flex flex-col">
-        <CompanyHeader onBack={goBack} navigate={navigate} />
+        <Navbar />
         <div className="flex-1 flex flex-col items-center justify-center bg-white">
           <div className="bg-green-100 text-green-700 rounded-lg px-5 py-2 text-sm mb-10">
             🪙 Apply today to get ₹200 Cashback
           </div>
           <div className="text-7xl mb-8 animate-pulse">💳</div>
-          <h2 className="text-xl font-bold text-gray-800">Processing Your Profile</h2>
+          <h2 className="text-xl font-bold text-gray-800">
+            Processing {user?.name ? `${user.name}'s` : "Your"} Profile
+          </h2>
           <p className="text-sm text-gray-500 mt-2">Trusted by over 2 million happy users.</p>
         </div>
+        <Footer />
       </div>
     );
   }
 
-  // ===== STEP 9: OFFERS =====
+  // ===== STEP 3b: OFFERS =====
   return (
-    <div className="min-h-screen bg-gray-50">
-      <CompanyHeader onBack={goBack} navigate={navigate} />
-      {/* top bar */}
-      <div className="bg-white border-b px-6 py-4 flex justify-between items-center">
-        <div className="font-bold text-blue-700">Direct Credit</div>
-        <button onClick={() => navigate("/")} className="text-blue-600 border rounded px-4 py-1 text-sm">
-          Sign Out
-        </button>
-      </div>
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      <Navbar />
 
-      <div className="max-w-3xl mx-auto px-4 py-8">
+      <div className="max-w-3xl mx-auto px-4 py-8 flex-1 w-full">
+        {/* Welcome message — login hone par naam ke saath */}
+        {user && (
+          <div className="bg-white border rounded-xl px-5 py-4 mb-6">
+            <p className="text-lg font-semibold text-gray-800">
+              Welcome, {user.name} 👋
+            </p>
+            <p className="text-sm text-gray-500">
+              Yahan aapke liye best card offers hain. Apply par tap karke aage badhein.
+            </p>
+          </div>
+        )}
+
         {/* cashback banner */}
         <div className="bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-xl p-5 mb-6 flex items-center justify-between">
-          <span className="font-bold">Apply & EARN HUGE CASHBACKS</span>
+          <span className="font-bold">Apply &amp; EARN HUGE CASHBACKS</span>
           <span className="text-sm">₹200 + ₹750 Cashback</span>
         </div>
 
-        <h2 className="text-lg font-semibold mb-4">{offers.length} Card Offer{offers.length !== 1 ? "s" : ""}</h2>
+        <h2 className="text-lg font-semibold mb-4">
+          {offers.length} Card Offer{offers.length !== 1 ? "s" : ""}
+        </h2>
 
         <div className="space-y-5">
           {offers.map((card) => (
@@ -673,8 +832,16 @@ export default function CreditCards() {
                 {card.tag}
               </span>
               <div className="flex gap-5 flex-col sm:flex-row">
-                <div className="w-40 h-24 bg-gradient-to-br from-gray-800 to-gray-600 rounded-lg flex items-center justify-center text-white text-xs">
-                  {card.image ? <img src={card.image} alt={card.name} className="w-full h-full object-cover rounded-lg" /> : "CARD"}
+                <div className="w-40 h-24 bg-gradient-to-br from-gray-800 to-gray-600 rounded-lg flex items-center justify-center text-white text-xs flex-shrink-0">
+                  {card.image ? (
+                    <img
+                      src={card.image}
+                      alt={card.name}
+                      className="w-full h-full object-cover rounded-lg"
+                    />
+                  ) : (
+                    "CARD"
+                  )}
                 </div>
                 <div className="flex-1">
                   <h3 className="font-bold text-gray-800">{card.name}</h3>
@@ -686,8 +853,20 @@ export default function CreditCards() {
                     ))}
                   </ul>
                   <div className="flex gap-3 mt-4">
-                    <button className="text-blue-600 text-sm">+ More Details</button>
-                    <button className="bg-blue-600 text-white text-sm rounded px-4 py-2">Check Eligibility ›</button>
+                    <button
+                      onClick={() => handleDetails(card)}
+                      className="text-blue-600 text-sm"
+                    >
+                      + More Details
+                    </button>
+                    {/* Apply → TRACK + UTM link kholta hai */}
+                    <button
+                      onClick={() => handleApply(card)}
+                      className="bg-blue-600 hover:bg-blue-700 text-white text-sm rounded px-4 py-2 inline-flex items-center gap-1.5"
+                    >
+                      Apply Now
+                      <ExternalLink size={14} />
+                    </button>
                   </div>
                 </div>
               </div>
@@ -695,6 +874,7 @@ export default function CreditCards() {
           ))}
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

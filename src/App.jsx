@@ -1,6 +1,9 @@
 
 
 // using claude ai code
+// add tracking system
+import { useEffect } from "react";
+import { captureUtmParams, initPageTimeTracking, track } from "./lib/analytics";
 
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -34,7 +37,7 @@ import Careers from "./pages/Careers";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import ContactUs from "./pages/ContactUs";
 import TermsConditions from "./pages/TermsConditions";
-import Awards from "./pages/awards";
+import Awards from "./pages/Awards";
 import Culture from "./pages/Culture";
 //import CompleteProfile from "./pages/account/CompleteProfile";
 import WarehouseFinance from "./pages/loans/WarehouseFinance";
@@ -56,6 +59,13 @@ import ProfessionalLoan from "./pages/loans/ProfessionalLoan";
 import ProjectLoan from "./pages/loans/ProjectLoan";
 
 function App() {
+  
+  useEffect(() => {
+    captureUtmParams();        // UTM URL se pakdo
+    initPageTimeTracking();    // page time tracking
+    track("page_view");        // page khula
+  }, []);
+  
   return (
     <AuthProvider>
     <BrowserRouter>
