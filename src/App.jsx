@@ -34,7 +34,7 @@ import Careers from "./pages/Careers";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import ContactUs from "./pages/ContactUs";
 import TermsConditions from "./pages/TermsConditions";
-import Awards from "./pages/awards";
+import Awards from "./pages/Awards";
 import Culture from "./pages/Culture";
 //import CompleteProfile from "./pages/account/CompleteProfile";
 import WarehouseFinance from "./pages/loans/WarehouseFinance";

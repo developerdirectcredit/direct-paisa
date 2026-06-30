@@ -1,6 +1,7 @@
 
 
-// // after changing on 25 june 
+
+//  // after changing on 25 june 
 // import { useState, useRef } from "react";
 // import TalkToExpertPopup from "./TalkToExpertPopup";
 // import GetAppPopup from "./GetAppPopup";
@@ -100,16 +101,6 @@
 //         title: "Other Loans",
 //         desc: "Education, Vehicle & more",
 //         path: "/loans/other",
-//           subItems: [
-//     { title: "Education Loan", path: "/loans/education" },
-//     { title: "Lease Rental Discounting", path: "/loans/lease-rental-discounting" },
-//     { title: "Agri Loan", path: "/loans/agri" },
-//     { title: "Bank Guarantee Loan", path: "/loans/bank-guarantee" },
-//     { title: "CGTMSE Loan", path: "/loans/cgtmse" },
-//     { title: "Foreign Currency Term Loan", path: "/loans/foreign-currency-term" },
-//     { title: "Hospital Loan", path: "/loans/hospital" },
-//   ],
-
 //       },
 
   
@@ -249,6 +240,55 @@
 //         <div className="space-y-1">
 //           {menu.items.map((item) => {
 //             const Icon = item.icon;
+
+//             // ─── ADDED: Agar item me subItems hain to right-side flyout submenu ───
+//             if (item.subItems) {
+//               return (
+//                 <div key={item.title} className="relative group/sub">
+//                   <div
+//                     onClick={() => navigate(item.path)}
+//                     className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-blue-50 cursor-pointer group transition-colors"
+//                   >
+//                     <div className="w-9 h-9 rounded-xl bg-blue-50 group-hover:bg-blue-600 flex items-center justify-center flex-shrink-0 transition-colors">
+//                       <Icon
+//                         size={18}
+//                         className="text-blue-600 group-hover:text-white transition-colors"
+//                       />
+//                     </div>
+//                     <div className="flex-1 min-w-0">
+//                       <p className="text-sm font-semibold text-gray-800 group-hover:text-blue-600 transition-colors">
+//                         {item.title}
+//                       </p>
+//                       {item.desc && (
+//                         <p className="text-xs text-gray-400 mt-0.5">{item.desc}</p>
+//                       )}
+//                     </div>
+//                     <ChevronRight
+//                       size={14}
+//                       className="text-gray-300 group-hover:text-blue-400 transition-colors flex-shrink-0"
+//                     />
+//                   </div>
+
+//                   {/* Right-side flyout submenu (hover pe khulega) */}
+//                   <div className="absolute top-0 left-full ml-2 w-72 bg-white shadow-2xl rounded-2xl border border-gray-100 p-3 z-50 hidden group-hover/sub:block">
+//                     <p className="text-xs font-semibold text-blue-600 uppercase tracking-wide mb-2 px-1 flex items-center gap-1">
+//                       <BadgeIndianRupee size={13} /> Loan Types
+//                     </p>
+//                     {item.subItems.map((sub) => (
+//                       <div
+//                         key={sub.path}
+//                         onClick={() => navigate(sub.path)}
+//                         className="px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600 cursor-pointer transition-colors"
+//                       >
+//                         {sub.title}
+//                       </div>
+//                     ))}
+//                   </div>
+//                 </div>
+//               );
+//             }
+//             // ─── END ADDED ───
+
 //             return (
 //               <div
 //                 key={item.title}
@@ -282,6 +322,53 @@
 //   );
 // }
 
+// // ─── ADDED: Mobile Sub-Item (subItems wala — andar khulta hai) ───────────────
+// function MobileSubItem({ item, Icon, navigate, onClose }) {
+//   const [subOpen, setSubOpen] = useState(false);
+
+//   return (
+//     <div>
+//       <div
+//         onClick={() => setSubOpen(!subOpen)}
+//         className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-blue-50 active:bg-blue-100 cursor-pointer group transition-colors"
+//       >
+//         <div className="w-9 h-9 rounded-xl bg-gray-100 group-hover:bg-blue-600 flex items-center justify-center flex-shrink-0 transition-colors">
+//           <Icon size={17} className="text-gray-500 group-hover:text-white transition-colors" />
+//         </div>
+//         <div className="flex-1">
+//           <p className="text-sm font-medium text-gray-800 group-hover:text-blue-600 transition-colors">
+//             {item.title}
+//           </p>
+//           {item.desc && <p className="text-xs text-gray-400 mt-0.5">{item.desc}</p>}
+//         </div>
+//         <ChevronRight
+//           size={14}
+//           className={`text-gray-300 flex-shrink-0 transition-transform ${subOpen ? "rotate-90" : ""}`}
+//         />
+//       </div>
+
+//       {/* Nested sub-items */}
+//       {subOpen && (
+//         <div className="pl-12 pr-2 py-1 space-y-1">
+//           {item.subItems.map((sub) => (
+//             <div
+//               key={sub.path}
+//               onClick={() => {
+//                 navigate(sub.path);
+//                 onClose();
+//               }}
+//               className="px-3 py-2.5 rounded-lg text-sm text-gray-600 hover:bg-blue-50 hover:text-blue-600 cursor-pointer transition-colors"
+//             >
+//               {sub.title}
+//             </div>
+//           ))}
+//         </div>
+//       )}
+//     </div>
+//   );
+// }
+// // ─── END ADDED ───
+
 // // ─── Mobile Accordion Item ────────────────────────────────────────────────────
 // function MobileAccordion({ menu, navigate, onClose }) {
 //   const [open, setOpen] = useState(false);
@@ -308,6 +395,21 @@
 //         <div className="pb-3 px-2 space-y-1">
 //           {menu.items.map((item) => {
 //             const Icon = item.icon;
+
+//             // ─── ADDED: subItems wala item → nested mobile accordion ───
+//             if (item.subItems) {
+//               return (
+//                 <MobileSubItem
+//                   key={item.title}
+//                   item={item}
+//                   Icon={Icon}
+//                   navigate={navigate}
+//                   onClose={onClose}
+//                 />
+//               );
+//             }
+//             // ─── END ADDED ───
+
 //             return (
 //               <div
 //                 key={item.title}
@@ -583,12 +685,8 @@
 //     </header>
 //   );
 // }
- // == ye upaper vla code poora sahi hai but drop down nhi add vhi mai test kar rha hu
 
- // test code for drop drop down
-
-
- // after changing on 25 june 
+// after changing on 27 june — two-pane mega menu for Loans other loans me hover krne pr loan open ho
 import { useState, useRef } from "react";
 import TalkToExpertPopup from "./TalkToExpertPopup";
 import GetAppPopup from "./GetAppPopup";
@@ -626,117 +724,48 @@ const menuConfig = [
     id: "score",
     label: "Credit Score",
     items: [
-      {
-        icon: BadgeIndianRupee,
-        title: "Credit Score FREE",
-        desc: "Know Your Score Instantly",
-        path: "/credit-score",
-      },
-      {
-        icon: BarChart3,
-        title: "FREE CIBIL Score",
-        desc: "Check Your CIBIL Report",
-        path: "/cibil-score",
-      },
-      {
-        icon: ShieldCheck,
-        title: "Improve Credit Score",
-        desc: "Tips & Strategies",
-        path: "/improve-score",
-      },
+      { icon: BadgeIndianRupee, title: "Credit Score FREE", desc: "Know Your Score Instantly", path: "/credit-score" },
+      { icon: BarChart3, title: "FREE CIBIL Score", desc: "Check Your CIBIL Report", path: "/cibil-score" },
+      { icon: ShieldCheck, title: "Improve Credit Score", desc: "Tips & Strategies", path: "/improve-score" },
     ],
   },
   {
     id: "loan",
     label: "Loans",
+    // ─── twoPane: true → Paisabazaar jaisa left+right panel ───
+    twoPane: true,
     items: [
-      {
-        icon: BadgeIndianRupee,
-        title: "Personal Loan",
-        desc: "Upto ₹40L, instant approval",
-        path: "/loans/personal",
-      },
-      {
-        icon: Home,
-        title: "Home Loan",
-        desc: "Best rates from top banks",
-        path: "/loans/home",
-      },
-      {
-        icon: Briefcase,
-        title: "Business Loan",
-        desc: "For MSMEs & startups",
-        path: "/loans/business",
-      },
-      {
-        icon: Landmark,
-        title: "Loan Against Property",
-        desc: "Unlock your asset value",
-        path: "/loans-against-property",
-      },
-          
-        {
-        icon: ShieldCheck,
-        title: "Bank Guarantee",
-        desc: "Financial, Performance, Bid Bond & more",
-        path: "/loans/bank-guarantee",
-      },
-
-
+      { icon: BadgeIndianRupee, title: "Personal Loan", desc: "Upto ₹40L, instant approval", path: "/loans/personal" },
+      { icon: Home, title: "Home Loan", desc: "Best rates from top banks", path: "/loans/home" },
+      { icon: Briefcase, title: "Business Loan", desc: "For MSMEs & startups", path: "/loans/business" },
+      { icon: ShieldCheck, title: "Bank Guarantee", desc: "Financial, Performance, Bid Bond & more", path: "/loans/bank-guarantee" },
       {
         icon: MoreHorizontal,
         title: "Other Loans",
         desc: "Education, Vehicle & more",
         path: "/loans/other",
-          subItems: [
-    { title: "Education Loan", path: "/loans/education" },
-    { title: "Lease Rental Discounting", path: "/loans/lease-rental-discounting" },
-    { title: "Agri Loan", path: "/loans/agri" },
-    { title: "Bank Guarantee Loan", path: "/loans/bank-guarantee-loan" },
-    { title: "CGTMSE Loan", path: "/loans/cgtmse" },
-    { title: "Foreign Currency Term Loan", path: "/loans/foreign-currency-term" },
-    { title: "Hospital Loan", path: "/loans/hospital" },
-  ],
-
+        // ─── subItems → right side me dikhenge jab is item pe CLICK ho ───
+        subItems: [
+          { title: "Loan Against Property", path: "/loans-against-property" },
+          { title: "Loan Against Car", path: "/loans/against-car" },
+          // { title: "Micro Loan", path: "/loans/micro" },
+          // { title: "Two Wheeler Loan", path: "/loans/two-wheeler" },
+          // { title: "Gold Loan", path: "/loans/gold" },
+          { title: "Education Loan", path: "/loans/education" },
+          // { title: "Car Loan", path: "/loans/car" },
+        ],
       },
-
-  
     ],
   },
   {
     id: "card",
     label: "Credit Cards",
     items: [
-      {
-        icon: CreditCard,
-        title: "Best Credit Cards",
-        desc: "Top picks for rewards",
-        path: "/credit-cards/best",
-      },
-      {
-        icon: Globe,
-        title: "Best Forex Cards",
-        desc: "Travel abroad hassle-free",
-        path: "/credit-cards/forex",
-      },
-      {
-        icon: BarChart3,
-        title: "CIBIL for Credit Card",
-        desc: "Check eligibility first",
-        path: "/credit-cards/cibil",
-      },
-      {
-        icon: ShieldCheck,
-        title: "Card Eligibility",
-        desc: "Know before you apply",
-        path: "/credit-cards/eligibility",
-      },
-      {
-        icon: SlidersHorizontal,
-        title: "Compare Cards",
-        desc: "Side-by-side comparison",
-        path: "/credit-cards/compare",
-      },
+      { icon: CreditCard, title: "Best Credit Cards", desc: "Top picks for rewards", path: "/credit-cards/best" },
+      { icon: Globe, title: "Best Forex Cards", desc: "Travel abroad hassle-free", path: "/credit-cards/forex" },
+      { icon: BarChart3, title: "CIBIL for Credit Card", desc: "Check eligibility first", path: "/credit-cards/cibil" },
+      { icon: ShieldCheck, title: "Card Eligibility", desc: "Know before you apply", path: "/credit-cards/eligibility" },
+      { icon: SlidersHorizontal, title: "Compare Cards", desc: "Side-by-side comparison", path: "/credit-cards/compare" },
     ],
   },
   {
@@ -744,66 +773,125 @@ const menuConfig = [
     label: "Calculators",
     cols: 2,
     items: [
-      {
-        icon: Calculator,
-        title: "Personal Loan EMI",
-        desc: "",
-        path: "/calculators/personal-loan",
-      },
-      {
-        icon: Calculator,
-        title: "Home Loan EMI",
-        desc: "",
-        path: "/calculators/home-loan",
-      },
-      {
-        icon: Calculator,
-        title: "Business Loan EMI",
-        desc: "",
-        path: "/calculators/business-loan",
-      },
-      {
-        icon: Calculator,
-        title: "Loan Against Property",
-        desc: "",
-        path: "/calculators/lap",
-      },
-      {
-        icon: Coins,
-        title: "Gold Loan EMI",
-        desc: "",
-        path: "/calculators/gold-loan",
-      },
-      {
-        icon: TrendingUp,
-        title: "FD Calculator",
-        desc: "",
-        path: "/calculators/fd",
-      },
-      {
-        icon: Wheat,
-        title: "Mudra Loan EMI",
-        desc: "",
-        path: "/calculators/mudra",
-      },
-      {
-        icon: Building2,
-        title: "Term Loan EMI",
-        desc: "",
-        path: "/calculators/term-loan",
-      },
+      { icon: Calculator, title: "Personal Loan EMI", desc: "", path: "/calculators/personal-loan" },
+      { icon: Calculator, title: "Home Loan EMI", desc: "", path: "/calculators/home-loan" },
+      { icon: Calculator, title: "Business Loan EMI", desc: "", path: "/calculators/business-loan" },
+      { icon: Calculator, title: "Loan Against Property", desc: "", path: "/calculators/lap" },
+      { icon: Coins, title: "Gold Loan EMI", desc: "", path: "/calculators/gold-loan" },
+      { icon: TrendingUp, title: "FD Calculator", desc: "", path: "/calculators/fd" },
+      { icon: Wheat, title: "Mudra Loan EMI", desc: "", path: "/calculators/mudra" },
+      { icon: Building2, title: "Term Loan EMI", desc: "", path: "/calculators/term-loan" },
     ],
   },
 ];
 
-// ─── Desktop Dropdown ─────────────────────────────────────────────────────────
+// ─── Two-Pane Mega Menu (Paisabazaar style) ──────────────────────────────────
+function TwoPaneDropdown({ menu, navigate }) {
+  // jis item pe hover ho aur usme subItems ho, right panel uska dikhega.
+  const [hoverItem, setHoverItem] = useState(null);
+  // right panel sirf tab jab hovered item me subItems ho
+  const showRight = hoverItem && hoverItem.subItems;
+
+  return (
+    <div className="absolute top-full left-0 mt-3 bg-white shadow-2xl rounded-2xl border border-gray-100 z-50 flex overflow-hidden">
+      {/* Arrow pointer */}
+      <div className="absolute -top-2 left-8 w-4 h-4 bg-white border-l border-t border-gray-100 rotate-45" />
+
+      {/* ── LEFT PANE: main loans (hamesha dikhega) ── */}
+      <div
+        className={`w-80 p-4 transition-all duration-200 ${
+          showRight ? "border-r border-gray-100" : ""
+        }`}
+      >
+        <div className="space-y-1">
+          {menu.items.map((item) => {
+            const Icon = item.icon;
+            const isActive = hoverItem === item;
+            return (
+              <div
+                key={item.title}
+                onMouseEnter={() => setHoverItem(item)}
+                onClick={() => navigate(item.path)}
+                className={`flex items-center gap-3 px-3 py-3 rounded-xl cursor-pointer group transition-colors ${
+                  isActive ? "bg-blue-50" : "hover:bg-blue-50"
+                }`}
+              >
+                <div
+                  className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors ${
+                    isActive ? "bg-blue-600" : "bg-blue-50 group-hover:bg-blue-600"
+                  }`}
+                >
+                  <Icon
+                    size={18}
+                    className={`transition-colors ${
+                      isActive ? "text-white" : "text-blue-600 group-hover:text-white"
+                    }`}
+                  />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p
+                    className={`text-sm font-semibold transition-colors ${
+                      isActive ? "text-blue-600" : "text-gray-800 group-hover:text-blue-600"
+                    }`}
+                  >
+                    {item.title}
+                  </p>
+                  {item.desc && <p className="text-xs text-gray-400 mt-0.5">{item.desc}</p>}
+                </div>
+                {item.subItems && (
+                  <ChevronRight
+                    size={15}
+                    className={`flex-shrink-0 transition-colors ${
+                      isActive ? "text-blue-500" : "text-gray-300 group-hover:text-blue-400"
+                    }`}
+                  />
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ── RIGHT PANE: sub-types — sirf jab subItems wale item pe hover ho ── */}
+      {showRight && (
+        <div className="w-72 p-4 bg-gray-50/60 animate-[fadeSlide_0.18s_ease-out]">
+          <p className="text-xs font-semibold text-blue-600 uppercase tracking-wide mb-3 px-1 flex items-center gap-1">
+            <BadgeIndianRupee size={13} /> Loan Types
+          </p>
+          <div className="space-y-0.5">
+            {hoverItem.subItems.map((sub) => (
+              <div
+                key={sub.path}
+                onClick={() => navigate(sub.path)}
+                className="px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-blue-100/60 hover:text-blue-600 cursor-pointer transition-colors"
+              >
+                {sub.title}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* slide-in keyframes */}
+      <style>{`
+        @keyframes fadeSlide {
+          from { opacity: 0; transform: translateX(10px); }
+          to   { opacity: 1; transform: translateX(0); }
+        }
+      `}</style>
+    </div>
+  );
+}
+
+// ─── Desktop Dropdown (normal single / two-col) ──────────────────────────────
 function DesktopDropdown({ menu, navigate }) {
   const isTwoCol = menu.cols === 2;
 
   return (
     <div
-      className={`absolute top-full left-0 mt-3 bg-white shadow-2xl rounded-2xl border border-gray-100 p-5 z-50 ${isTwoCol ? "w-[480px]" : "w-80"
-        }`}
+      className={`absolute top-full left-0 mt-3 bg-white shadow-2xl rounded-2xl border border-gray-100 p-5 z-50 ${
+        isTwoCol ? "w-[480px]" : "w-80"
+      }`}
     >
       {/* Arrow pointer */}
       <div className="absolute -top-2 left-6 w-4 h-4 bg-white border-l border-t border-gray-100 rotate-45" />
@@ -837,55 +925,6 @@ function DesktopDropdown({ menu, navigate }) {
         <div className="space-y-1">
           {menu.items.map((item) => {
             const Icon = item.icon;
-
-            // ─── ADDED: Agar item me subItems hain to right-side flyout submenu ───
-            if (item.subItems) {
-              return (
-                <div key={item.title} className="relative group/sub">
-                  <div
-                    onClick={() => navigate(item.path)}
-                    className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-blue-50 cursor-pointer group transition-colors"
-                  >
-                    <div className="w-9 h-9 rounded-xl bg-blue-50 group-hover:bg-blue-600 flex items-center justify-center flex-shrink-0 transition-colors">
-                      <Icon
-                        size={18}
-                        className="text-blue-600 group-hover:text-white transition-colors"
-                      />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-gray-800 group-hover:text-blue-600 transition-colors">
-                        {item.title}
-                      </p>
-                      {item.desc && (
-                        <p className="text-xs text-gray-400 mt-0.5">{item.desc}</p>
-                      )}
-                    </div>
-                    <ChevronRight
-                      size={14}
-                      className="text-gray-300 group-hover:text-blue-400 transition-colors flex-shrink-0"
-                    />
-                  </div>
-
-                  {/* Right-side flyout submenu (hover pe khulega) */}
-                  <div className="absolute top-0 left-full ml-2 w-72 bg-white shadow-2xl rounded-2xl border border-gray-100 p-3 z-50 hidden group-hover/sub:block">
-                    <p className="text-xs font-semibold text-blue-600 uppercase tracking-wide mb-2 px-1 flex items-center gap-1">
-                      <BadgeIndianRupee size={13} /> Loan Types
-                    </p>
-                    {item.subItems.map((sub) => (
-                      <div
-                        key={sub.path}
-                        onClick={() => navigate(sub.path)}
-                        className="px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600 cursor-pointer transition-colors"
-                      >
-                        {sub.title}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              );
-            }
-            // ─── END ADDED ───
-
             return (
               <div
                 key={item.title}
@@ -893,23 +932,15 @@ function DesktopDropdown({ menu, navigate }) {
                 className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-blue-50 cursor-pointer group transition-colors"
               >
                 <div className="w-9 h-9 rounded-xl bg-blue-50 group-hover:bg-blue-600 flex items-center justify-center flex-shrink-0 transition-colors">
-                  <Icon
-                    size={18}
-                    className="text-blue-600 group-hover:text-white transition-colors"
-                  />
+                  <Icon size={18} className="text-blue-600 group-hover:text-white transition-colors" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold text-gray-800 group-hover:text-blue-600 transition-colors">
                     {item.title}
                   </p>
-                  {item.desc && (
-                    <p className="text-xs text-gray-400 mt-0.5">{item.desc}</p>
-                  )}
+                  {item.desc && <p className="text-xs text-gray-400 mt-0.5">{item.desc}</p>}
                 </div>
-                <ChevronRight
-                  size={14}
-                  className="text-gray-300 group-hover:text-blue-400 transition-colors flex-shrink-0"
-                />
+                <ChevronRight size={14} className="text-gray-300 group-hover:text-blue-400 transition-colors flex-shrink-0" />
               </div>
             );
           })}
@@ -919,7 +950,7 @@ function DesktopDropdown({ menu, navigate }) {
   );
 }
 
-// ─── ADDED: Mobile Sub-Item (subItems wala — andar khulta hai) ───────────────
+// ─── Mobile Sub-Item (subItems wala — andar khulta hai) ───────────────
 function MobileSubItem({ item, Icon, navigate, onClose }) {
   const [subOpen, setSubOpen] = useState(false);
 
@@ -938,10 +969,7 @@ function MobileSubItem({ item, Icon, navigate, onClose }) {
           </p>
           {item.desc && <p className="text-xs text-gray-400 mt-0.5">{item.desc}</p>}
         </div>
-        <ChevronRight
-          size={14}
-          className={`text-gray-300 flex-shrink-0 transition-transform ${subOpen ? "rotate-90" : ""}`}
-        />
+        <ChevronRight size={14} className={`text-gray-300 flex-shrink-0 transition-transform ${subOpen ? "rotate-90" : ""}`} />
       </div>
 
       {/* Nested sub-items */}
@@ -964,7 +992,6 @@ function MobileSubItem({ item, Icon, navigate, onClose }) {
     </div>
   );
 }
-// ─── END ADDED ───
 
 // ─── Mobile Accordion Item ────────────────────────────────────────────────────
 function MobileAccordion({ menu, navigate, onClose }) {
@@ -977,14 +1004,8 @@ function MobileAccordion({ menu, navigate, onClose }) {
         onClick={() => setOpen(!open)}
         className="w-full flex items-center justify-between px-4 py-4 text-left"
       >
-        <span className="font-semibold text-gray-800 text-[15px]">
-          {menu.label}
-        </span>
-        <ChevronDown
-          size={18}
-          className={`text-gray-400 transition-transform duration-300 ${open ? "rotate-180" : ""
-            }`}
-        />
+        <span className="font-semibold text-gray-800 text-[15px]">{menu.label}</span>
+        <ChevronDown size={18} className={`text-gray-400 transition-transform duration-300 ${open ? "rotate-180" : ""}`} />
       </button>
 
       {/* Dropdown items */}
@@ -993,19 +1014,10 @@ function MobileAccordion({ menu, navigate, onClose }) {
           {menu.items.map((item) => {
             const Icon = item.icon;
 
-            // ─── ADDED: subItems wala item → nested mobile accordion ───
+            // subItems wala item → nested mobile accordion
             if (item.subItems) {
-              return (
-                <MobileSubItem
-                  key={item.title}
-                  item={item}
-                  Icon={Icon}
-                  navigate={navigate}
-                  onClose={onClose}
-                />
-              );
+              return <MobileSubItem key={item.title} item={item} Icon={Icon} navigate={navigate} onClose={onClose} />;
             }
-            // ─── END ADDED ───
 
             return (
               <div
@@ -1017,18 +1029,13 @@ function MobileAccordion({ menu, navigate, onClose }) {
                 className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-blue-50 active:bg-blue-100 cursor-pointer group transition-colors"
               >
                 <div className="w-9 h-9 rounded-xl bg-gray-100 group-hover:bg-blue-600 flex items-center justify-center flex-shrink-0 transition-colors">
-                  <Icon
-                    size={17}
-                    className="text-gray-500 group-hover:text-white transition-colors"
-                  />
+                  <Icon size={17} className="text-gray-500 group-hover:text-white transition-colors" />
                 </div>
                 <div className="flex-1">
                   <p className="text-sm font-medium text-gray-800 group-hover:text-blue-600 transition-colors">
                     {item.title}
                   </p>
-                  {item.desc && (
-                    <p className="text-xs text-gray-400 mt-0.5">{item.desc}</p>
-                  )}
+                  {item.desc && <p className="text-xs text-gray-400 mt-0.5">{item.desc}</p>}
                 </div>
                 <ChevronRight size={14} className="text-gray-300 flex-shrink-0" />
               </div>
@@ -1082,15 +1089,9 @@ export default function Navbar() {
 
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
-
       {/* Top Bar */}
       <div className="hidden md:flex justify-end items-center px-8 py-2 text-sm border-b bg-gray-50">
-
-        <div
-          className="relative"
-          onMouseEnter={handleExpertEnter}
-          onMouseLeave={handleExpertLeave}
-        >
+        <div className="relative" onMouseEnter={handleExpertEnter} onMouseLeave={handleExpertLeave}>
           <div className="flex items-center gap-2 text-blue-600 cursor-pointer hover:text-blue-700 transition-colors">
             <PhoneCall size={15} />
             Talk to Expert
@@ -1100,11 +1101,7 @@ export default function Navbar() {
 
         <span className="mx-4 text-gray-300">|</span>
 
-        <div
-          className="relative"
-          onMouseEnter={handleAppEnter}
-          onMouseLeave={handleAppLeave}
-        >
+        <div className="relative" onMouseEnter={handleAppEnter} onMouseLeave={handleAppLeave}>
           <div className="flex items-center gap-2 text-blue-600 font-medium cursor-pointer hover:text-blue-700 transition-colors">
             <Download size={15} />
             Get The App
@@ -1115,7 +1112,6 @@ export default function Navbar() {
 
       {/* Main Navbar */}
       <div className="max-w-7xl mx-auto flex justify-between items-center px-4 md:px-6 py-1">
-
         {/* Logo */}
         <img
           src="/logo.png"
@@ -1134,22 +1130,27 @@ export default function Navbar() {
               onMouseLeave={handleMenuLeave}
             >
               <button
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${openMenu === menu.id
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  openMenu === menu.id
                     ? "text-blue-600 bg-blue-50"
                     : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-                  }`}
+                }`}
               >
                 {menu.label}
                 <ChevronDown
                   size={15}
-                  className={`transition-transform duration-200 ${openMenu === menu.id ? "rotate-180 text-blue-600" : "text-gray-400"
-                    }`}
+                  className={`transition-transform duration-200 ${
+                    openMenu === menu.id ? "rotate-180 text-blue-600" : "text-gray-400"
+                  }`}
                 />
               </button>
 
-              {openMenu === menu.id && (
-                <DesktopDropdown menu={menu} navigate={navigate} />
-              )}
+              {openMenu === menu.id &&
+                (menu.twoPane ? (
+                  <TwoPaneDropdown menu={menu} navigate={navigate} />
+                ) : (
+                  <DesktopDropdown menu={menu} navigate={navigate} />
+                ))}
             </div>
           ))}
         </nav>
@@ -1204,18 +1205,13 @@ export default function Navbar() {
           onClick={() => setMobileMenu(!mobileMenu)}
           aria-label="Toggle menu"
         >
-          {mobileMenu ? (
-            <X size={24} className="text-gray-700" />
-          ) : (
-            <Menu size={24} className="text-gray-700" />
-          )}
+          {mobileMenu ? <X size={24} className="text-gray-700" /> : <Menu size={24} className="text-gray-700" />}
         </button>
       </div>
 
       {/* Mobile Menu */}
       {mobileMenu && (
         <div className="lg:hidden border-t border-gray-100 bg-white shadow-lg max-h-[80vh] overflow-y-auto">
-
           {/* Mobile Top Bar links */}
           <div className="flex gap-4 px-4 py-3 bg-blue-50 border-b border-blue-100">
             <div className="flex items-center gap-2 text-blue-600 text-sm font-medium cursor-pointer">
@@ -1231,12 +1227,7 @@ export default function Navbar() {
 
           {/* Accordion Menus */}
           {menuConfig.map((menu) => (
-            <MobileAccordion
-              key={menu.id}
-              menu={menu}
-              navigate={navigate}
-              onClose={() => setMobileMenu(false)}
-            />
+            <MobileAccordion key={menu.id} menu={menu} navigate={navigate} onClose={() => setMobileMenu(false)} />
           ))}
 
           {/* Sign In / User options */}
@@ -1282,8 +1273,6 @@ export default function Navbar() {
     </header>
   );
 }
-
-
 
 
 
