@@ -207,24 +207,11 @@ export default function Culture() {
         </div>
       </section>
 
-      {/* Continuous Learning — LEFT image, RIGHT text */}
+     {/* Continuous Learning — LEFT text, RIGHT image */}
       <section className="bg-slate-50 py-12">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            {/* Left: image (apna path yahan daalo) */}
-            <div>
-              <img
-                src="/culture/2026/Naina-mam.png"
-                alt="Continuous Learning at Direct Credit"
-                className="w-full rounded-3xl shadow-xl object-cover"
-                onError={(e) => {
-                  e.currentTarget.src =
-                    "https://placehold.co/600x450/1e293b/94a3b8?text=Continuous+Learning";
-                }}
-              />
-            </div>
-
-            {/* Right: text */}
+            {/* Left: text */}
             <div>
               <h2 className="text-3xl md:text-4xl font-bold text-blue-900 leading-snug">
                 Continuous Learning
@@ -241,6 +228,19 @@ export default function Culture() {
                 sector knowledge, every team member gets the support they need
                 to keep growing — both personally and professionally.
               </p>
+            </div>
+
+            {/* Right: image (apna path yahan daalo) */}
+            <div>
+              <img
+                src="/culture/2026/Naina-mam.png"
+                alt="Continuous Learning at Direct Credit"
+                className="w-full rounded-3xl shadow-xl object-cover"
+                onError={(e) => {
+                  e.currentTarget.src =
+                    "https://placehold.co/600x450/1e293b/94a3b8?text=Continuous+Learning";
+                }}
+              />
             </div>
           </div>
         </div>
