@@ -1,3 +1,5 @@
+
+
 // ─────────────────────────────────────────────────────────────────
 //  Instant Personal Loan page
 //  Flow:  name + mobile  →  Check Eligibility  →  bank offers card
@@ -16,10 +18,20 @@ const BAJAJ_LINK =
   "https://www.bajajfinservmarkets.in/apply-for-personal-loan-finservmarkets/?utm_source=ERefferalAffiliate&utm_medium=SOL&utm_campaign=Open&utm_content=DirectCredit&utm_term=june26SC1_";
 
 const features = [
-  { icon: Zap, color: "bg-blue-50 text-blue-600", title: "Instant Approval in Minutes", desc: "Fully digital process. No branch visits required." },
-  { icon: Clock, color: "bg-blue-50 text-blue-600", title: "Get Funds in 24 Hours", desc: "Minimal documentation with super-fast disbursal." },
-  { icon: Search, color: "bg-blue-50 text-blue-600", title: "Check Eligibility for Free", desc: "No impact on credit score. 100% secure." },
-  { icon: Shield, color: "bg-blue-50 text-blue-600", title: "Safe, Secure & RBI-Compliant", desc: "Your data is always protected & encrypted." },
+  { icon: Search, color: "bg-[#001f54] text-white", title: "Compare 30+ Lenders Instantly", desc: "Evaluate interest rates, tenure & more in one place." },
+  { icon: Clock, color: "bg-[#001f54] text-white", title: "Get Funds in 24 Hours", desc: "Minimal documentation with super-fast approval." },
+  { icon: CheckCircle, color: "bg-[#001f54] text-white", title: "Check Eligibility for Free", desc: "No impact on credit score. 100% secure." },
+  { icon: Shield, color: "bg-[#001f54] text-white", title: "Safe, Secure & Compliant", desc: "RBI-compliant partners. Your data is always protected." },
+];
+
+// Poster-style highlight strips (navy on white, red accents).
+const posterHighlights = [
+  "Best Rate of Interest",
+  "Min Salary 20k (All Salaried Employee)",
+  "No Security or Collateral",
+  "Simple documentation & Easy Process",
+  "Flexible repayment plans",
+  "Explore pre-approved offers from our partner lenders",
 ];
 
 const tableData = [
@@ -95,15 +107,35 @@ export default function InstantPersonalLoan() {
 
           {/* ── LEFT ── */}
           <div className="flex-1">
-            <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-3">
-              Instant Personal Loan
-            </h1>
-            <p className="text-gray-500 text-base mb-8 max-w-lg leading-relaxed">
-              Get an instant personal loan from 30+ Banks and NBFCs on Direct Paisa — approval in minutes,
-              money in your account within 24 hours.{" "}
-              <span className="text-blue-600 font-semibold">Multiple offers.</span>{" "}
-              Maximum growth.
+            {/* ISO certified badge */}
+            <p className="text-xs font-bold tracking-wide text-gray-800 mb-2">
+              ISO 27001:2022 CERTIFIED
             </p>
+
+            <h1 className="text-2xl md:text-3xl font-extrabold leading-tight mb-1">
+              <span className="text-[#e8112d]">INSTANT</span>{" "}
+              <span className="text-[#001f54]">PERSONAL LOAN</span>
+            </h1>
+            <p className="text-lg md:text-xl font-extrabold text-[#e8112d] mb-5">
+              Up to 30 Lakhs
+            </p>
+
+            {/* Poster highlight strips (navy) */}
+            <div className="space-y-2 mb-6 max-w-md">
+              {posterHighlights.map((text) => (
+                <div
+                  key={text}
+                  className="rounded-md bg-[#001f54] px-4 py-2 text-center text-sm font-semibold text-white"
+                >
+                  {text}
+                </div>
+              ))}
+            </div>
+
+            {/* Team of ex-bankers strip (red) */}
+            <div className="mb-8 max-w-md rounded-md bg-[#e8112d] px-4 py-2 text-center text-sm font-extrabold tracking-wide text-white">
+              TEAM OF EX-BANKERS &amp; CAs
+            </div>
 
             {/* Feature list */}
             <div className="space-y-5 mb-10">
@@ -474,3 +506,7 @@ export default function InstantPersonalLoan() {
     </div>
   );
 }
+
+
+// // add instant personal loan poster image in the hero section, and add a section for FAQs at the bottom of the page.
+
