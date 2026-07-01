@@ -1,4 +1,7 @@
 
+
+
+
 // add image and form section same side this code used with loan flow system
 
 import { useState } from "react";
@@ -73,7 +76,7 @@ export default function PersonalLoan() {
               Personal Loan
             </h1>
             <p className="text-gray-500 text-base mb-8 max-w-lg leading-relaxed">
-              Find the right personal loan for you from 30+ Banks and NBFCs on Direct Paisa — with just
+              Find the right personal loan for you from 30+ Banks and NBFCs on Direct Credit — with just
               one easy application.{" "}
               <span className="text-blue-600 font-semibold">Multiple offers.</span>{" "}
               Maximum growth.
@@ -98,7 +101,7 @@ export default function PersonalLoan() {
             <div className="relative hidden md:block">
               <img
                 src="/images/direct-credit-app.png"
-                alt="Direct Paisa App"
+                alt="Direct Credit App"
                 className="w-72 mx-auto drop-shadow-2xl"
               />
             </div>
@@ -120,13 +123,13 @@ export default function PersonalLoan() {
                     {[1,2,3,4,5].map(i => <Star key={i} size={9} className="fill-yellow-400 text-yellow-400" />)}
                   </div>
                   <p className="text-xs font-bold text-gray-800">4.5/5</p>
-                  <p className="text-xs text-gray-400">15.6L Reviews</p>
+                  <p className="text-xs text-gray-400">15 Reviews</p>
                 </div>
               </div>
               {[
-                { value: "5.7cr+",    sub: "Satisfied Customers" },
+                { value: "5L",    sub: "Satisfied Customers" },
                 { value: "65+",       sub: "Lending Partners" },
-                { value: "₹65k Cr+", sub: "Loans Disbursed" },
+                { value: "₹65 Cr+", sub: "Loans Disbursed" },
               ].map(s => (
                 <div key={s.value} className="text-center">
                   <p className="text-lg font-bold text-blue-600">{s.value}</p>
@@ -307,7 +310,7 @@ export default function PersonalLoan() {
       {/* ── FEATURE TABLE ── */}
       <section className="max-w-7xl mx-auto px-4 md:px-8 py-10 border-t">
         <h2 className="text-2xl font-bold text-gray-800 mb-5">
-          Key Personal Loan Features at Direct Paisa
+          Key Personal Loan Features at Direct Credit
         </h2>
         <div className="rounded-2xl border border-gray-200 overflow-hidden">
           <table className="w-full text-sm">
@@ -332,13 +335,13 @@ export default function PersonalLoan() {
       {/* ── WHY DIRECT PAISA ── */}
       <section className="max-w-7xl mx-auto px-4 md:px-8 py-10 border-t">
         <h2 className="text-2xl font-bold text-gray-800 mb-4">
-          Why Apply for a Personal Loan on Direct Paisa?
+          Why Apply for a Personal Loan on Direct Credit?
         </h2>
         <p className="text-gray-600 text-sm leading-relaxed max-w-3xl">
-          Direct Paisa provides personal loan offers from 30+ banks & NBFCs, enabling you to compare,
+          Direct Credit provides personal loan offers from 30+ banks & NBFCs, enabling you to compare,
           choose and apply for the personal loan that suits your requirements the best, with the highest
           chances of approval. Through deep integrations with India's leading Banks and NBFCs, you can
-          apply for a personal loan with ease on the Direct Paisa platform, through end-to-end digital
+          apply for a personal loan with ease on the Direct Credit platform, through end-to-end digital
           processes.
         </p>
       </section>
@@ -379,7 +382,7 @@ export default function PersonalLoan() {
 
 // add image and form section same side eseme ye tha poora basic details ek hi file me show rha hai 
 
-
+// es code se app direct utm link se bank ke page pe redirect ho jayega jo ki ye instantat personal loan ke liye hai
 // import { useState } from "react";
 // import Navbar from "../../components/Navbar";
 // import Footer from "../../components/Footer";
