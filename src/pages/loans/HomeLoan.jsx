@@ -1,1092 +1,1169 @@
-// import Navbar from "../../components/Navbar";
-// import Footer from "../../components/Footer";
-// import { Home, CheckCircle, ArrowRight, Phone } from "lucide-react";
 
-// const features = ["Loan amount: ₹10 Lakh – ₹5 Crore","Interest rate from 8.50% p.a.","Tenure upto 30 years","Balance transfer facility","Top-up loan available","Tax benefit under 80C & 24B"];
-// const eligibility = ["Age: 21 – 65 years","Salaried or self-employed","Stable income proof","CIBIL score 700+","Property should be legally clear"];
-// const documents = ["PAN & Aadhaar Card","Income proof / ITR 3 years","Bank statement 12 months","Property documents","Sale agreement"];
 
-// export default function HomeLoan() {
-//   return (
-//     <div className="min-h-screen bg-gray-50">
-//       <Navbar />
-//       <section className="bg-gradient-to-br from-green-700 to-green-500 text-white py-16 px-4">
-//         <div className="max-w-5xl mx-auto">
-//           <div className="flex items-center gap-3 mb-4">
-//             <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center"><Home size={24} /></div>
-//             <span className="text-green-200 font-medium">Loans → Home Loan</span>
-//           </div>
-//           <h1 className="text-3xl md:text-5xl font-bold mb-4">Home Loan</h1>
-//           <p className="text-green-100 text-lg max-w-xl mb-8">Buy your dream home with best interest rates from top banks and NBFCs. Tenure upto 30 years.</p>
-//           <div className="flex flex-wrap gap-4">
-//             <button className="bg-white text-green-700 font-semibold px-6 py-3 rounded-xl hover:bg-green-50 transition-colors flex items-center gap-2">Apply Now <ArrowRight size={18} /></button>
-//             <button className="border border-white/40 text-white font-medium px-6 py-3 rounded-xl hover:bg-white/10 transition-colors flex items-center gap-2"><Phone size={16} /> Talk to Expert</button>
-//           </div>
-//         </div>
-//       </section>
-//       <section className="bg-white border-b">
-//         <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 divide-x divide-gray-100">
-//           {[{label:"Max Loan",value:"₹5 Crore"},{label:"Interest From",value:"8.50%*"},{label:"Max Tenure",value:"30 Years"},{label:"Tax Benefit",value:"80C+24B"}].map((s) => (
-//             <div key={s.label} className="py-6 px-8 text-center">
-//               <div className="text-2xl font-bold text-green-600">{s.value}</div>
-//               <div className="text-sm text-gray-500 mt-1">{s.label}</div>
-//             </div>
-//           ))}
-//         </div>
-//       </section>
-//       <section className="max-w-5xl mx-auto px-4 py-12 grid md:grid-cols-3 gap-6">
-//         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-//           <h2 className="font-bold text-gray-800 text-lg mb-5">Key Features</h2>
-//           <ul className="space-y-3">{features.map((f) => <li key={f} className="flex items-start gap-3 text-sm text-gray-600"><CheckCircle size={17} className="text-green-500 mt-0.5 flex-shrink-0" />{f}</li>)}</ul>
-//         </div>
-//         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-//           <h2 className="font-bold text-gray-800 text-lg mb-5">Eligibility</h2>
-//           <ul className="space-y-3">{eligibility.map((e) => <li key={e} className="flex items-start gap-3 text-sm text-gray-600"><CheckCircle size={17} className="text-blue-500 mt-0.5 flex-shrink-0" />{e}</li>)}</ul>
-//         </div>
-//         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-//           <h2 className="font-bold text-gray-800 text-lg mb-5">Documents Required</h2>
-//           <ul className="space-y-3">{documents.map((d) => <li key={d} className="flex items-start gap-3 text-sm text-gray-600"><CheckCircle size={17} className="text-purple-500 mt-0.5 flex-shrink-0" />{d}</li>)}</ul>
-//         </div>
-//       </section>
-//       <section className="max-w-5xl mx-auto px-4 pb-16">
-//         <div className="bg-green-600 rounded-2xl p-8 text-white text-center">
-//           <h2 className="text-2xl font-bold mb-2">Apna ghar, apna sapna!</h2>
-//           <p className="text-green-100 mb-6">Compare rates from 30+ banks and get the best deal</p>
-//           <button className="bg-white text-green-700 font-semibold px-8 py-3 rounded-xl hover:bg-green-50 transition-colors">Apply for Home Loan</button>
-//         </div>
-//       </section>
-//       <Footer />
-//     </div>
-//   );
-// }
+// ─────────────────────────────────────────────────────────────────
+//  Home Loan page
+//  Route suggestion:  /loans/home-loan
+//  File location:     src/pages/loans/HomeLoan.jsx
+//
+//  Flow:
+//   1) Hero — Name + Mobile
+//   2) If NOT logged in  -> Mobile OTP verify step
+//      If logged in      -> skip straight to the application flow
+//   3) Loan Purpose (property type + New Purchase / Balance Transfer / Top-up)
+//   4) Mode-specific steps (per loan type)
+//   5) Property Details -> Applicant Profile -> Banking -> Offers
+//   6) Confirmation + Next Steps guidance
+// ─────────────────────────────────────────────────────────────────
 
-// 22 june ko data upload kiya 
 import { useState, useRef, useEffect } from "react";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
+import { useAuth } from "../../context/useAuth";
 import {
-  ArrowLeft, ChevronLeft, ChevronDown, X, Wallet, Building2,
-  IndianRupee, SlidersHorizontal, ArrowDownWideNarrow, Check,
-  CheckCircle2, Upload, Camera, ShieldCheck, FileText, UserPlus, Trash2,
-  Home, ArrowRight, Phone, CheckCircle,
+  CheckCircle, CheckCircle2, ArrowRight, ArrowLeft, X, Home, Clock, Search, Shield, Star,
+  Building2, CreditCard, RefreshCw, IndianRupee, Landmark, FileCheck2, ClipboardList,
+  UserCheck, PhoneCall,
 } from "lucide-react";
 
-/* ══════════════════════════════════════════════════════════════════════════
-   HOME LOAN — single-file page + full Paisabazaar-style application journey
-   Landing → Loan Amount → Pincode → Income → Basic Details → Mobile OTP →
-   Email OTP → KYC → Aadhaar → PAN → Co-Applicant → Property → Offers
-   Everything lives in this one file (like BusinessLoan.jsx). Frontend-only;
-   file uploads show a local preview with no real verification.
-═══════════════════════════════════════════════════════════════════════════ */
+/* ════════════════════════════════════════════════════════════
+   LANDING-PAGE CONTENT
+════════════════════════════════════════════════════════════ */
+const features = [
+  { icon: Search, title: "Compare 20+ Bank & NBFC Offers", desc: "Best ROI, tenure & processing fee — all in one place." },
+  { icon: Clock, title: "Disbursal in Just 2 Days", desc: "Fast property evaluation & credit approval." },
+  { icon: CheckCircle, title: "Check Eligibility for Free", desc: "No impact on credit score. 100% secure." },
+  { icon: Shield, title: "Safe, Secure & Compliant", desc: "RBI-compliant partners. Your data is always protected." },
+];
 
+/* Poster highlight strips — text version of the reference banner */
+const posterHighlights = [
+  "Best ROI",
+  "Quick Approval",
+  "Flexible EMI",
+  "30 Year Tenure",
+  "0% Processing Fee*",
+];
 
-/* ═══════════ STEP COMPONENTS ═══════════ */
+const tableData = [
+  { feature: "Loan Amount", details: "₹5 Lakh – ₹15 Crore" },
+  { feature: "Interest Rate", details: "8.35% – 12% p.a." },
+  { feature: "Repayment Tenure", details: "Up to 30 years" },
+  { feature: "Processing Fee", details: "0% – 1% of loan amount" },
+  { feature: "Disbursal Time", details: "Within 2 days of final approval" },
+  { feature: "Loan Types", details: "New Purchase, Balance Transfer, Top-up" },
+  { feature: "LTV Ratio", details: "Up to 90% of property value" },
+  { feature: "CIBIL Score Required", details: "700+ preferred" },
+];
 
-/* ════════════════════════════════════════════════════════════════════
-   HOME LOAN — Phase 1 step components
-   basic → mobileOtp → emailOtp → kyc → aadhaar → pan → coApplicant → property
-   Frontend-only. File uploads show a local preview (no real verification).
-═══════════════════════════════════════════════════════════════════════ */
+const useCases = [
+  "Buying a new flat, villa or plot",
+  "Constructing a house on owned land",
+  "Transferring an existing home loan for a lower rate",
+  "Topping up an existing home loan for renovation",
+  "Purchasing commercial or resale property",
+  "Consolidating debt with a top-up loan",
+];
 
-const PAN_REGEX = /^[A-Z]{5}[0-9]{4}[A-Z]$/;
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const AADHAAR_REGEX = /^\d{12}$/;
+/* ════════════════════════════════════════════════════════════
+   APPLICATION-FLOW STATIC DATA
+════════════════════════════════════════════════════════════ */
+const propertyTypesStep1 = ["Flat", "Villa", "Plot", "Plot + Construction", "Independent Floor"];
+const loanTypes = ["New Purchase", "Balance Transfer", "Top-up", "Renovation"];
 
-const fieldWrap = (err) =>
-  `relative border rounded-md ${err ? "border-red-400" : "border-gray-300 focus-within:border-green-600"}`;
-const floatLabel = "absolute -top-2 left-3 bg-white px-1 text-[11px] text-green-600 font-medium";
-const inputBase = "w-full px-4 py-3.5 text-sm outline-none rounded-md bg-transparent";
+const loanAmountRanges = [
+  { id: "u20l", label: "Up to ₹20 Lakhs" },
+  { id: "20-60l", label: "₹20 – 60 Lakhs" },
+  { id: "60l-1cr", label: "₹60 Lakhs – 1 Cr" },
+  { id: "1-3cr", label: "₹1 Cr – 3 Cr" },
+  { id: "3-5cr", label: "₹3 Cr – 5 Cr" },
+  { id: "5crplus", label: "₹5 Cr+" },
+];
 
-function Field({ label, error, children }) {
-  return (
-    <div>
-      <div className={fieldWrap(error)}>
-        <label className={floatLabel}>{label}</label>
-        {children}
-      </div>
-      {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
-    </div>
-  );
+const btAmountRanges = [
+  { id: "u20l", label: "Up to ₹20 Lakhs" },
+  { id: "20-50l", label: "₹20 – 50 Lakhs" },
+  { id: "50l-1cr", label: "₹50 Lakhs – 1 Cr" },
+  { id: "1-5cr", label: "₹1 Cr – 5 Cr" },
+  { id: "5-15cr", label: "₹5 Cr – 15 Cr" },
+  { id: "15crplus", label: "₹15 Cr+" },
+];
+
+const propertyCategoryOptions = ["Residential", "Commercial", "Industrial", "Agricultural", "Gram Panchayat", "Lal Dora", "Khasra/Khtauni", "Other"];
+const constructionStatusOptions = ["Ready-to-move Property", "Under Construction", "Home Construction", "Plot + Construction", "Resale Purchase"];
+
+const employmentTypes = ["Salaried", "Self-Employed – Business", "Self-Employed – Professional"];
+const salariedIncomeRanges = ["Below ₹3 Lakhs", "₹3–6 Lakhs", "₹6–12 Lakhs", "₹12–18 Lakhs", "Over ₹18 Lakhs"];
+const turnoverRanges = ["Below ₹25 Lakhs", "₹25–50 Lakhs", "₹50–75 Lakhs", "₹75 Lakhs–1 Cr", "₹1 Cr+"];
+
+const popularBanks = ["HDFC Bank", "ICICI Bank", "SBI", "Axis Bank", "Kotak Mahindra", "Bajaj Housing Finance", "Other"];
+
+const topupPurposes = ["Home Renovation", "Education", "Medical Expenses", "Debt Consolidation", "Business Expansion", "Other"];
+
+const homeLoanOffers = [
+  { name: "HDFC Bank", rate: "8.35% – 9.10% p.a.", amount: "Up to ₹5 Cr", color: "bg-blue-50 text-blue-700", emoji: "🏦" },
+  { name: "SBI", rate: "8.40% – 9.15% p.a.", amount: "Up to ₹10 Cr", color: "bg-teal-50 text-teal-700", emoji: "🏛️" },
+  { name: "ICICI Bank", rate: "8.50% – 9.25% p.a.", amount: "Up to ₹5 Cr", color: "bg-blue-50 text-blue-700", emoji: "🏦" },
+  { name: "Bajaj Housing Finance", rate: "8.60% – 10.50% p.a.", amount: "Up to ₹15 Cr", color: "bg-indigo-50 text-indigo-700", emoji: "🏠" },
+];
+
+const btOffers = [
+  { name: "SBI", rate: "8.40% p.a.", amount: "Refinance up to ₹5 Cr", color: "bg-teal-50 text-teal-700", emoji: "🏛️" },
+  { name: "HDFC Bank", rate: "8.45% p.a.", amount: "Refinance up to ₹5 Cr", color: "bg-blue-50 text-blue-700", emoji: "🏦" },
+  { name: "Axis Bank", rate: "8.55% p.a.", amount: "Refinance up to ₹5 Cr", color: "bg-pink-50 text-pink-700", emoji: "🏦" },
+];
+
+const topupOffersList = [
+  { name: "HDFC Bank", rate: "9.10% p.a.", amount: "Top-up up to ₹50 Lakh", color: "bg-blue-50 text-blue-700", emoji: "🏦" },
+  { name: "Bajaj Housing Finance", rate: "9.75% p.a.", amount: "Top-up up to ₹75 Lakh", color: "bg-indigo-50 text-indigo-700", emoji: "🏠" },
+];
+
+// Title + subtitle for each step's modal header
+const STEP_TITLES = {
+  mobileOtp: "Verify Your Number",
+  otp: "Enter OTP",
+  purpose: "Loan Purpose",
+  loanDetails: "Loan Details",
+  transferOrTopup: "Transfer Details",
+  propertyDetails: "Property Details",
+  applicantProfile: "Applicant Profile",
+  banking: "Banking Relationship",
+};
+const STEP_SUBTITLES = {
+  mobileOtp: "Enter your mobile number to continue",
+  purpose: "Tell us what kind of home loan you need",
+  loanDetails: "Tell us about the loan amount or your existing loan",
+  transferOrTopup: "Tell us how much you'd like to transfer or top-up",
+  propertyDetails: "Tell us about the property",
+  applicantProfile: "Tell us a bit about yourself",
+  banking: "Select your primary bank account",
+};
+
+const CONTINUE_LABELS = {
+  mobileOtp: "Send OTP",
+  otp: "Verify OTP",
+};
+
+function getStepSequence(loanType, isLoggedIn) {
+  const authSteps = isLoggedIn ? [] : ["mobileOtp", "otp"];
+  const modeSteps =
+    loanType === "Balance Transfer" || loanType === "Top-up"
+      ? ["loanDetails", "transferOrTopup"]
+      : ["loanDetails"]; // New Purchase / Renovation
+
+  return [...authSteps, "purpose", ...modeSteps, "propertyDetails", "applicantProfile", "banking", "offers"];
 }
 
-function PrimaryBtn({ children, onClick, disabled }) {
-  return (
-    <button onClick={onClick} disabled={disabled}
-      className={`w-full mt-8 py-4 rounded-md font-semibold text-white transition ${
-        disabled ? "bg-gray-200 text-gray-400 cursor-not-allowed" : "bg-green-700 hover:bg-green-800"
-      }`}>
-      {children}
-    </button>
-  );
-}
+export default function HomeLoan() {
+  const { isLoggedIn, user } = useAuth?.() || { isLoggedIn: false, user: null };
 
-function BackBtn({ onBack }) {
-  return (
-    <button onClick={onBack}
-      className="hidden lg:flex absolute right-full mr-4 top-1 w-9 h-9 rounded-full border border-gray-300 items-center justify-center text-gray-500 hover:bg-gray-50">
-      <ChevronLeft size={18} />
-    </button>
-  );
-}
+  /* ── Hero form ── */
+  const [form, setForm] = useState({ name: user?.fullName || "", mobile: user?.mobile || "" });
+  const [agreed, setAgreed] = useState(true);
+  const [errors, setErrors] = useState({});
 
-function StepShell({ title, subtitle, onBack, children }) {
-  return (
-    <div className="max-w-lg mx-auto w-full">
-      <h2 className="text-2xl font-bold text-gray-900">{title}</h2>
-      {subtitle && <p className="text-sm text-gray-400 mt-1 mb-7">{subtitle}</p>}
-      <div className="relative">
-        {onBack && <BackBtn onBack={onBack} />}
-        {children}
-      </div>
-    </div>
-  );
-}
+  /* ── Flow controller — "hero" means popup closed ── */
+  const [step, setStep] = useState("hero");
 
-/* ════════════════ STEP: Basic Details ════════════════ */
-const maritalOptions = ["Single", "Married", "Divorced", "Widowed"];
+  /* ── OTP ── */
+  const [otp, setOtp] = useState(Array(6).fill(""));
+  const [otpTimer, setOtpTimer] = useState(0);
+  const otpRefs = useRef([]);
 
-function StepBasicDetails({ data, patch, onNext, onBack }) {
-  const [err, setErr] = useState({});
-  const [agreed, setAgreed] = useState(false);
-  const f = data;
-  const up = (k, v) => { patch({ [k]: v }); setErr((e) => ({ ...e, [k]: "" })); };
+  /* ── Application-flow state ── */
+  const [loanType, setLoanType] = useState("New Purchase");
+  const [propertyPurposeType, setPropertyPurposeType] = useState("");
 
-  const validate = () => {
+  const [loanAmountRange, setLoanAmountRange] = useState("");
+
+  const [btExisting, setBtExisting] = useState({ outstanding: "", emi: "", tenure: "", lender: "" });
+  const [btTransfer, setBtTransfer] = useState({ amountRange: "", tenureYears: "", wantTopup: "no", topupAmount: "" });
+
+  const [topupExisting, setTopupExisting] = useState({ accountNo: "", outstanding: "", emi: "", tenure: "", lender: "" });
+  const [topupReq, setTopupReq] = useState({ amount: "", purpose: "" });
+
+  const [property, setProperty] = useState({ pincode: "", category: "", downPayment: "", constructionStatus: "" });
+
+  const [applicant, setApplicant] = useState({
+    employmentType: "Salaried", incomeRange: "", turnoverRange: "",
+    companyName: "", workExp: "", officePincode: "", activeEmi: "",
+  });
+
+  const [banking, setBanking] = useState({ primaryBank: "", currentLenderAccountNo: "" });
+
+  const [appliedOffer, setAppliedOffer] = useState(null);
+  const [referenceNo, setReferenceNo] = useState("");
+
+  useEffect(() => {
+    if (otpTimer <= 0) return;
+    const t = setTimeout(() => setOtpTimer((s) => s - 1), 1000);
+    return () => clearTimeout(t);
+  }, [otpTimer]);
+
+  const sequence = getStepSequence(loanType, isLoggedIn);
+  const stepIndex = sequence.indexOf(step);
+
+  const offersForMode = loanType === "Balance Transfer" ? btOffers : loanType === "Top-up" ? topupOffersList : homeLoanOffers;
+
+  /* ── Validation per step ── */
+  const validateHero = () => {
     const e = {};
-    if (!f.fullName?.trim() || f.fullName.trim().length < 3) e.fullName = "Enter your full name as on PAN";
-    if (!PAN_REGEX.test((f.pan || "").toUpperCase())) e.pan = "Enter a valid PAN (e.g. ABCDE1234F)";
-    if (!EMAIL_REGEX.test(f.email || "")) e.email = "Enter a valid email address";
-    if (!f.dob) e.dob = "Select your date of birth";
-    else {
-      const age = (Date.now() - new Date(f.dob)) / (1000 * 60 * 60 * 24 * 365.25);
-      if (age < 21) e.dob = "You must be at least 21 years old";
-      if (age > 70) e.dob = "Maximum age limit is 70 years";
+    if (!form.name.trim() || form.name.trim().length < 3) e.name = "Enter your full name";
+    if (!/^[6-9]\d{9}$/.test(form.mobile)) e.mobile = "Enter valid 10-digit mobile number";
+    if (!agreed) e.agreed = "Please accept terms to continue";
+    return e;
+  };
+  const validateOtp = () => (otp.join("").length === 6 ? {} : { otp: "Enter the complete 6-digit OTP" });
+
+  const validatePurpose = () => {
+    const e = {};
+    if (loanType === "New Purchase" || loanType === "Renovation") {
+      if (!propertyPurposeType) e.propertyPurposeType = "Select a property type";
     }
-    if (!f.gender) e.gender = "Select gender";
-    if (!f.maritalStatus) e.maritalStatus = "Select marital status";
-    if (!f.motherName?.trim() || f.motherName.trim().length < 3) e.motherName = "Enter your mother's name";
-    if (!agreed) e.agreed = "Please accept the consent to continue";
     return e;
   };
 
-  const proceed = () => {
-    const e = validate();
-    if (Object.keys(e).length) { setErr(e); return; }
-    patch({ pan: (f.pan || "").toUpperCase() });
-    onNext();
-  };
-
-  return (
-    <StepShell title="Basic Details" subtitle="All fields are mandatory to proceed" onBack={onBack}>
-      <div className="space-y-5">
-        <Field label="Full Name (as per PAN)" error={err.fullName}>
-          <input value={f.fullName || ""} onChange={(e) => up("fullName", e.target.value)} placeholder="Enter your full name" className={inputBase} />
-        </Field>
-        <Field label="PAN Number" error={err.pan}>
-          <input maxLength={10} value={f.pan || ""} onChange={(e) => up("pan", e.target.value.toUpperCase())} placeholder="ABCDE1234F" className={`${inputBase} uppercase`} />
-        </Field>
-        <Field label="Email Address" error={err.email}>
-          <input type="email" value={f.email || ""} onChange={(e) => up("email", e.target.value)} placeholder="you@example.com" className={inputBase} />
-        </Field>
-        <Field label="Date of Birth" error={err.dob}>
-          <input type="date" max={new Date().toISOString().split("T")[0]} value={f.dob || ""} onChange={(e) => up("dob", e.target.value)} className={inputBase} />
-        </Field>
-        <div>
-          <p className="text-xs font-semibold text-gray-600 mb-2">Gender</p>
-          <div className="grid grid-cols-3 gap-3">
-            {["Male", "Female", "Other"].map((g) => (
-              <button key={g} onClick={() => up("gender", g)}
-                className={`py-2.5 rounded-lg border text-sm transition ${f.gender === g ? "border-green-600 bg-green-50 text-green-700" : "border-gray-200 text-gray-600"}`}>
-                {g}
-              </button>
-            ))}
-          </div>
-          {err.gender && <p className="text-red-500 text-xs mt-1">{err.gender}</p>}
-        </div>
-        <Field label="Marital Status" error={err.maritalStatus}>
-          <select value={f.maritalStatus || ""} onChange={(e) => up("maritalStatus", e.target.value)} className={`${inputBase} appearance-none`}>
-            <option value="">Select marital status</option>
-            {maritalOptions.map((m) => <option key={m} value={m}>{m}</option>)}
-          </select>
-          <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-        </Field>
-        <Field label="Mother's Name" error={err.motherName}>
-          <input value={f.motherName || ""} onChange={(e) => up("motherName", e.target.value)} placeholder="Enter your mother's name" className={inputBase} />
-        </Field>
-
-        <label className="flex items-start gap-2 cursor-pointer">
-          <input type="checkbox" checked={agreed} onChange={(e) => { setAgreed(e.target.checked); setErr((x) => ({ ...x, agreed: "" })); }} className="mt-0.5 accent-green-600 w-4 h-4 flex-shrink-0" />
-          <span className="text-xs text-gray-400 leading-relaxed">
-            I authorise Direct Paisa to fetch my credit report &amp; agree to the{" "}
-            <span className="text-green-500">Terms of Use</span> &amp; <span className="text-green-500">Privacy Policy</span>
-          </span>
-        </label>
-        {err.agreed && <p className="text-red-500 text-xs">{err.agreed}</p>}
-      </div>
-      <PrimaryBtn onClick={proceed}>Continue</PrimaryBtn>
-    </StepShell>
-  );
-}
-
-/* ════════════════ Reusable OTP block ════════════════ */
-function OtpBoxes({ value, onChange, length = 6 }) {
-  const refs = useRef([]);
-  const handle = (i, v) => {
-    if (!/^\d?$/.test(v)) return;
-    const next = value.split("");
-    next[i] = v;
-    const joined = next.join("").slice(0, length);
-    onChange(joined);
-    if (v && i < length - 1) refs.current[i + 1]?.focus();
-  };
-  const key = (i, e) => {
-    if (e.key === "Backspace" && !value[i] && i > 0) refs.current[i - 1]?.focus();
-  };
-  useEffect(() => { refs.current[0]?.focus(); }, []);
-  return (
-    <div className="flex gap-2.5 justify-center">
-      {Array.from({ length }).map((_, i) => (
-        <input key={i} ref={(el) => (refs.current[i] = el)} type="tel" maxLength={1}
-          value={value[i] || ""} onChange={(e) => handle(i, e.target.value)} onKeyDown={(e) => key(i, e)}
-          className={`w-11 h-12 text-center text-lg font-bold rounded-xl border-2 outline-none transition ${value[i] ? "border-green-500 bg-green-50 text-green-700" : "border-gray-200"}`} />
-      ))}
-    </div>
-  );
-}
-
-function OtpStep({ title, target, onNext, onBack }) {
-  const [otp, setOtp] = useState("");
-  const [sec, setSec] = useState(30);
-  useEffect(() => {
-    const t = setInterval(() => setSec((s) => (s > 0 ? s - 1 : 0)), 1000);
-    return () => clearInterval(t);
-  }, []);
-  const verify = () => { if (otp.length === 6) onNext(); };
-  return (
-    <StepShell title={title} subtitle={`Enter the 6-digit OTP sent to ${target}`} onBack={onBack}>
-      <div className="mt-4">
-        <OtpBoxes value={otp} onChange={setOtp} />
-        <p className="text-sm text-gray-500 text-center mt-4">
-          {sec > 0 ? <>Resend OTP in <span className="font-semibold text-green-600">{sec}s</span></>
-            : <button onClick={() => setSec(30)} className="text-green-600 font-semibold hover:underline">Resend OTP</button>}
-        </p>
-        <p className="text-[11px] text-gray-300 text-center mt-2">Demo: enter any 6 digits to continue</p>
-      </div>
-      <PrimaryBtn onClick={verify} disabled={otp.length !== 6}>Verify &amp; Continue</PrimaryBtn>
-    </StepShell>
-  );
-}
-
-function StepMobileOtp({ data, onNext, onBack }) {
-  return <OtpStep title="Verify Your Number" target={`+91 ${data.phone || data.cibilMobile || "XXXXXXXXXX"}`} onNext={onNext} onBack={onBack} />;
-}
-function StepEmailOtp({ data, onNext, onBack }) {
-  return <OtpStep title="Verify Your Email" target={data.email || "your email"} onNext={onNext} onBack={onBack} />;
-}
-
-/* ════════════════ STEP: KYC intro ════════════════ */
-function StepKycIntro({ onNext, onBack }) {
-  return (
-    <StepShell title="KYC Verification" subtitle="A quick, secure step to verify your identity" onBack={onBack}>
-      <div className="flex flex-col items-center text-center py-6">
-        <div className="w-24 h-24 rounded-2xl bg-green-50 flex items-center justify-center mb-5">
-          <ShieldCheck size={44} className="text-green-600" />
-        </div>
-        <p className="text-gray-600 text-sm max-w-xs leading-relaxed mb-2">
-          To process your loan, we need to verify your <strong>Aadhaar</strong> and <strong>PAN</strong>.
-        </p>
-        <p className="text-xs text-gray-400 max-w-xs">Your documents are encrypted and used only for verification.</p>
-      </div>
-      <PrimaryBtn onClick={onNext}>Begin KYC</PrimaryBtn>
-    </StepShell>
-  );
-}
-
-/* ════════════════ Reusable upload box ════════════════ */
-function UploadBox({ label, file, onFile, onClear }) {
-  const inputRef = useRef(null);
-  const isImage = file && file.type?.startsWith("image/");
-  return (
-    <div>
-      <p className="text-xs font-semibold text-gray-600 mb-2">{label}</p>
-      {!file ? (
-        <button onClick={() => inputRef.current?.click()}
-          className="w-full border-2 border-dashed border-gray-300 rounded-xl py-7 flex flex-col items-center gap-2 text-gray-400 hover:border-green-400 hover:text-green-500 transition">
-          <Upload size={22} />
-          <span className="text-sm font-medium">Upload / Take Photo</span>
-          <span className="text-[11px]">JPG, PNG or PDF · up to 5 MB</span>
-        </button>
-      ) : (
-        <div className="border border-gray-200 rounded-xl p-3 flex items-center gap-3">
-          {isImage ? (
-            <img src={file.url} alt={label} className="w-16 h-16 object-cover rounded-lg flex-shrink-0" />
-          ) : (
-            <div className="w-16 h-16 rounded-lg bg-gray-50 flex items-center justify-center flex-shrink-0">
-              <FileText size={26} className="text-gray-400" />
-            </div>
-          )}
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-gray-700 truncate">{file.name}</p>
-            <p className="text-xs text-green-600 flex items-center gap-1"><CheckCircle2 size={13} /> Uploaded</p>
-          </div>
-          <button onClick={onClear} className="text-gray-400 hover:text-red-500 flex-shrink-0"><Trash2 size={18} /></button>
-        </div>
-      )}
-      <input ref={inputRef} type="file" accept="image/*,application/pdf" className="hidden"
-        onChange={(e) => {
-          const file = e.target.files?.[0];
-          if (file) onFile({ name: file.name, type: file.type, url: URL.createObjectURL(file) });
-        }} />
-    </div>
-  );
-}
-
-/* ════════════════ STEP: Aadhaar upload ════════════════ */
-function StepAadhaar({ data, patch, onNext, onBack }) {
-  const [err, setErr] = useState({});
-  const proceed = () => {
+  const validateLoanDetails = () => {
     const e = {};
-    if (!AADHAAR_REGEX.test((data.aadhaarNo || "").replace(/\s/g, ""))) e.aadhaarNo = "Enter a valid 12-digit Aadhaar number";
-    if (!data.aadhaarFront) e.front = "Upload front of Aadhaar";
-    if (!data.aadhaarBack) e.back = "Upload back of Aadhaar";
-    if (Object.keys(e).length) { setErr(e); return; }
-    onNext();
+    if (loanType === "New Purchase" || loanType === "Renovation") {
+      if (!loanAmountRange) e.loanAmountRange = "Select desired loan amount";
+    } else if (loanType === "Balance Transfer") {
+      if (!btExisting.outstanding) e.outstanding = "Enter current outstanding amount";
+      if (!btExisting.emi) e.emi = "Enter current EMI amount";
+      if (!btExisting.tenure) e.tenure = "Enter remaining tenure";
+      if (!btExisting.lender) e.lender = "Select current lender";
+    } else if (loanType === "Top-up") {
+      if (!topupExisting.accountNo) e.accountNo = "Enter current loan account number";
+      if (!topupExisting.outstanding) e.outstanding = "Enter current outstanding amount";
+      if (!topupExisting.lender) e.lender = "Select current lender";
+    }
+    return e;
   };
-  const fmtAadhaar = (v) => v.replace(/\D/g, "").slice(0, 12).replace(/(\d{4})(?=\d)/g, "$1 ");
-  return (
-    <StepShell title="Upload Aadhaar Card" subtitle="Upload clear photos of both sides" onBack={onBack}>
-      <div className="space-y-5">
-        <Field label="Aadhaar Number" error={err.aadhaarNo}>
-          <input inputMode="numeric" value={data.aadhaarNo || ""} onChange={(e) => { patch({ aadhaarNo: fmtAadhaar(e.target.value) }); setErr((x) => ({ ...x, aadhaarNo: "" })); }}
-            placeholder="XXXX XXXX XXXX" className={inputBase} />
-        </Field>
-        <UploadBox label="Front Side" file={data.aadhaarFront} onFile={(file) => { patch({ aadhaarFront: file }); setErr((x) => ({ ...x, front: "" })); }} onClear={() => patch({ aadhaarFront: null })} />
-        {err.front && <p className="text-red-500 text-xs">{err.front}</p>}
-        <UploadBox label="Back Side" file={data.aadhaarBack} onFile={(file) => { patch({ aadhaarBack: file }); setErr((x) => ({ ...x, back: "" })); }} onClear={() => patch({ aadhaarBack: null })} />
-        {err.back && <p className="text-red-500 text-xs">{err.back}</p>}
-      </div>
-      <PrimaryBtn onClick={proceed}>Continue</PrimaryBtn>
-    </StepShell>
-  );
-}
 
-/* ════════════════ STEP: PAN upload ════════════════ */
-function StepPanUpload({ data, patch, onNext, onBack }) {
-  const [err, setErr] = useState({});
-  const proceed = () => {
-    if (!data.panCard) { setErr({ pan: "Upload your PAN card" }); return; }
-    onNext();
-  };
-  return (
-    <StepShell title="Upload PAN Card" subtitle="Upload a clear photo of your PAN" onBack={onBack}>
-      <div className="space-y-5">
-        <Field label="PAN Number">
-          <input value={data.pan || ""} disabled className={`${inputBase} bg-gray-50 text-gray-500 uppercase`} />
-        </Field>
-        <UploadBox label="PAN Card" file={data.panCard} onFile={(file) => { patch({ panCard: file }); setErr({}); }} onClear={() => patch({ panCard: null })} />
-        {err.pan && <p className="text-red-500 text-xs">{err.pan}</p>}
-      </div>
-      <PrimaryBtn onClick={proceed}>Continue</PrimaryBtn>
-    </StepShell>
-  );
-}
-
-/* ════════════════ STEP: Add Co-Applicant ════════════════ */
-const relations = ["Spouse", "Father", "Mother", "Son", "Daughter", "Brother", "Sister"];
-
-function StepCoApplicant({ data, patch, onNext, onBack }) {
-  const [wants, setWants] = useState(data.hasCoApplicant ?? null);
-  const [err, setErr] = useState({});
-  const co = data.coApplicant || {};
-  const upCo = (k, v) => { patch({ coApplicant: { ...co, [k]: v } }); setErr((e) => ({ ...e, [k]: "" })); };
-
-  const proceed = () => {
-    if (wants === false) { patch({ hasCoApplicant: false }); onNext(); return; }
+  const validateTransferOrTopup = () => {
     const e = {};
-    if (!co.name?.trim() || co.name.trim().length < 3) e.name = "Enter co-applicant name";
-    if (!co.gender) e.gender = "Select gender";
-    if (!co.relation) e.relation = "Select relation";
-    if (!co.income || Number(co.income) <= 0) e.income = "Enter monthly income";
-    if (Object.keys(e).length) { setErr(e); return; }
-    patch({ hasCoApplicant: true });
-    onNext();
+    if (loanType === "Balance Transfer") {
+      if (!btTransfer.amountRange) e.amountRange = "Select desired loan amount range";
+      if (!btTransfer.tenureYears) e.tenureYears = "Enter desired tenure";
+    } else if (loanType === "Top-up") {
+      if (!topupReq.amount || Number(topupReq.amount) <= 0) e.amount = "Enter desired top-up amount";
+      if (!topupReq.purpose) e.purpose = "Select purpose of top-up";
+    }
+    return e;
   };
 
-  return (
-    <StepShell title="Add Co-Applicant" subtitle="A co-applicant can improve your eligibility" onBack={onBack}>
-      <p className="text-sm font-medium text-gray-700 mb-3">Do you want to add a co-applicant?</p>
-      <div className="grid grid-cols-2 gap-3 mb-6">
-        {[{ v: true, l: "Yes" }, { v: false, l: "No" }].map((o) => (
-          <button key={o.l} onClick={() => { setWants(o.v); setErr({}); }}
-            className={`py-3 rounded-xl border-2 text-sm font-semibold transition ${wants === o.v ? "border-green-600 bg-green-50 text-green-700" : "border-gray-200 text-gray-600"}`}>
-            {o.l}
-          </button>
-        ))}
-      </div>
+  const validateProperty = () => {
+    const e = {};
+    if (!/^\d{6}$/.test(property.pincode)) e.pincode = "Enter a valid 6-digit pincode";
+    if (!property.category) e.category = "Select property type";
+    if (loanType === "New Purchase" || loanType === "Renovation") {
+      if (!property.downPayment) e.downPayment = "Select down payment status";
+      if (!property.constructionStatus) e.constructionStatus = "Select construction status";
+    }
+    return e;
+  };
 
-      {wants === true && (
-        <div className="space-y-5">
+  const validateApplicant = () => {
+    const e = {}; const a = applicant;
+    if (!a.employmentType) e.employmentType = "Select employment type";
+    if (a.employmentType === "Salaried") {
+      if (!a.incomeRange) e.incomeRange = "Select annual income range";
+      if (!a.companyName.trim()) e.companyName = "Enter company name";
+      if (!a.workExp.trim()) e.workExp = "Enter total work experience";
+      if (!/^\d{6}$/.test(a.officePincode)) e.officePincode = "Enter a valid 6-digit office pincode";
+    } else {
+      if (!a.turnoverRange) e.turnoverRange = "Select annual turnover range";
+    }
+    if (!a.activeEmi.trim()) e.activeEmi = "Enter active EMI total (0 if none)";
+    return e;
+  };
+
+  const validateBanking = () => {
+    const e = {};
+    if (!banking.primaryBank) e.primaryBank = "Select your primary bank account";
+    if (loanType === "Balance Transfer" && !banking.currentLenderAccountNo.trim()) {
+      e.currentLenderAccountNo = "Enter current lender's loan account number";
+    }
+    return e;
+  };
+
+  /* ── Navigation ── */
+  const goNext = () => {
+    let e = {};
+    if (step === "otp") e = validateOtp();
+    else if (step === "purpose") e = validatePurpose();
+    else if (step === "loanDetails") e = validateLoanDetails();
+    else if (step === "transferOrTopup") e = validateTransferOrTopup();
+    else if (step === "propertyDetails") e = validateProperty();
+    else if (step === "applicantProfile") e = validateApplicant();
+    else if (step === "banking") e = validateBanking();
+
+    if (Object.keys(e).length) { setErrors(e); return; }
+    setErrors({});
+
+    if (step === "mobileOtp") {
+      setOtp(Array(6).fill(""));
+      setOtpTimer(30);
+      setStep("otp");
+      return;
+    }
+
+    const idx = sequence.indexOf(step);
+    setStep(sequence[idx + 1]);
+  };
+
+  const goBack = () => {
+    setErrors({});
+    const idx = sequence.indexOf(step);
+    setStep(idx <= 0 ? "hero" : sequence[idx - 1]);
+  };
+
+  const handleHeroSubmit = () => {
+    const e = validateHero();
+    if (Object.keys(e).length) { setErrors(e); return; }
+    setErrors({});
+    const seq = getStepSequence(loanType, isLoggedIn);
+    setStep(seq[0]); // "mobileOtp" if not logged in, else "purpose"
+  };
+
+  const closeModal = () => { setErrors({}); setStep("hero"); };
+
+  const resetAll = () => {
+    setForm({ name: user?.fullName || "", mobile: user?.mobile || "" });
+    setLoanType("New Purchase"); setPropertyPurposeType(""); setLoanAmountRange("");
+    setBtExisting({ outstanding: "", emi: "", tenure: "", lender: "" });
+    setBtTransfer({ amountRange: "", tenureYears: "", wantTopup: "no", topupAmount: "" });
+    setTopupExisting({ accountNo: "", outstanding: "", emi: "", tenure: "", lender: "" });
+    setTopupReq({ amount: "", purpose: "" });
+    setProperty({ pincode: "", category: "", downPayment: "", constructionStatus: "" });
+    setApplicant({ employmentType: "Salaried", incomeRange: "", turnoverRange: "", companyName: "", workExp: "", officePincode: "", activeEmi: "" });
+    setBanking({ primaryBank: "", currentLenderAccountNo: "" });
+    setAppliedOffer(null); setReferenceNo(""); setErrors({}); setStep("hero");
+  };
+
+  const handleApplyOffer = (offer) => {
+    setAppliedOffer(offer);
+    setReferenceNo("DC" + Math.floor(100000 + Math.random() * 900000));
+    setStep("confirmation");
+  };
+
+  const handleOtpChange = (idx, val) => {
+    if (!/^\d?$/.test(val)) return;
+    const next = [...otp]; next[idx] = val; setOtp(next);
+    if (val && idx < 5) otpRefs.current[idx + 1]?.focus();
+  };
+  const handleOtpKeyDown = (idx, e) => {
+    if (e.key === "Backspace" && !otp[idx] && idx > 0) otpRefs.current[idx - 1]?.focus();
+  };
+
+  const inputCls = (err) =>
+    `w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition ${err ? "border-red-400 bg-red-50" : "border-gray-200 bg-white"
+    }`;
+
+  const confirmationCopy = () => {
+    if (loanType === "Balance Transfer") {
+      return {
+        heading: "Home Loan Balance Transfer Application Received",
+        steps: [
+          { icon: ClipboardList, text: "Document Collection — sanction letter, repayment track record & property papers" },
+          { icon: Building2, text: "Property Valuation & Legal Verification — re-check valuation and title" },
+          { icon: FileCheck2, text: "Final Approval — lender approves BT + Top-up (if any)" },
+          { icon: IndianRupee, text: "Loan Closure & Disbursal — new lender pays off old loan; balance to you" },
+          { icon: UserCheck, text: "Auto Payment Setup — new EMI mandate set up" },
+        ],
+      };
+    }
+    if (loanType === "Top-up") {
+      return {
+        heading: "Top-up Loan Application Received",
+        steps: [
+          { icon: ClipboardList, text: "Document Collection — updated income & property docs (if required)" },
+          { icon: Building2, text: "Property Revaluation — only if top-up amount is high" },
+          { icon: FileCheck2, text: "Credit Assessment — income & FOIR check for incremental eligibility" },
+          { icon: IndianRupee, text: "Sanction & Disbursal — top-up amount credited to your account" },
+          { icon: UserCheck, text: "Auto Payment Setup — EMI mandate updated for revised EMI" },
+        ],
+      };
+    }
+    return {
+      heading: "Home Loan Application Received",
+      steps: [
+        { icon: PhoneCall, text: "Sales Executive Visit — collects your financial & property documents" },
+        { icon: Building2, text: "Property Evaluation — certified partner conducts a valuation visit" },
+        { icon: FileCheck2, text: "Final Credit Approval — document + valuation assessment by lender" },
+        { icon: UserCheck, text: "Auto Payment Setup — EMI auto-debit mandate for smooth repayment" },
+      ],
+    };
+  };
+
+  /* ── Step body content ── */
+  const renderStepContent = () => {
+    switch (step) {
+      case "mobileOtp":
+        return (
           <div>
-            <p className="text-xs font-semibold text-gray-600 mb-2">Co-Applicant Gender</p>
-            <div className="grid grid-cols-3 gap-3">
-              {["Male", "Female", "Other"].map((g) => (
-                <button key={g} onClick={() => upCo("gender", g)}
-                  className={`py-2.5 rounded-lg border text-sm transition ${co.gender === g ? "border-green-600 bg-green-50 text-green-700" : "border-gray-200 text-gray-600"}`}>
-                  {g}
-                </button>
+            <div className="flex items-center border-2 border-blue-400 rounded-xl overflow-hidden">
+              <div className="flex items-center gap-1.5 px-3 py-3.5 border-r border-gray-200 bg-gray-50 flex-shrink-0">
+                <span className="text-base">🇮🇳</span><span className="text-sm text-gray-600 font-medium">+91</span>
+              </div>
+              <input type="tel" maxLength={10} value={form.mobile} disabled
+                className="flex-1 px-3 py-3.5 text-sm bg-gray-50 text-gray-600" />
+            </div>
+            <p className="text-xs text-gray-400 mt-2">We'll send a 6-digit OTP to verify this number.</p>
+          </div>
+        );
+
+      case "otp":
+        return (
+          <div>
+            <p className="text-sm text-gray-500 mb-5">We've sent a 6-digit OTP to +91 {form.mobile}</p>
+            <div className="flex justify-between gap-2 mb-3">
+              {otp.map((d, i) => (
+                <input key={i} ref={(el) => (otpRefs.current[i] = el)} type="text" inputMode="numeric" maxLength={1} value={d}
+                  onChange={(e) => handleOtpChange(i, e.target.value)} onKeyDown={(e) => handleOtpKeyDown(i, e)}
+                  className={`w-10 h-12 text-center text-lg font-bold border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.otp ? "border-red-400" : "border-gray-200"
+                    }`} />
               ))}
             </div>
-            {err.gender && <p className="text-red-500 text-xs mt-1">{err.gender}</p>}
+            {errors.otp && <p className="text-red-500 text-xs mb-2">{errors.otp}</p>}
+            <div className="flex justify-center">
+              {otpTimer > 0 ? (
+                <p className="text-xs text-gray-400">Resend OTP in {otpTimer}s</p>
+              ) : (
+                <button onClick={() => setOtpTimer(30)} className="text-xs text-blue-600 font-semibold flex items-center gap-1">
+                  <RefreshCw size={12} /> Resend OTP
+                </button>
+              )}
+            </div>
           </div>
-          <Field label="Co-Applicant Name" error={err.name}>
-            <input value={co.name || ""} onChange={(e) => upCo("name", e.target.value)} placeholder="Full name" className={inputBase} />
-          </Field>
-          <Field label="Relation" error={err.relation}>
-            <select value={co.relation || ""} onChange={(e) => upCo("relation", e.target.value)} className={`${inputBase} appearance-none`}>
-              <option value="">Select relation</option>
-              {relations.map((r) => <option key={r} value={r}>{r}</option>)}
-            </select>
-            <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-          </Field>
-          <Field label="Co-Applicant Monthly Income" error={err.income}>
-            <input inputMode="numeric" value={co.income ? Number(co.income).toLocaleString("en-IN") : ""} onChange={(e) => upCo("income", e.target.value.replace(/\D/g, ""))} placeholder="₹ Monthly income" className={inputBase} />
-          </Field>
-        </div>
-      )}
-      <PrimaryBtn onClick={proceed} disabled={wants === null}>Continue</PrimaryBtn>
-    </StepShell>
-  );
-}
+        );
 
-/* ════════════════ STEP: Property Details ════════════════ */
-const propertyTypes = ["Apartment / Flat", "Independent House", "Villa", "Residential Plot", "Under Construction", "Builder Floor"];
+      case "purpose":
+        return (
+          <div className="space-y-6">
+            <div>
+              <p className="text-xs text-gray-500 mb-2 font-medium">Type of Loan</p>
+              <div className="grid grid-cols-2 gap-2">
+                {loanTypes.map((t) => (
+                  <button key={t} onClick={() => { setLoanType(t); setErrors({}); }}
+                    className={`py-2.5 rounded-xl border-2 text-xs font-semibold transition ${loanType === t ? "border-blue-600 bg-blue-50 text-blue-700" : "border-gray-200 text-gray-600"
+                      }`}>
+                    {t}
+                  </button>
+                ))}
+              </div>
+            </div>
 
-function StepProperty({ data, patch, onNext, onBack }) {
-  const [err, setErr] = useState({});
-  const p = data.property || {};
-  const up = (k, v) => { patch({ property: { ...p, [k]: v } }); setErr((e) => ({ ...e, [k]: "" })); };
-
-  const proceed = () => {
-    const e = {};
-    if (p.finalised == null) e.finalised = "Please select an option";
-    if (!p.type) e.type = "Select property type";
-    if (!p.value || Number(p.value) <= 0) e.value = "Enter property value";
-    if (!p.address?.trim() || p.address.trim().length < 6) e.address = "Enter complete property address";
-    if (Object.keys(e).length) { setErr(e); return; }
-    onNext();
-  };
-
-  return (
-    <StepShell title="Property Details" subtitle="Tell us about the property you're buying" onBack={onBack}>
-      <div className="space-y-5">
-        <div>
-          <p className="text-sm font-medium text-gray-700 mb-2">Have you finalised a property?</p>
-          <div className="grid grid-cols-2 gap-3">
-            {[{ v: true, l: "Yes" }, { v: false, l: "No" }].map((o) => (
-              <button key={o.l} onClick={() => up("finalised", o.v)}
-                className={`py-3 rounded-xl border-2 text-sm font-semibold transition ${p.finalised === o.v ? "border-green-600 bg-green-50 text-green-700" : "border-gray-200 text-gray-600"}`}>
-                {o.l}
-              </button>
-            ))}
+            {(loanType === "New Purchase" || loanType === "Renovation") && (
+              <div>
+                <p className="text-xs text-gray-500 mb-2 font-medium">Property Type</p>
+                <div className="grid grid-cols-2 gap-2">
+                  {propertyTypesStep1.map((t) => (
+                    <button key={t} onClick={() => { setPropertyPurposeType(t); setErrors({}); }}
+                      className={`py-2.5 rounded-xl border-2 text-xs font-semibold transition ${propertyPurposeType === t ? "border-blue-600 bg-blue-50 text-blue-700" : "border-gray-200 text-gray-600"
+                        }`}>
+                      {t}
+                    </button>
+                  ))}
+                </div>
+                {errors.propertyPurposeType && <p className="text-red-500 text-xs mt-2">{errors.propertyPurposeType}</p>}
+              </div>
+            )}
           </div>
-          {err.finalised && <p className="text-red-500 text-xs mt-1">{err.finalised}</p>}
-        </div>
-        <Field label="Property Type" error={err.type}>
-          <select value={p.type || ""} onChange={(e) => up("type", e.target.value)} className={`${inputBase} appearance-none`}>
-            <option value="">Select property type</option>
-            {propertyTypes.map((t) => <option key={t} value={t}>{t}</option>)}
-          </select>
-          <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-        </Field>
-        <Field label="Estimated Property Value" error={err.value}>
-          <input inputMode="numeric" value={p.value ? Number(p.value).toLocaleString("en-IN") : ""} onChange={(e) => up("value", e.target.value.replace(/\D/g, ""))} placeholder="₹ Property value" className={inputBase} />
-        </Field>
-        <Field label="Property Address" error={err.address}>
-          <textarea rows={3} value={p.address || ""} onChange={(e) => up("address", e.target.value)} placeholder="Flat / House no, street, area, city" className={`${inputBase} resize-none`} />
-        </Field>
-      </div>
-      <PrimaryBtn onClick={proceed}>Submit Application</PrimaryBtn>
-    </StepShell>
-  );
-}
+        );
 
-/* ════════════════ STEP: Thank You (final confirmation) ════════════════ */
-function StepThankYou({ data, onClose }) {
-  // Generate a stable application ID once when this screen mounts.
-  const [appId] = useState(() => {
-    const d = new Date();
-    const ymd = `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, "0")}${String(d.getDate()).padStart(2, "0")}`;
-    const rand = Math.floor(100000 + Math.random() * 900000);
-    return `HL${ymd}${rand}`;
-  });
-  const [copied, setCopied] = useState(false);
-
-  const copyId = () => {
-    try {
-      navigator.clipboard?.writeText(appId);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
-    } catch (_) { /* ignore */ }
-  };
-
-  return (
-    <div className="max-w-lg mx-auto w-full text-center py-6">
-      {/* success tick */}
-      <div className="w-24 h-24 rounded-full bg-green-50 flex items-center justify-center mx-auto mb-6">
-        <CheckCircle2 size={52} className="text-green-600" />
-      </div>
-
-      <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Thank You!</h2>
-      <p className="text-gray-500 text-sm md:text-base max-w-md mx-auto mb-8">
-        Your home loan application has been submitted successfully.
-        Our team will review your details and contact you soon.
-      </p>
-
-      {/* application id card */}
-      <div className="bg-green-50 border border-green-100 rounded-2xl p-6 mb-8">
-        <p className="text-xs text-gray-500 mb-1">Your Application ID</p>
-        <div className="flex items-center justify-center gap-3">
-          <p className="text-2xl font-extrabold tracking-wide text-green-700">{appId}</p>
-          <button onClick={copyId} className="text-xs font-medium text-green-600 border border-green-300 rounded-md px-2.5 py-1 hover:bg-green-100 transition">
-            {copied ? "Copied ✓" : "Copy"}
-          </button>
-        </div>
-        <p className="text-[11px] text-gray-400 mt-3">Please save this ID for future reference.</p>
-      </div>
-
-      {/* what's next */}
-      <div className="text-left bg-white border border-gray-100 rounded-2xl p-5 mb-8">
-        <p className="font-semibold text-gray-800 text-sm mb-3">What happens next?</p>
-        <ul className="space-y-2.5 text-sm text-gray-600">
-          <li className="flex items-start gap-2"><CheckCircle2 size={16} className="text-green-500 mt-0.5 flex-shrink-0" /> Our loan expert will verify your submitted details.</li>
-          <li className="flex items-start gap-2"><CheckCircle2 size={16} className="text-green-500 mt-0.5 flex-shrink-0" /> You'll get a call on <span className="font-medium">+91 {data.phone || data.cibilMobile || "your number"}</span> within 24 hours.</li>
-          <li className="flex items-start gap-2"><CheckCircle2 size={16} className="text-green-500 mt-0.5 flex-shrink-0" /> Keep your documents handy for faster processing.</li>
-        </ul>
-      </div>
-
-      <button onClick={onClose} className="w-full bg-green-700 hover:bg-green-800 text-white font-semibold py-4 rounded-md transition">
-        Back to Home
-      </button>
-    </div>
-  );
-}
-
-
-/* ═══════════ JOURNEY (flow controller, filter, edit, offers) ═══════════ */
-
-/* ════════════════════════════════════════════════════════════════════
-   HOME LOAN JOURNEY — Paisabazaar-style full-page flow
-   Steps:  loanAmount(25%) → pincode(50%) → income(75%) → quotes(offers)
-   Built to match the uploaded reference screenshots.
-═══════════════════════════════════════════════════════════════════════ */
-
-/* ── tiny pincode → city map (demo). Extend or wire to an API later. ── */
-const PINCODE_CITY = {
-  "201304": "Noida, Delhi-NCR",
-  "201301": "Noida, Delhi-NCR",
-  "110001": "New Delhi",
-  "400001": "Mumbai, Maharashtra",
-  "560001": "Bengaluru, Karnataka",
-  "600001": "Chennai, Tamil Nadu",
-  "700001": "Kolkata, West Bengal",
-  "500001": "Hyderabad, Telangana",
-  "411001": "Pune, Maharashtra",
-  "302001": "Jaipur, Rajasthan",
-};
-
-const loanChips = [
-  { label: "Up to ₹20 Lacs", value: 2000000 },
-  { label: "₹20 – ₹50 Lacs", value: 5000000 },
-  { label: "₹50 – ₹75 Lacs", value: 7500000 },
-  { label: "Above ₹75 Lacs", value: 10000000 },
-];
-
-const incomeChips = [
-  { label: "Below ₹3 Lacs", value: 250000 },
-  { label: "₹3 – ₹6 Lacs", value: 500000 },
-  { label: "₹6 – ₹12 Lacs", value: 1000000 },
-  { label: "₹12 – ₹18 Lacs", value: 1600000 },
-  { label: "Over ₹18 Lacs", value: 2400000 },
-];
-
-/* ════════════════════ Progress bar (top of page) ════════════════════ */
-function TopProgress({ percent }) {
-  return (
-    <div className="w-full h-5 bg-green-100 relative">
-      <div
-        className="h-full bg-green-600 flex items-center justify-end pr-3 transition-all duration-500"
-        style={{ width: `${percent}%` }}
-      >
-        <span className="text-[11px] font-semibold text-white whitespace-nowrap">{percent}% Complete</span>
-      </div>
-    </div>
-  );
-}
-
-/* ════════════════════ Shared step heading ════════════════════ */
-function StepHeading({ title }) {
-  return (
-    <>
-      <p className="text-center text-2xl md:text-3xl font-bold text-gray-800">
-        Get Your <span className="text-green-600">Dream Home</span> at{" "}
-        <span className="text-green-600">Lowest</span> Interest Rates
-      </p>
-      <p className="text-center text-xl md:text-2xl text-gray-700 mt-1">
-        starting from <span className="font-bold">@7.1%</span> ✨
-      </p>
-      <h2 className="text-center text-2xl font-bold text-gray-900 mt-10 leading-snug whitespace-pre-line">
-        {title}
-      </h2>
-    </>
-  );
-}
-
-/* helper bubble shown to the right of the input on desktop */
-function HintBubble({ children }) {
-  return (
-    <div className="hidden lg:flex absolute left-full ml-6 top-0 w-64 items-start gap-3 bg-white border border-gray-100 shadow-md rounded-xl p-3.5">
-      <div className="w-9 h-9 rounded-lg bg-green-50 flex items-center justify-center flex-shrink-0">
-        <IndianRupee size={16} className="text-green-600" />
-      </div>
-      <p className="text-xs text-gray-500 leading-relaxed">{children}</p>
-    </div>
-  );
-}
-
-/* ════════════════════ STEP: Loan Amount (25%) ════════════════════ */
-function StepLoanAmount({ value, setValue, onNext, onBack }) {
-  const [err, setErr] = useState("");
-  const display = value ? Number(value).toLocaleString("en-IN") : "";
-
-  const proceed = () => {
-    if (!value || Number(value) < 100000) { setErr("Enter a valid loan amount (min ₹1,00,000)"); return; }
-    onNext();
-  };
-
-  return (
-    <div className="max-w-xl mx-auto w-full">
-      <StepHeading title={"How much Loan Amount\nDo you Require?"} />
-      <div className="mt-10 relative flex justify-center">
-        <button onClick={onBack} className="hidden lg:flex absolute right-full mr-4 top-4 w-9 h-9 rounded-full border border-gray-300 items-center justify-center text-gray-500 hover:bg-gray-50">
-          <ChevronLeft size={18} />
-        </button>
-        <div className="w-full">
-          <div className={`relative border rounded-md ${err ? "border-red-400" : "border-green-500"} focus-within:border-green-600`}>
-            <label className="absolute -top-2 left-3 bg-white px-1 text-[11px] text-green-600 font-medium">Loan Amount{value ? " *" : ""}</label>
-            <input
-              inputMode="numeric"
-              value={display}
-              onChange={(e) => { setValue(e.target.value.replace(/\D/g, "")); setErr(""); }}
-              placeholder="Loan Amount"
-              className="w-full px-4 py-4 text-base outline-none rounded-md bg-transparent"
-            />
+      case "loanDetails":
+        if (loanType === "New Purchase" || loanType === "Renovation") {
+          return (
+            <div>
+              <div className="space-y-2.5">
+                {loanAmountRanges.map((o) => (
+                  <label key={o.id} className={`flex items-center gap-3 border-2 rounded-xl px-4 py-3 cursor-pointer transition ${loanAmountRange === o.id ? "border-blue-600 bg-blue-50" : "border-gray-200"
+                    }`}>
+                    <input type="radio" name="loanAmountRange" className="accent-blue-600 w-4 h-4"
+                      checked={loanAmountRange === o.id} onChange={() => { setLoanAmountRange(o.id); setErrors({}); }} />
+                    <span className="text-sm font-medium text-gray-700">{o.label}</span>
+                  </label>
+                ))}
+              </div>
+              {errors.loanAmountRange && <p className="text-red-500 text-xs mt-2">{errors.loanAmountRange}</p>}
+            </div>
+          );
+        }
+        if (loanType === "Balance Transfer") {
+          return (
+            <div className="space-y-4">
+              <div>
+                <div className={`flex items-center border-2 rounded-xl overflow-hidden ${errors.outstanding ? "border-red-400" : "border-gray-200"}`}>
+                  <span className="px-3 text-gray-500 text-sm bg-gray-50 border-r border-gray-200 py-3.5">₹</span>
+                  <input type="number" placeholder="Current outstanding loan amount" value={btExisting.outstanding}
+                    onChange={(e) => { setBtExisting({ ...btExisting, outstanding: e.target.value }); setErrors({ ...errors, outstanding: "" }); }}
+                    className="flex-1 px-3 py-3 text-sm focus:outline-none" />
+                </div>
+                {errors.outstanding && <p className="text-red-500 text-xs mt-1">{errors.outstanding}</p>}
+              </div>
+              <div>
+                <div className={`flex items-center border-2 rounded-xl overflow-hidden ${errors.emi ? "border-red-400" : "border-gray-200"}`}>
+                  <span className="px-3 text-gray-500 text-sm bg-gray-50 border-r border-gray-200 py-3.5">₹</span>
+                  <input type="number" placeholder="Current EMI amount" value={btExisting.emi}
+                    onChange={(e) => { setBtExisting({ ...btExisting, emi: e.target.value }); setErrors({ ...errors, emi: "" }); }}
+                    className="flex-1 px-3 py-3 text-sm focus:outline-none" />
+                </div>
+                {errors.emi && <p className="text-red-500 text-xs mt-1">{errors.emi}</p>}
+              </div>
+              <div>
+                <input type="text" placeholder="Remaining tenure (e.g. 12 years)" value={btExisting.tenure}
+                  onChange={(e) => { setBtExisting({ ...btExisting, tenure: e.target.value }); setErrors({ ...errors, tenure: "" }); }}
+                  className={inputCls(errors.tenure)} />
+                {errors.tenure && <p className="text-red-500 text-xs mt-1">{errors.tenure}</p>}
+              </div>
+              <div>
+                <select value={btExisting.lender}
+                  onChange={(e) => { setBtExisting({ ...btExisting, lender: e.target.value }); setErrors({ ...errors, lender: "" }); }}
+                  className={inputCls(errors.lender)}>
+                  <option value="">Current Lender</option>
+                  {popularBanks.map((b) => <option key={b}>{b}</option>)}
+                </select>
+                {errors.lender && <p className="text-red-500 text-xs mt-1">{errors.lender}</p>}
+              </div>
+            </div>
+          );
+        }
+        // Top-up
+        return (
+          <div className="space-y-4">
+            <div>
+              <input type="text" placeholder="Current loan account number" value={topupExisting.accountNo}
+                onChange={(e) => { setTopupExisting({ ...topupExisting, accountNo: e.target.value }); setErrors({ ...errors, accountNo: "" }); }}
+                className={inputCls(errors.accountNo)} />
+              {errors.accountNo && <p className="text-red-500 text-xs mt-1">{errors.accountNo}</p>}
+            </div>
+            <div>
+              <div className={`flex items-center border-2 rounded-xl overflow-hidden ${errors.outstanding ? "border-red-400" : "border-gray-200"}`}>
+                <span className="px-3 text-gray-500 text-sm bg-gray-50 border-r border-gray-200 py-3.5">₹</span>
+                <input type="number" placeholder="Current outstanding loan amount" value={topupExisting.outstanding}
+                  onChange={(e) => { setTopupExisting({ ...topupExisting, outstanding: e.target.value }); setErrors({ ...errors, outstanding: "" }); }}
+                  className="flex-1 px-3 py-3 text-sm focus:outline-none" />
+              </div>
+              {errors.outstanding && <p className="text-red-500 text-xs mt-1">{errors.outstanding}</p>}
+            </div>
+            <div>
+              <input type="text" placeholder="Current EMI & tenure" value={topupExisting.emi}
+                onChange={(e) => setTopupExisting({ ...topupExisting, emi: e.target.value })}
+                className={inputCls()} />
+            </div>
+            <div>
+              <select value={topupExisting.lender}
+                onChange={(e) => { setTopupExisting({ ...topupExisting, lender: e.target.value }); setErrors({ ...errors, lender: "" }); }}
+                className={inputCls(errors.lender)}>
+                <option value="">Current Lender</option>
+                {popularBanks.map((b) => <option key={b}>{b}</option>)}
+              </select>
+              {errors.lender && <p className="text-red-500 text-xs mt-1">{errors.lender}</p>}
+            </div>
           </div>
-          {err && <p className="text-red-500 text-xs mt-1">{err}</p>}
-          <div className="flex flex-wrap gap-3 mt-4">
-            {loanChips.map((c) => (
-              <button key={c.label} onClick={() => { setValue(String(c.value)); setErr(""); }}
-                className={`px-4 py-2 rounded-full border text-sm transition ${
-                  String(c.value) === value ? "border-green-500 text-green-600" : "border-gray-300 text-gray-500 hover:border-gray-400"
-                }`}>
-                {c.label}
-              </button>
-            ))}
+        );
+
+      case "transferOrTopup":
+        if (loanType === "Balance Transfer") {
+          return (
+            <div className="space-y-4">
+              <div>
+                <p className="text-xs text-gray-500 mb-2 font-medium">Desired Loan Amount Range</p>
+                <div className="space-y-2.5">
+                  {btAmountRanges.map((o) => (
+                    <label key={o.id} className={`flex items-center gap-3 border-2 rounded-xl px-4 py-3 cursor-pointer transition ${btTransfer.amountRange === o.id ? "border-blue-600 bg-blue-50" : "border-gray-200"
+                      }`}>
+                      <input type="radio" name="btAmountRange" className="accent-blue-600 w-4 h-4"
+                        checked={btTransfer.amountRange === o.id}
+                        onChange={() => { setBtTransfer({ ...btTransfer, amountRange: o.id }); setErrors({ ...errors, amountRange: "" }); }} />
+                      <span className="text-sm font-medium text-gray-700">{o.label}</span>
+                    </label>
+                  ))}
+                </div>
+                {errors.amountRange && <p className="text-red-500 text-xs mt-2">{errors.amountRange}</p>}
+              </div>
+
+              <div>
+                <input type="number" placeholder="Desired tenure (in years)" value={btTransfer.tenureYears}
+                  onChange={(e) => { setBtTransfer({ ...btTransfer, tenureYears: e.target.value }); setErrors({ ...errors, tenureYears: "" }); }}
+                  className={inputCls(errors.tenureYears)} />
+                {errors.tenureYears && <p className="text-red-500 text-xs mt-1">{errors.tenureYears}</p>}
+              </div>
+
+              <div>
+                <p className="text-xs text-gray-500 mb-2 font-medium">Want a Top-up along with BT?</p>
+                <div className="grid grid-cols-2 gap-3">
+                  {["yes", "no"].map((opt) => (
+                    <button key={opt} onClick={() => setBtTransfer({ ...btTransfer, wantTopup: opt })}
+                      className={`py-2.5 rounded-xl border-2 text-sm font-semibold capitalize transition ${btTransfer.wantTopup === opt ? "border-blue-600 bg-blue-50 text-blue-700" : "border-gray-200 text-gray-600"
+                        }`}>
+                      {opt}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {btTransfer.wantTopup === "yes" && (
+                <div className={`flex items-center border-2 rounded-xl overflow-hidden border-gray-200`}>
+                  <span className="px-3 text-gray-500 text-sm bg-gray-50 border-r border-gray-200 py-3.5">₹</span>
+                  <input type="number" placeholder="Required top-up amount" value={btTransfer.topupAmount}
+                    onChange={(e) => setBtTransfer({ ...btTransfer, topupAmount: e.target.value })}
+                    className="flex-1 px-3 py-3 text-sm focus:outline-none" />
+                </div>
+              )}
+            </div>
+          );
+        }
+        // Top-up requirement
+        return (
+          <div className="space-y-4">
+            <div>
+              <div className={`flex items-center border-2 rounded-xl overflow-hidden ${errors.amount ? "border-red-400" : "border-gray-200"}`}>
+                <span className="px-3 text-gray-500 text-sm bg-gray-50 border-r border-gray-200 py-3.5">₹</span>
+                <input type="number" placeholder="Desired top-up amount" value={topupReq.amount}
+                  onChange={(e) => { setTopupReq({ ...topupReq, amount: e.target.value }); setErrors({ ...errors, amount: "" }); }}
+                  className="flex-1 px-3 py-3 text-sm focus:outline-none" />
+              </div>
+              {errors.amount && <p className="text-red-500 text-xs mt-1">{errors.amount}</p>}
+            </div>
+            <div>
+              <select value={topupReq.purpose}
+                onChange={(e) => { setTopupReq({ ...topupReq, purpose: e.target.value }); setErrors({ ...errors, purpose: "" }); }}
+                className={inputCls(errors.purpose)}>
+                <option value="">Purpose of Top-up</option>
+                {topupPurposes.map((t) => <option key={t}>{t}</option>)}
+              </select>
+              {errors.purpose && <p className="text-red-500 text-xs mt-1">{errors.purpose}</p>}
+            </div>
           </div>
-          <button
-            onClick={proceed}
-            disabled={!value}
-            className={`w-full mt-8 py-4 rounded-md font-semibold text-white transition ${
-              value ? "bg-green-700 hover:bg-green-800" : "bg-gray-200 text-gray-400 cursor-not-allowed"
-            }`}>
-            Proceed
-          </button>
-        </div>
-        <HintBubble>Choose the desired loan amount &amp; we will find the best suitable offers for you</HintBubble>
-      </div>
-    </div>
-  );
-}
+        );
 
-/* ════════════════════ STEP: Pincode (50%) ════════════════════ */
-function StepPincode({ value, setValue, city, setCity, onNext, onBack }) {
-  const [err, setErr] = useState("");
-  const [showSug, setShowSug] = useState(false);
+      case "propertyDetails":
+        return (
+          <div className="space-y-4">
+            <div>
+              <input type="text" maxLength={6} placeholder="Property Pincode" value={property.pincode}
+                onChange={(e) => { const v = e.target.value.replace(/\D/g, ""); setProperty({ ...property, pincode: v }); setErrors({ ...errors, pincode: "" }); }}
+                className={inputCls(errors.pincode)} />
+              {errors.pincode && <p className="text-red-500 text-xs mt-1">{errors.pincode}</p>}
+            </div>
 
-  const handleChange = (raw) => {
-    const v = raw.replace(/\D/g, "").slice(0, 6);
-    setValue(v);
-    setErr("");
-    const c = PINCODE_CITY[v] || (v.length === 6 ? "India" : "");
-    setCity(c);
-    setShowSug(v.length === 6);
-  };
+            <div>
+              <select value={property.category}
+                onChange={(e) => { setProperty({ ...property, category: e.target.value }); setErrors({ ...errors, category: "" }); }}
+                className={inputCls(errors.category)}>
+                <option value="">Property Type</option>
+                {propertyCategoryOptions.map((t) => <option key={t}>{t}</option>)}
+              </select>
+              {errors.category && <p className="text-red-500 text-xs mt-1">{errors.category}</p>}
+            </div>
 
-  const proceed = () => {
-    if (value.length !== 6) { setErr("Enter a valid 6-digit pincode"); return; }
-    onNext();
-  };
+            {(loanType === "New Purchase" || loanType === "Renovation") && (
+              <>
+                <div>
+                  <p className="text-xs text-gray-500 mb-2 font-medium">Down Payment Status</p>
+                  <div className="grid grid-cols-2 gap-3">
+                    {["Yes (completed)", "No (pending)"].map((opt) => (
+                      <button key={opt} onClick={() => { setProperty({ ...property, downPayment: opt }); setErrors({ ...errors, downPayment: "" }); }}
+                        className={`py-2.5 rounded-xl border-2 text-xs font-semibold transition ${property.downPayment === opt ? "border-blue-600 bg-blue-50 text-blue-700" : "border-gray-200 text-gray-600"
+                          }`}>
+                        {opt}
+                      </button>
+                    ))}
+                  </div>
+                  {errors.downPayment && <p className="text-red-500 text-xs mt-1">{errors.downPayment}</p>}
+                </div>
 
-  return (
-    <div className="max-w-xl mx-auto w-full">
-      <StepHeading title={"Where is Your\nProperty Located?"} />
-      <div className="mt-10 relative flex justify-center">
-        <button onClick={onBack} className="hidden lg:flex absolute right-full mr-4 top-4 w-9 h-9 rounded-full border border-gray-300 items-center justify-center text-gray-500 hover:bg-gray-50">
-          <ChevronLeft size={18} />
-        </button>
-        <div className="w-full">
-          <div className={`relative border rounded-md ${err ? "border-red-400" : value ? "border-green-500" : "border-gray-300"}`}>
-            <label className="absolute -top-2 left-3 bg-white px-1 text-[11px] text-green-600 font-medium">Property Pincode *</label>
-            <input
-              inputMode="numeric"
-              value={value}
-              onChange={(e) => handleChange(e.target.value)}
-              placeholder="Property Pincode"
-              className="w-full px-4 py-4 text-base outline-none rounded-md bg-transparent"
-            />
-            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-gray-400">{value.length}/6</span>
+                <div>
+                  <select value={property.constructionStatus}
+                    onChange={(e) => { setProperty({ ...property, constructionStatus: e.target.value }); setErrors({ ...errors, constructionStatus: "" }); }}
+                    className={inputCls(errors.constructionStatus)}>
+                    <option value="">Construction Status</option>
+                    {constructionStatusOptions.map((t) => <option key={t}>{t}</option>)}
+                  </select>
+                  {errors.constructionStatus && <p className="text-red-500 text-xs mt-1">{errors.constructionStatus}</p>}
+                </div>
+              </>
+            )}
           </div>
-          {!err && city && <p className="text-xs text-gray-500 mt-1.5">{city}</p>}
-          {!err && !city && <p className="text-xs text-gray-400 mt-1.5">Try to be accurate for right offers</p>}
-          {err && <p className="text-red-500 text-xs mt-1">{err}</p>}
+        );
 
-          {showSug && city && (
-            <button onClick={proceed} className="w-full mt-1 bg-green-600 text-white text-sm text-left px-4 py-3 rounded-md">
-              {value}
+      case "applicantProfile":
+        return (
+          <div className="space-y-4">
+            <div>
+              <p className="text-xs text-gray-500 mb-2 font-medium">Employment Type</p>
+              <div className="grid grid-cols-1 gap-2">
+                {employmentTypes.map((t) => (
+                  <button key={t} onClick={() => { setApplicant({ ...applicant, employmentType: t }); setErrors({}); }}
+                    className={`py-2.5 rounded-xl border-2 text-xs font-semibold transition ${applicant.employmentType === t ? "border-blue-600 bg-blue-50 text-blue-700" : "border-gray-200 text-gray-600"
+                      }`}>
+                    {t}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {applicant.employmentType === "Salaried" ? (
+              <>
+                <div>
+                  <select value={applicant.incomeRange}
+                    onChange={(e) => { setApplicant({ ...applicant, incomeRange: e.target.value }); setErrors({ ...errors, incomeRange: "" }); }}
+                    className={inputCls(errors.incomeRange)}>
+                    <option value="">Annual Income</option>
+                    {salariedIncomeRanges.map((t) => <option key={t}>{t}</option>)}
+                  </select>
+                  {errors.incomeRange && <p className="text-red-500 text-xs mt-1">{errors.incomeRange}</p>}
+                </div>
+                <div>
+                  <input type="text" placeholder="Company Name" value={applicant.companyName}
+                    onChange={(e) => { setApplicant({ ...applicant, companyName: e.target.value }); setErrors({ ...errors, companyName: "" }); }}
+                    className={inputCls(errors.companyName)} />
+                  {errors.companyName && <p className="text-red-500 text-xs mt-1">{errors.companyName}</p>}
+                </div>
+                <div>
+                  <input type="text" placeholder="Total Work Experience (e.g. 5 years)" value={applicant.workExp}
+                    onChange={(e) => { setApplicant({ ...applicant, workExp: e.target.value }); setErrors({ ...errors, workExp: "" }); }}
+                    className={inputCls(errors.workExp)} />
+                  {errors.workExp && <p className="text-red-500 text-xs mt-1">{errors.workExp}</p>}
+                </div>
+                <div>
+                  <input type="text" maxLength={6} placeholder="Office Pincode" value={applicant.officePincode}
+                    onChange={(e) => { const v = e.target.value.replace(/\D/g, ""); setApplicant({ ...applicant, officePincode: v }); setErrors({ ...errors, officePincode: "" }); }}
+                    className={inputCls(errors.officePincode)} />
+                  {errors.officePincode && <p className="text-red-500 text-xs mt-1">{errors.officePincode}</p>}
+                </div>
+              </>
+            ) : (
+              <div>
+                <select value={applicant.turnoverRange}
+                  onChange={(e) => { setApplicant({ ...applicant, turnoverRange: e.target.value }); setErrors({ ...errors, turnoverRange: "" }); }}
+                  className={inputCls(errors.turnoverRange)}>
+                  <option value="">Annual / Net Turnover</option>
+                  {turnoverRanges.map((t) => <option key={t}>{t}</option>)}
+                </select>
+                {errors.turnoverRange && <p className="text-red-500 text-xs mt-1">{errors.turnoverRange}</p>}
+              </div>
+            )}
+
+            <div>
+              <div className={`flex items-center border-2 rounded-xl overflow-hidden ${errors.activeEmi ? "border-red-400" : "border-gray-200"}`}>
+                <span className="px-3 text-gray-500 text-sm bg-gray-50 border-r border-gray-200 py-3.5">₹</span>
+                <input type="number" placeholder="Total active EMIs currently paid (0 if none)" value={applicant.activeEmi}
+                  onChange={(e) => { setApplicant({ ...applicant, activeEmi: e.target.value }); setErrors({ ...errors, activeEmi: "" }); }}
+                  className="flex-1 px-3 py-3 text-sm focus:outline-none" />
+              </div>
+              {errors.activeEmi && <p className="text-red-500 text-xs mt-1">{errors.activeEmi}</p>}
+            </div>
+          </div>
+        );
+
+      case "banking":
+        return (
+          <div className="space-y-4">
+            <div>
+              <select value={banking.primaryBank}
+                onChange={(e) => { setBanking({ ...banking, primaryBank: e.target.value }); setErrors({ ...errors, primaryBank: "" }); }}
+                className={inputCls(errors.primaryBank)}>
+                <option value="">Select Primary Bank Account</option>
+                {popularBanks.map((b) => <option key={b}>{b}</option>)}
+              </select>
+              {errors.primaryBank && <p className="text-red-500 text-xs mt-1">{errors.primaryBank}</p>}
+            </div>
+
+            {loanType === "Balance Transfer" && (
+              <div>
+                <input type="text" placeholder="Current lender's loan account number" value={banking.currentLenderAccountNo}
+                  onChange={(e) => { setBanking({ ...banking, currentLenderAccountNo: e.target.value }); setErrors({ ...errors, currentLenderAccountNo: "" }); }}
+                  className={inputCls(errors.currentLenderAccountNo)} />
+                {errors.currentLenderAccountNo && <p className="text-red-500 text-xs mt-1">{errors.currentLenderAccountNo}</p>}
+              </div>
+            )}
+          </div>
+        );
+
+      case "offers":
+        return (
+          <div>
+            <div className="text-center mb-5">
+              <h3 className="text-lg font-bold text-gray-900">Your Eligible Offers</h3>
+              <p className="text-xs text-gray-400 mt-0.5">Pick a lender to apply</p>
+            </div>
+            <div className="space-y-3 max-h-96 overflow-y-auto pr-1">
+              {offersForMode.map((l) => (
+                <div key={l.name} className="border border-gray-200 rounded-xl p-3.5 flex items-center gap-3">
+                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 text-lg ${l.color}`}>{l.emoji}</div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-bold text-gray-800">{l.name}</p>
+                    <p className="text-xs text-gray-400">{l.rate} &middot; {l.amount}</p>
+                  </div>
+                  <button onClick={() => handleApplyOffer(l)}
+                    className="text-xs font-semibold px-3.5 py-2 rounded-lg flex-shrink-0 transition bg-blue-600 text-white hover:bg-blue-700">
+                    Apply
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+
+      case "confirmation": {
+        const copy = confirmationCopy();
+        return (
+          <div className="text-center py-1">
+            <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4">
+              <CheckCircle2 size={32} className="text-green-600" />
+            </div>
+            <h3 className="text-lg font-bold text-gray-900 mb-2">{copy.heading}</h3>
+            <p className="text-sm text-gray-500 leading-relaxed mb-1">
+              Thank you — we've received your application with partner bank{appliedOffer ? ` ${appliedOffer.name}` : ""}.
+            </p>
+            <p className="text-sm font-semibold text-gray-800 mb-4">Reference No: {referenceNo}</p>
+            <p className="text-xs text-gray-400 mb-6">
+              Our loan expert will get in touch within 24 hours. For queries call 90 1003 1003 or write to support@directcredit.in
+            </p>
+
+            <div className="text-left bg-gray-50 rounded-xl p-4 space-y-3">
+              <p className="text-xs font-bold text-gray-600 uppercase tracking-wide mb-1">Next Steps</p>
+              {copy.steps.map((s, i) => (
+                <div key={i} className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
+                    <s.icon size={15} className="text-blue-600" />
+                  </div>
+                  <p className="text-xs text-gray-600 pt-1.5">{s.text}</p>
+                </div>
+              ))}
+            </div>
+
+            <button onClick={resetAll} className="w-full text-center text-xs text-gray-400 mt-5 hover:underline">
+              Start a New Application
             </button>
-          )}
-
-          {!city && <p className="text-center text-green-500 text-sm mt-4 cursor-pointer hover:underline">Don't know the pincode?</p>}
-
-          <button
-            onClick={proceed}
-            disabled={value.length !== 6}
-            className={`w-full mt-8 py-4 rounded-md font-semibold text-white transition ${
-              value.length === 6 ? "bg-green-600 hover:bg-green-700" : "bg-gray-200 text-gray-400 cursor-not-allowed"
-            }`}>
-            Proceed
-          </button>
-        </div>
-        <div className="hidden lg:flex absolute left-full ml-6 top-0 w-64 items-start gap-3 bg-white border border-gray-100 shadow-md rounded-xl p-3.5">
-          <div className="w-9 h-9 rounded-lg bg-green-50 flex items-center justify-center flex-shrink-0">
-            <Building2 size={16} className="text-green-600" />
           </div>
-          <p className="text-xs text-gray-500 leading-relaxed">This information helps unlock best offers from loan providers for your property</p>
-        </div>
-      </div>
-    </div>
-  );
-}
+        );
+      }
 
-/* ════════════════════ STEP: Annual Income (75%) ════════════════════ */
-function StepIncome({ value, setValue, onNext, onBack }) {
-  const [err, setErr] = useState("");
-  const display = value ? Number(value).toLocaleString("en-IN") : "";
-
-  const proceed = () => {
-    if (!value || Number(value) < 100000) { setErr("Enter a valid annual income"); return; }
-    onNext();
+      default:
+        return null;
+    }
   };
 
   return (
-    <div className="max-w-xl mx-auto w-full">
-      <StepHeading title={"What is your\nAnnual Income?"} />
-      <div className="mt-10 relative flex justify-center">
-        <button onClick={onBack} className="hidden lg:flex absolute right-full mr-4 top-4 w-9 h-9 rounded-full border border-gray-300 items-center justify-center text-gray-500 hover:bg-gray-50">
-          <ChevronLeft size={18} />
-        </button>
-        <div className="w-full">
-          <div className={`relative border rounded-md ${err ? "border-red-400" : value ? "border-green-500" : "border-gray-300"}`}>
-            <label className="absolute -top-2 left-3 bg-white px-1 text-[11px] text-green-600 font-medium">Annual Income{value ? " *" : ""}</label>
-            <input
-              inputMode="numeric"
-              value={display}
-              onChange={(e) => { setValue(e.target.value.replace(/\D/g, "")); setErr(""); }}
-              placeholder="Annual Income"
-              className="w-full px-4 py-4 text-base outline-none rounded-md bg-transparent"
-            />
-          </div>
-          {err && <p className="text-red-500 text-xs mt-1">{err}</p>}
-          <div className="flex flex-wrap gap-3 mt-4">
-            {incomeChips.map((c) => (
-              <button key={c.label} onClick={() => { setValue(String(c.value)); setErr(""); }}
-                className={`px-4 py-2 rounded-full border text-sm transition ${
-                  String(c.value) === value ? "border-green-500 text-green-600" : "border-gray-300 text-gray-500 hover:border-gray-400"
-                }`}>
-                {c.label}
-              </button>
-            ))}
-          </div>
-          <button
-            onClick={proceed}
-            disabled={!value}
-            className={`w-full mt-8 py-4 rounded-md font-semibold text-white transition ${
-              value ? "bg-green-700 hover:bg-green-800" : "bg-gray-200 text-gray-400 cursor-not-allowed"
-            }`}>
-            Get Offers
-          </button>
-          <p className="text-center text-green-600 text-sm mt-4">Yay! You are eligible for loan offers from top banks 🎉</p>
-        </div>
-        <HintBubble>This information is crucial to calculate the maximum loan you might get</HintBubble>
-      </div>
-    </div>
-  );
-}
-
-/* ════════════════════ MAIN CONTROLLER ════════════════════ */
-
-/* Ordered journey. "quotes" is the terminal offers page (no progress bar). */
-const SEQUENCE = [
-  { id: "amount",      nextUp: "Property Pincode" },
-  { id: "pincode",     nextUp: "Income Details" },
-  { id: "income",      nextUp: "Verify Mobile" },
-  { id: "mobileOtp",   nextUp: "Verify Email" },
-  { id: "emailOtp",    nextUp: "Basic Details" },
-  { id: "basic",       nextUp: "KYC Verification" },
-  { id: "kyc",         nextUp: "Aadhaar Upload" },
-  { id: "aadhaar",     nextUp: "PAN Upload" },
-  { id: "pan",         nextUp: "Co-Applicant" },
-  { id: "coApplicant", nextUp: "Property Details" },
-  { id: "property",    nextUp: "Submit" },
-  { id: "thankyou",    nextUp: "" },
-];
-
-function HomeLoanFlow({ onClose, initialMobile = "" }) {
-  const [idx, setIdx] = useState(0);
-  const [flowState, setFlowState] = useState({
-    loanAmount: "", pincode: "", city: "", income: "", tenure: "20 yrs",
-    phone: initialMobile, cibilMobile: initialMobile,
-    fullName: "", pan: "", email: "", dob: "", gender: "", maritalStatus: "", motherName: "",
-    aadhaarNo: "", aadhaarFront: null, aadhaarBack: null, panCard: null,
-    hasCoApplicant: null, coApplicant: {}, property: {},
-  });
-
-  const set = (key) => (val) => setFlowState((s) => ({ ...s, [key]: val }));
-  const patch = (obj) => setFlowState((s) => ({ ...s, ...obj }));
-
-  const current = SEQUENCE[idx];
-  const next = () => setIdx((i) => Math.min(SEQUENCE.length - 1, i + 1));
-  const back = () => { if (idx === 0) { onClose(); return; } setIdx((i) => i - 1); };
-
-  const isThankyou = current.id === "thankyou";
-  // progress %: spread across the steps before the final screen
-  const stepCount = SEQUENCE.length - 1; // exclude thankyou
-  const percent = Math.round(((idx + 1) / stepCount) * 100);
-
-  return (
-    <div className="min-h-screen bg-white flex flex-col">
-      {/* top bar */}
-      <div className="flex items-center justify-between px-4 md:px-8 py-3 border-b">
-        {/* left: back */}
-        <div className="flex-1">
-          {!isThankyou && (
-            <button onClick={back} className="flex items-center gap-2 text-gray-500 hover:text-gray-800 text-sm">
-              <ArrowLeft size={18} /> {idx === 0 ? "Back" : "Back"}
-            </button>
-          )}
-          {isThankyou && (
-            <button onClick={onClose} className="flex items-center gap-2 text-gray-500 hover:text-gray-800 text-sm">
-              <ArrowLeft size={18} /> Back to Home Loan
-            </button>
-          )}
-        </div>
-
-        {/* center: company logo + name */}
-        <div className="flex items-center gap-2 flex-shrink-0">
-          <img src="/logo.png" alt="Direct Credit" className="h-9 md:h-11 object-contain" />
-          <span className="text-lg md:text-xl font-extrabold text-green-700 tracking-tight hidden sm:inline">
-            Direct Credit
-          </span>
-        </div>
-
-        {/* right: next up */}
-        <div className="flex-1 flex justify-end">
-          {!isThankyou && current.nextUp && (
-            <span className="text-sm text-gray-400">Next up: <span className="text-gray-600 font-medium">{current.nextUp}</span></span>
-          )}
-        </div>
-      </div>
-
-      {!isThankyou && <TopProgress percent={percent} />}
-
-      <div className="flex-1 px-4 md:px-8 py-12">
-        {current.id === "amount" && (
-          <StepLoanAmount value={flowState.loanAmount} setValue={set("loanAmount")} onNext={next} onBack={back} />
-        )}
-        {current.id === "pincode" && (
-          <StepPincode value={flowState.pincode} setValue={set("pincode")} city={flowState.city} setCity={set("city")}
-            onNext={next} onBack={back} />
-        )}
-        {current.id === "income" && (
-          <StepIncome value={flowState.income} setValue={set("income")} onNext={next} onBack={back} />
-        )}
-        {current.id === "basic" && (
-          <StepBasicDetails data={flowState} patch={patch} onNext={next} onBack={back} />
-        )}
-        {current.id === "mobileOtp" && (
-          <StepMobileOtp data={flowState} onNext={next} onBack={back} />
-        )}
-        {current.id === "emailOtp" && (
-          <StepEmailOtp data={flowState} onNext={next} onBack={back} />
-        )}
-        {current.id === "kyc" && (
-          <StepKycIntro onNext={next} onBack={back} />
-        )}
-        {current.id === "aadhaar" && (
-          <StepAadhaar data={flowState} patch={patch} onNext={next} onBack={back} />
-        )}
-        {current.id === "pan" && (
-          <StepPanUpload data={flowState} patch={patch} onNext={next} onBack={back} />
-        )}
-        {current.id === "coApplicant" && (
-          <StepCoApplicant data={flowState} patch={patch} onNext={next} onBack={back} />
-        )}
-        {current.id === "property" && (
-          <StepProperty data={flowState} patch={patch} onNext={next} onBack={back} />
-        )}
-        {current.id === "thankyou" && (
-          <StepThankYou data={flowState} onClose={onClose} />
-        )}
-      </div>
-    </div>
-  );
-}
-
-
-/* ═══════════ LANDING PAGE (default export) — green theme + number entry ═══════════ */
-
-const features = ["Loan amount: ₹10 Lakh – ₹5 Crore", "Interest rate from 8.50% p.a.", "Tenure upto 30 years", "Balance transfer facility", "Top-up loan available", "Tax benefit under 80C & 24B"];
-const eligibility = ["Age: 21 – 65 years", "Salaried or self-employed", "Stable income proof", "CIBIL score 700+", "Property should be legally clear"];
-const documentsList = ["PAN & Aadhaar Card", "Income proof / ITR 3 years", "Bank statement 12 months", "Property documents", "Sale agreement"];
-
-export default function HomeLoan() {
-  const [mobile, setMobile] = useState("");
-  const [agreed, setAgreed] = useState(true);
-  const [err, setErr] = useState("");
-  const [showFlow, setShowFlow] = useState(false);
-  const formRef = useRef(null);
-
-  const proceed = () => {
-    if (!/^[6-9]\d{9}$/.test(mobile)) { setErr("Enter a valid 10-digit mobile number"); return; }
-    if (!agreed) { setErr("Please accept the terms to continue"); return; }
-    setErr("");
-    setShowFlow(true);
-  };
-
-  const scrollToForm = () => {
-    formRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
-    formRef.current?.querySelector("input")?.focus();
-  };
-
-  if (showFlow) return <HomeLoanFlow onClose={() => setShowFlow(false)} initialMobile={mobile} />;
-
-  return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       <Navbar />
 
-      {/* ── HERO ── */}
-      <section className="bg-gradient-to-br from-green-700 to-green-500 text-white py-16 px-4">
-        <div className="max-w-5xl mx-auto grid lg:grid-cols-2 gap-10 items-center">
-          {/* left copy */}
-          <div>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center"><Home size={24} /></div>
-              <span className="text-green-200 font-medium">Loans → Home Loan</span>
-            </div>
-            <h1 className="text-3xl md:text-5xl font-bold mb-4">Home Loan</h1>
-            <p className="text-green-100 text-lg max-w-xl mb-8">
-              Buy your dream home with best interest rates from top banks and NBFCs. Tenure upto 30 years.
-            </p>
-            <div className="flex flex-wrap gap-4">
-              <button onClick={scrollToForm} className="bg-white text-green-700 font-semibold px-6 py-3 rounded-xl hover:bg-green-50 transition-colors flex items-center gap-2">
-                Apply Now <ArrowRight size={18} />
-              </button>
-              <button className="border border-white/40 text-white font-medium px-6 py-3 rounded-xl hover:bg-white/10 transition-colors flex items-center gap-2">
-                <Phone size={16} /> Talk to Expert
-              </button>
-            </div>
-          </div>
+      {/* ══════════════════════════════════════
+          HERO — left: content  |  right: form
+      ══════════════════════════════════════ */}
+      <section className="max-w-7xl mx-auto px-4 md:px-8 pt-10 pb-6">
+        <div className="flex flex-col lg:flex-row gap-10 items-start">
 
-          {/* right number-entry card */}
-          <div ref={formRef} className="bg-white rounded-2xl shadow-2xl p-7 text-gray-800">
-            <h2 className="text-xl font-extrabold text-green-700 leading-snug">Unlock Best Home Loan Offers</h2>
-            <div className="w-28 h-0.5 bg-green-500 mt-1 mb-5" />
-            <ul className="space-y-3 mb-6">
-              {["Compare Offers from 30+ Lenders", "Best Interest Rate from 7.1%", "Loan Tenure up to 30 Years"].map((t) => (
-                <li key={t} className="flex items-center gap-2 text-sm text-gray-700">
-                  <CheckCircle size={16} className="text-green-500" /> {t}
-                </li>
-              ))}
-            </ul>
-
-            <label className="block text-sm font-semibold text-gray-700 mb-2">Mobile Number</label>
-            <div className={`flex items-center border rounded-xl px-3 ${err ? "border-red-400" : "border-gray-300 focus-within:border-green-500"}`}>
-              <span className="text-sm text-gray-500 pr-2 border-r mr-2">🇮🇳 +91</span>
-              <input
-                inputMode="numeric"
-                maxLength={10}
-                value={mobile}
-                onChange={(e) => { setMobile(e.target.value.replace(/\D/g, "").slice(0, 10)); setErr(""); }}
-                placeholder="Enter mobile number"
-                className="flex-1 py-3 text-sm outline-none bg-transparent"
+          {/* ── LEFT ── */}
+          <div className="flex-1">
+            {/* Hero banner image — bigger now: max-w-md -> max-w-xl, h-56/64 -> h-72/80 */}
+            <div className="mb-6 rounded-2xl overflow-hidden shadow-lg max-w-xl">
+              <img
+                src="/images/home-loan-hero.jpg"
+                alt="Home Loan - Direct Credit"
+                className="w-full h-72 md:h-80 object-cover"
               />
             </div>
-            {err && <p className="text-red-500 text-xs mt-1">{err}</p>}
-            <p className="text-xs text-gray-400 mt-1.5">We will check offers against your number</p>
 
-            <button onClick={proceed} className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3.5 rounded-xl mt-5 flex items-center justify-center gap-2">
-              Proceed <ArrowRight size={17} />
-            </button>
+            <h1 className="text-2xl md:text-3xl font-extrabold leading-tight mb-1">
+              <span className="text-[#e8112d]">HOME</span>{" "}
+              <span className="text-[#001f54]">LOAN</span>
+            </h1>
+            <p className="text-lg md:text-xl font-extrabold text-[#e8112d] mb-5">
+              0% Processing Fee*
+            </p>
 
-            <label className="flex items-start gap-2 mt-3 cursor-pointer">
-              <input type="checkbox" checked={agreed} onChange={(e) => { setAgreed(e.target.checked); setErr(""); }} className="mt-0.5 accent-green-600 w-4 h-4" />
-              <span className="text-[11px] text-gray-400 leading-relaxed">
-                By clicking on proceed, you agree to the <span className="text-green-600">Terms of Use</span> &amp; <span className="text-green-600">Privacy Policy</span>
-              </span>
-            </label>
+            {/* Poster highlight strips */}
+            <div className="space-y-2 mb-8 max-w-md">
+              {posterHighlights.map((text) => (
+                <div
+                  key={text}
+                  className="rounded-md bg-[#001f54] px-4 py-2 text-center text-sm font-semibold text-white"
+                >
+                  {text}
+                </div>
+              ))}
+            </div>
+
+            {/* Feature list */}
+            <div className="space-y-5 mb-10">
+              {features.map(({ icon: Icon, title, desc }) => (
+                <div key={title} className="flex items-start gap-4">
+                  <div className="w-11 h-11 rounded-xl bg-[#001f54] flex items-center justify-center flex-shrink-0">
+                    <Icon size={20} className="text-white" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-gray-800 text-sm">{title}</p>
+                    <p className="text-gray-400 text-sm">{desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* App image */}
+            <div className="hidden md:block">
+              <img
+                src="/images/direct-credit-app.png"
+                alt="Direct Paisa App"
+                className="w-72 mx-auto drop-shadow-2xl"
+              />
+            </div>
+
+            {/* Stats bar */}
+            <div className="bg-gray-50 rounded-2xl border border-gray-100 p-4 mt-6 grid grid-cols-2 md:grid-cols-4 gap-4 items-center">
+              <div className="flex items-center gap-2">
+                <div className="w-9 h-9 bg-white rounded-lg border border-gray-200 flex items-center justify-center flex-shrink-0">
+                  <Home size={18} className="text-[#001f54]" />
+                </div>
+                <div>
+                  <div className="flex gap-0.5 mb-0.5">
+                    {[1, 2, 3, 4].map(i => <Star key={i} size={9} className="fill-yellow-400 text-yellow-400" />)}
+                    <Star size={9} className="fill-yellow-200 text-yellow-400" />
+                  </div>
+                  <p className="text-xs font-bold text-gray-800">4.6/5</p>
+                  <p className="text-xs text-gray-400">12.4K Reviews</p>
+                </div>
+              </div>
+              {[
+                { value: "3.1L+", sub: "Homes Financed", color: "text-blue-600" },
+                { value: "20+", sub: "Banking Partners", color: "text-blue-600" },
+                { value: "₹8,500 Cr+", sub: "Loans Disbursed", color: "text-blue-600" },
+              ].map(s => (
+                <div key={s.value} className="text-center">
+                  <p className={`text-lg font-bold ${s.color}`}>{s.value}</p>
+                  <p className="text-xs text-gray-400">{s.sub}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* ── RIGHT — Sticky login/eligibility form — widened: 400px -> 460px, padding 6 -> 8 ── */}
+          <div className="w-full lg:w-[460px] flex-shrink-0 lg:sticky lg:top-24">
+            <div className="border border-gray-200 rounded-2xl shadow-xl overflow-hidden">
+
+              {/* Cashback banner */}
+              <div className="bg-amber-50 border-b border-amber-100 px-6 py-4 flex items-center gap-3">
+                <span className="text-2xl">🏠</span>
+                <div>
+                  <p className="text-sm font-semibold text-gray-800">
+                    <span className="text-blue-600 font-bold">0% Processing Fee*</span> on Home Loans
+                  </p>
+                  {/* <p className="text-xs text-gray-400">Valid till 30th June '26 &nbsp;·&nbsp; *T&C Apply</p> */}
+                </div>
+              </div>
+
+              <div className="px-8 py-8">
+                <div className="flex items-center gap-2 mb-4 justify-center">
+                  <div className="h-px flex-1 bg-gray-200" />
+                  <span className="text-xs text-gray-500 font-medium whitespace-nowrap px-1">
+                    ✦ Instant Home Loan ✦
+                  </span>
+                  <div className="h-px flex-1 bg-gray-200" />
+                </div>
+
+                <p className="text-center text-xl font-extrabold text-gray-900 mb-5 leading-snug">
+                  Get up to{" "}
+                  <span className="text-blue-600">₹5 Crore</span>{" "}
+                  starting at{" "}
+                  <span className="text-blue-600 underline decoration-blue-400 decoration-2 underline-offset-2">
+                    8.35%
+                  </span>
+                </p>
+
+                {isLoggedIn && (
+                  <p className="text-center text-xs text-green-600 font-semibold mb-4 flex items-center justify-center gap-1.5">
+                    <CheckCircle size={13} /> Logged in as {user?.fullName || "member"} — no OTP needed
+                  </p>
+                )}
+
+                {/* Name */}
+                <div className="mb-4">
+                  <input
+                    type="text"
+                    placeholder="Full Name (as on your PAN)"
+                    value={form.name}
+                    onChange={e => { setForm({ ...form, name: e.target.value }); setErrors({ ...errors, name: "" }); }}
+                    className={`w-full border rounded-xl px-4 py-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition
+                      ${errors.name ? "border-red-400 bg-red-50" : "border-gray-200 bg-white"}`}
+                  />
+                  {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+                </div>
+
+                {/* Mobile */}
+                <div className="mb-1 relative">
+                  <span className="absolute -top-2 left-3 bg-white px-1 text-xs text-blue-600 font-medium z-10">
+                    Mobile Number
+                  </span>
+                  <div className={`flex items-center border-2 rounded-xl overflow-hidden transition
+                    ${errors.mobile ? "border-red-400" : "border-blue-400"}`}>
+                    <div className="flex items-center gap-1.5 px-3 py-3.5 border-r border-gray-200 bg-gray-50 flex-shrink-0">
+                      <span className="text-base">🇮🇳</span>
+                      <span className="text-sm text-gray-600 font-medium">+91</span>
+                    </div>
+                    <input
+                      type="tel"
+                      maxLength={10}
+                      placeholder="Enter mobile number"
+                      value={form.mobile}
+                      disabled={isLoggedIn}
+                      onChange={e => {
+                        const v = e.target.value.replace(/\D/g, "");
+                        setForm({ ...form, mobile: v });
+                        setErrors({ ...errors, mobile: "" });
+                      }}
+                      className="flex-1 px-3 py-3.5 text-sm focus:outline-none bg-transparent disabled:text-gray-500"
+                    />
+                  </div>
+                  {errors.mobile && <p className="text-red-500 text-xs mt-1">{errors.mobile}</p>}
+                </div>
+
+                {/* Submit — logged in: skip OTP, straight to purpose step; else -> OTP flow */}
+                <button
+                  onClick={handleHeroSubmit}
+                  className="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold py-4 rounded-xl transition-colors flex items-center justify-center gap-2 text-sm mt-5"
+                >
+                  {isLoggedIn ? "Continue Application" : "Check Eligibility"} <ArrowRight size={17} />
+                </button>
+
+                {/* Terms */}
+                <div className="flex items-start gap-2 mt-3">
+                  <input
+                    type="checkbox" id="terms" checked={agreed}
+                    onChange={e => { setAgreed(e.target.checked); setErrors({ ...errors, agreed: "" }); }}
+                    className="mt-0.5 accent-blue-600 w-4 h-4 flex-shrink-0 cursor-pointer"
+                  />
+                  <label htmlFor="terms" className="text-xs text-gray-400 leading-relaxed cursor-pointer">
+                    By submitting this form, you have read and agree to the{" "}
+                    <span className="text-blue-500">Terms of Use</span> &{" "}
+                    <span className="text-blue-500">Privacy Policy</span>
+                  </label>
+                </div>
+                {errors.agreed && <p className="text-red-500 text-xs mt-1">{errors.agreed}</p>}
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ── STATS ── */}
-      <section className="bg-white border-b">
-        <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 divide-x divide-gray-100">
-          {[{ label: "Max Loan", value: "₹5 Crore" }, { label: "Interest From", value: "8.50%*" }, { label: "Max Tenure", value: "30 Years" }, { label: "Tax Benefit", value: "80C+24B" }].map((s) => (
-            <div key={s.label} className="py-6 px-8 text-center">
-              <div className="text-2xl font-bold text-green-600">{s.value}</div>
-              <div className="text-sm text-gray-500 mt-1">{s.label}</div>
-            </div>
-          ))}
+      {/* ── WHAT IS ── */}
+      <section className="max-w-7xl mx-auto px-4 md:px-8 py-10 border-t">
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">What is a Home Loan?</h2>
+        <div className="text-gray-600 text-sm leading-relaxed space-y-4">
+          <p>A Home Loan helps you buy, construct, or transfer financing on residential or commercial property, with tenures up to 30 years and competitive interest rates. Direct Credit connects you with the right lender for New Purchase, Balance Transfer, or Top-up needs.</p>
+          <p>It is ideal for:</p>
+          <ul className="space-y-2 pl-1">
+            {useCases.map(u => (
+              <li key={u} className="flex items-start gap-3">
+                <CheckCircle size={16} className="text-blue-500 mt-0.5 flex-shrink-0" />{u}
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
-      {/* ── FEATURES / ELIGIBILITY / DOCUMENTS ── */}
-      <section className="max-w-5xl mx-auto px-4 py-12 grid md:grid-cols-3 gap-6">
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-          <h2 className="font-bold text-gray-800 text-lg mb-5">Key Features</h2>
-          <ul className="space-y-3">{features.map((f) => <li key={f} className="flex items-start gap-3 text-sm text-gray-600"><CheckCircle size={17} className="text-green-500 mt-0.5 flex-shrink-0" />{f}</li>)}</ul>
-        </div>
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-          <h2 className="font-bold text-gray-800 text-lg mb-5">Eligibility</h2>
-          <ul className="space-y-3">{eligibility.map((e) => <li key={e} className="flex items-start gap-3 text-sm text-gray-600"><CheckCircle size={17} className="text-green-600 mt-0.5 flex-shrink-0" />{e}</li>)}</ul>
-        </div>
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-          <h2 className="font-bold text-gray-800 text-lg mb-5">Documents Required</h2>
-          <ul className="space-y-3">{documentsList.map((d) => <li key={d} className="flex items-start gap-3 text-sm text-gray-600"><CheckCircle size={17} className="text-green-700 mt-0.5 flex-shrink-0" />{d}</li>)}</ul>
+      {/* ── TABLE ── */}
+      <section className="max-w-7xl mx-auto px-4 md:px-8 py-10 border-t">
+        <h2 className="text-2xl font-bold text-gray-800 mb-5">Key Home Loan Features at Direct Credit</h2>
+        <div className="rounded-2xl border border-gray-200 overflow-hidden">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="bg-blue-50">
+                <th className="text-left px-6 py-3 font-semibold text-blue-700 w-1/2">Feature</th>
+                <th className="text-left px-6 py-3 font-semibold text-blue-700">Details</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tableData.map((row, i) => (
+                <tr key={row.feature} className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                  <td className="px-6 py-3.5 text-gray-700 font-medium border-t border-gray-100">{row.feature}</td>
+                  <td className="px-6 py-3.5 text-gray-600 border-t border-gray-100">{row.details}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </section>
 
-      {/* ── CTA ── */}
-      <section className="max-w-5xl mx-auto px-4 pb-16">
-        <div className="bg-green-600 rounded-2xl p-8 text-white text-center">
-          <h2 className="text-2xl font-bold mb-2">Apna ghar, apna sapna!</h2>
-          <p className="text-green-100 mb-6">Compare rates from 30+ banks and get the best deal</p>
-          <button onClick={scrollToForm} className="bg-white text-green-700 font-semibold px-8 py-3 rounded-xl hover:bg-green-50 transition-colors">
-            Apply for Home Loan
+      {/* ── BOTTOM CTA ── */}
+      <section className="max-w-7xl mx-auto px-4 md:px-8 pb-16">
+        <div className="bg-blue-600 rounded-2xl p-8 text-white flex flex-col md:flex-row items-center justify-between gap-6">
+          <div>
+            <h2 className="text-xl font-bold mb-1">Ready to own your dream home?</h2>
+            <p className="text-blue-100 text-sm">Apply in 5 minutes — disbursal in 2 days</p>
+          </div>
+          <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            className="bg-white text-blue-700 font-semibold px-7 py-3 rounded-xl hover:bg-blue-50 transition-colors flex items-center gap-2 text-sm whitespace-nowrap">
+            Apply Now <ArrowRight size={16} />
           </button>
         </div>
       </section>
 
       <Footer />
+
+      {/* ══════════════════════════════════════
+          APPLICATION-FLOW POPUP
+      ══════════════════════════════════════ */}
+      {step !== "hero" && (
+        <div
+          className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
+          onClick={(e) => { if (e.target === e.currentTarget) closeModal(); }}
+        >
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto p-7 sm:p-8">
+
+            {/* Progress bar + close (hidden on confirmation) */}
+            {step !== "confirmation" && (
+              <div className="flex items-center mb-6">
+                <div className="flex items-center gap-1.5 flex-1 mr-4">
+                  {sequence.map((s, i) => (
+                    <div key={s} className={`h-1.5 flex-1 rounded-full transition-colors ${i < stepIndex ? "bg-blue-600" : i === stepIndex ? "bg-blue-300" : "bg-gray-200"
+                      }`} />
+                  ))}
+                </div>
+                <button onClick={closeModal} className="text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0">
+                  <X size={20} />
+                </button>
+              </div>
+            )}
+            {step === "confirmation" && (
+              <div className="flex justify-end mb-2">
+                <button onClick={closeModal} className="text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0">
+                  <X size={20} />
+                </button>
+              </div>
+            )}
+
+            {/* Title + subtitle */}
+            {STEP_TITLES[step] && (
+              <div className="mb-6">
+                <h2 className="text-2xl font-bold text-gray-900 mb-1">{STEP_TITLES[step]}</h2>
+                {STEP_SUBTITLES[step] && <p className="text-sm text-gray-500">{STEP_SUBTITLES[step]}</p>}
+              </div>
+            )}
+
+            {/* Step body */}
+            {renderStepContent()}
+
+            {/* Footer actions */}
+            {step !== "offers" && step !== "confirmation" && (
+              <div className="mt-7">
+                <button onClick={goNext}
+                  className="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 text-sm transition-colors">
+                  {CONTINUE_LABELS[step] || "Continue"} <ArrowRight size={16} />
+                </button>
+                <button onClick={goBack}
+                  className="w-full text-center text-sm text-gray-500 mt-4 flex items-center justify-center gap-1.5 hover:text-gray-700 transition-colors">
+                  <ArrowLeft size={14} /> Back
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
+  

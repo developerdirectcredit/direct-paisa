@@ -206,6 +206,14 @@
 
 // 
 
+
+
+const APP_LINK = "https://onelink.to/kqq5xd";
+const PLAY_STORE_URL =
+  "https://play.google.com/store/apps/details?id=com.directcredit.ondcapp&pcampaignid=web_share";
+const APP_STORE_URL =
+  "https://apps.apple.com/in/app/direct-credit/id6765877653";
+
 import { ChevronUp } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -234,7 +242,7 @@ const companyLinks = [
   { label: "Awards", to: "/awards" },
   { label: "Contact Us", to: "/contact" },
   { label: "Privacy Policy", to: "/privacy-policy" },
-  { label: "Terms & Conditions", to: "/terms" },
+  { label: "Terms & Conditions", to: "/terms-conditions" },
 ];
 
 /* Inline brand SVG icons (lucide-react removed brand logos in newer versions). */
@@ -378,21 +386,100 @@ export default function Footer() {
           </div>
 
           {/* Download App */}
-          <div>
-            <h3 className="font-bold mb-5">DOWNLOAD APP</h3>
-            <div className="space-y-4">
-              <button className="w-full bg-black border border-gray-700 rounded-lg p-3 text-left">
-                📱 Get it on Google Play
-              </button>
-              <button className="w-full bg-black border border-gray-700 rounded-lg p-3 text-left">
-                🍎 Download on App Store
-              </button>
-            </div>
-            <div className="mt-6 text-gray-400">Follow us on social media</div>
-          </div>
-        </div>
-      </div>
+            
+           {/* Download App */}
+<div>
+  <h3 className="font-bold mb-5">DOWNLOAD APP</h3>
 
+  {/* QR Code */}
+  <a
+    href={APP_LINK}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="inline-block mb-5"
+  >
+    <img
+      src="/images/app-qr.png"
+      alt="Scan to Download"
+      className="w-24 h-24 rounded-lg border border-gray-700 bg-white p-1"
+      onError={(e) => {
+        e.currentTarget.style.display = "none";
+      }}
+    />
+  </a>
+
+  <div className="space-y-3">
+
+    {/* Google Play */}
+    <a
+      href={PLAY_STORE_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex items-center gap-3 bg-black text-white rounded-lg px-4 py-3 hover:bg-gray-900 transition-colors"
+    >
+      <svg viewBox="0 0 24 24" className="w-6 h-6 shrink-0">
+        <path
+          d="M3 20.5v-17c0-.59.34-1.11.84-1.35L13.69 12 3.84 21.85c-.5-.24-.84-.76-.84-1.35z"
+          fill="#00D9FF"
+        />
+        <path
+          d="M16.81 15.12L4.5 22.1l9.19-9.19 3.12 2.21z"
+          fill="#00F076"
+        />
+        <path
+          d="M20.16 10.81c.35.2.59.57.59 1.19s-.24.99-.59 1.19l-2.71 1.56-3.31-3.31 3.31-3.31 2.71 1.56z"
+          fill="#FFC900"
+        />
+        <path
+          d="M4.5 1.9l12.31 6.98-3.12 2.21L4.5 1.9z"
+          fill="#FF3A44"
+        />
+      </svg>
+
+      <div className="leading-tight">
+        <p className="text-[9px] uppercase tracking-wide">
+          Get it on
+        </p>
+        <p className="text-sm font-semibold">
+          Google Play
+        </p>
+      </div>
+    </a>
+
+    {/* App Store */}
+    <a
+      href={APP_STORE_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex items-center gap-3 bg-black text-white rounded-lg px-4 py-3 hover:bg-gray-900 transition-colors"
+    >
+      <svg
+        viewBox="0 0 24 24"
+        className="w-6 h-6 shrink-0"
+        fill="white"
+      >
+        <path d="M17.05 12.53c-.02-2.02 1.65-2.99 1.72-3.04-.94-1.37-2.4-1.56-2.92-1.58-1.24-.13-2.42.73-3.05.73-.63 0-1.6-.71-2.63-.69-1.35.02-2.6.79-3.29 2-1.4 2.43-.36 6.02 1 7.99.67.96 1.47 2.04 2.51 2 1.01-.04 1.39-.65 2.61-.65 1.22 0 1.56.65 2.63.63 1.09-.02 1.78-.98 2.44-1.95.77-1.12 1.09-2.2 1.11-2.26-.02-.01-2.13-.82-2.15-3.25zM15.03 6.36c.55-.67.92-1.6.82-2.53-.79.03-1.75.53-2.32 1.19-.51.59-.96 1.53-.84 2.44.88.07 1.79-.45 2.34-1.1z" />
+      </svg>
+
+      <div className="leading-tight">
+        <p className="text-[9px] uppercase tracking-wide">
+          Download on the
+        </p>
+        <p className="text-sm font-semibold">
+          App Store
+        </p>
+      </div>
+    </a>
+
+  </div>
+
+  <p className="mt-5 text-xs text-gray-400">
+    Scan the QR code or download the Direct Credit App.
+  </p>
+</div>
+</div>
+</div>
+          {/* add code end */}
       {/* Bottom Bar */}
       <div className="border-t border-gray-800">
         <div className="max-w-7xl mx-auto px-6 py-5 flex flex-col md:flex-row justify-between items-center">

@@ -82,7 +82,7 @@
 //         desc: "Top picks for rewards",
 //         path: "/credit-cards/best",
 //       },
-     
+
 //       {
 //         icon: BarChart3,
 //         title: "CIBIL for Credit Card",
@@ -95,7 +95,7 @@
 //         desc: "Know before you apply",
 //         path: "/credit-cards/eligibility",
 //       },
-    
+
 // //=======
 //       { icon: CreditCard, title: "Best Credit Cards", desc: "Top picks for rewards", path: "/credit-cards/best" },
 //       { icon: Globe, title: "Best Forex Cards", desc: "Travel abroad hassle-free", path: "/credit-cards/forex" },
@@ -678,10 +678,10 @@ const menuConfig = [
     label: "Credit Cards",
     items: [
       { img: "/icons/credit-card.png", title: "Best Credit Cards", desc: "Top picks for rewards", path: "/credit-cards" },
-     // { img: "/icons/forex-card.png", title: "Best Forex Cards", desc: "Travel abroad hassle-free", path: "/credit-cards/forex" },
+      // { img: "/icons/forex-card.png", title: "Best Forex Cards", desc: "Travel abroad hassle-free", path: "/credit-cards/forex" },
       { img: "/icons/cibil-score.png", title: "CIBIL for Credit Card", desc: "Check eligibility first", path: "/credit-score" },
       { img: "/icons/card-eligibility.png", title: "Card Eligibility", desc: "Know before you apply", path: "/credit-cards" },
-     // { img: "/icons/compare-cards.png", title: "Compare Cards", desc: "Side-by-side comparison", path: "/credit-cards/compare" },
+      // { img: "/icons/compare-cards.png", title: "Compare Cards", desc: "Side-by-side comparison", path: "/credit-cards/compare" },
     ],
   },
   {
@@ -693,8 +693,8 @@ const menuConfig = [
       { img: "/icons/home-loan.png", title: "Home Loan EMI", desc: "", path: "/calculators/home-loan" },
       { img: "/icons/business-loan.png", title: "Business Loan EMI", desc: "", path: "/calculators/business-loan" },
       { img: "/icons/property-loan.png", title: "Loan Against Property", desc: "", path: "/calculators/lap" },
-     // { img: "/icons/gold-loan.png", title: "Gold Loan EMI", desc: "", path: "/calculators/gold-loan" },
-    
+      // { img: "/icons/gold-loan.png", title: "Gold Loan EMI", desc: "", path: "/calculators/gold-loan" },
+
     ],
   },
 ];
@@ -728,9 +728,8 @@ function TwoPaneDropdown({ menu, navigate }) {
 
       {/* ── LEFT PANE: main loans (hamesha dikhega) ── */}
       <div
-        className={`w-80 p-4 transition-all duration-200 ${
-          showRight ? "border-r border-gray-100" : ""
-        }`}
+        className={`w-80 p-4 transition-all duration-200 ${showRight ? "border-r border-gray-100" : ""
+          }`}
       >
         <div className="space-y-1">
           {menu.items.map((item) => {
@@ -740,9 +739,8 @@ function TwoPaneDropdown({ menu, navigate }) {
                 key={item.title}
                 onMouseEnter={() => setHoverItem(item)}
                 onClick={() => navigate(item.path)}
-                className={`flex items-center gap-3 px-3 py-3 rounded-xl cursor-pointer group transition-colors ${
-                  isActive ? "bg-blue-50" : "hover:bg-blue-50"
-                }`}
+                className={`flex items-center gap-3 px-3 py-3 rounded-xl cursor-pointer group transition-colors ${isActive ? "bg-blue-50" : "hover:bg-blue-50"
+                  }`}
               >
                 {/* ── PNG icon (lucide ki jagah) ── */}
                 <div className="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
@@ -750,9 +748,8 @@ function TwoPaneDropdown({ menu, navigate }) {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p
-                    className={`text-sm font-semibold transition-colors ${
-                      isActive ? "text-blue-600" : "text-gray-800 group-hover:text-blue-600"
-                    }`}
+                    className={`text-sm font-semibold transition-colors ${isActive ? "text-blue-600" : "text-gray-800 group-hover:text-blue-600"
+                      }`}
                   >
                     {item.title}
                   </p>
@@ -761,9 +758,8 @@ function TwoPaneDropdown({ menu, navigate }) {
                 {item.subItems && (
                   <ChevronRight
                     size={15}
-                    className={`flex-shrink-0 transition-colors ${
-                      isActive ? "text-blue-500" : "text-gray-300 group-hover:text-blue-400"
-                    }`}
+                    className={`flex-shrink-0 transition-colors ${isActive ? "text-blue-500" : "text-gray-300 group-hover:text-blue-400"
+                      }`}
                   />
                 )}
               </div>
@@ -809,9 +805,8 @@ function DesktopDropdown({ menu, navigate }) {
 
   return (
     <div
-      className={`absolute top-full left-0 mt-3 bg-white shadow-2xl rounded-2xl border border-gray-100 p-5 z-50 ${
-        isTwoCol ? "w-[480px]" : "w-80"
-      }`}
+      className={`absolute top-full left-0 mt-3 bg-white shadow-2xl rounded-2xl border border-gray-100 p-5 z-50 ${isTwoCol ? "w-[480px]" : "w-80"
+        }`}
     >
       {/* Arrow pointer */}
       <div className="absolute -top-2 left-6 w-4 h-4 bg-white border-l border-t border-gray-100 rotate-45" />
@@ -975,6 +970,8 @@ export default function Navbar() {
   const appTimer = useRef(null);
   const { isLoggedIn, user, logout } = useAuth();
   const [userMenu, setUserMenu] = useState(false);
+  const userMenuTimeout = useRef(null);// for my profile and logout dropdown menu
+
 
   const handleMenuEnter = (id) => {
     if (closeTimer.current) clearTimeout(closeTimer.current);
@@ -1046,18 +1043,16 @@ export default function Navbar() {
               onMouseLeave={handleMenuLeave}
             >
               <button
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  openMenu === menu.id
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${openMenu === menu.id
                     ? "text-blue-600 bg-blue-50"
                     : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-                }`}
+                  }`}
               >
                 {menu.label}
                 <ChevronDown
                   size={15}
-                  className={`transition-transform duration-200 ${
-                    openMenu === menu.id ? "rotate-180 text-blue-600" : "text-gray-400"
-                  }`}
+                  className={`transition-transform duration-200 ${openMenu === menu.id ? "rotate-180 text-blue-600" : "text-gray-400"
+                    }`}
                 />
               </button>
 
@@ -1075,8 +1070,16 @@ export default function Navbar() {
         {isLoggedIn ? (
           <div
             className="hidden lg:block relative"
-            onMouseEnter={() => setUserMenu(true)}
-            onMouseLeave={() => setUserMenu(false)}
+           
+            onMouseEnter={() => {
+              clearTimeout(userMenuTimeout.current);
+              setUserMenu(true);
+            }}
+            onMouseLeave={() => {
+              userMenuTimeout.current = setTimeout(() => {
+                setUserMenu(false);
+              }, 300);
+            }}
           >
             <button className="flex items-center gap-2 border border-blue-600 text-blue-600 px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-blue-50 transition-colors">
               <UserCircle size={18} />
@@ -1188,7 +1191,7 @@ export default function Navbar() {
       )}
     </header>
   );
-// <<<<<<< HEAD
+  // <<<<<<< HEAD
 }
 // =======
 

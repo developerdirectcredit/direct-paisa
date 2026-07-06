@@ -1,3 +1,6 @@
+
+// add another image match to the left column of the agri loan section, below the existing image, with a caption that reads "Empowering Farmers for a Sustainable Future".
+
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 
@@ -15,9 +18,10 @@ import {
 
 /* ------------------------------------------------------------------ */
 /*  Agri Loan Page                                                     */
-/*  Hero = lead capture (Name + Mobile), styled like the Education     */
-/*         loan hero, with the agri family image.                      */
-/*  Wizard = the full Agri Loan flow you provided.                     */
+/*  Hero = lead capture (Name + Mobile), styled like the Instant       */
+/*         Personal Loan page (navy #001f54 / red #e8112d / blue-600   */
+/*         CTA), with the agri family image.                           */
+/*  Wizard = the full Agri Loan flow, recolored to match.              */
 /* ------------------------------------------------------------------ */
 
 const ENTITY_TYPES = ["Proprietor", "Partnership", "Pvt Ltd", "LLP", "Others"];
@@ -312,7 +316,7 @@ export default function AgriLoan() {
 }
 
 /* ------------------------------------------------------------------ */
-/*  HERO (Education-style + Name & Mobile capture)                     */
+/*  HERO (Instant Personal Loan color theme + Name & Mobile capture)   */
 /* ------------------------------------------------------------------ */
 
 function Hero({ onStart }) {
@@ -339,26 +343,27 @@ function Hero({ onStart }) {
   };
 
   return (
-    <section className="bg-gradient-to-b from-emerald-50 to-white">
+    <section className="bg-gradient-to-b from-blue-50 to-white">
       <div className="mx-auto max-w-6xl px-5 py-10 lg:py-16">
         <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
           {/* Left column */}
           <div>
             <h1 className="text-4xl font-extrabold leading-tight tracking-tight lg:text-5xl">
-              Grow More with an <span className="text-emerald-600">Agri Loan</span>{" "}
-              — Hassle-Free
+              Grow More with an{" "}
+              <span className="text-[#e8112d]">Agri Loan</span>{" "}
+              <span className="text-[#001f54]">— Hassle-Free</span>
             </h1>
-            <p className="mt-4 max-w-xl text-slate-600">
+            {/* <p className="mt-4 max-w-xl text-slate-600">
               Funding for crops, machinery, livestock, infrastructure and agri
               business. Apply once and discover the best offer matched to your
               farm — with expert support at every step.
-            </p>
+            </p> */}
 
             <div className="mt-6 overflow-hidden rounded-2xl">
               <img
                 src="/agri_loan-image.webp"
                 alt="Farming family"
-                className="h-56 w-full object-cover"
+                className="h-72 md:h-80 w-full object-cover"
               />
             </div>
 
@@ -383,7 +388,7 @@ function Hero({ onStart }) {
 
           {/* Right column — lead card */}
           <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm lg:p-8">
-            <div className="rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+            <div className="rounded-xl bg-[#001f54] px-4 py-3 text-sm text-white font-semibold text-center">
               Start your Agri Loan application — it only takes a minute.
             </div>
 
@@ -391,7 +396,8 @@ function Hero({ onStart }) {
               Agri Loan
             </p>
             <p className="mt-1 text-center text-2xl font-bold">
-              Get the right loan for your <span className="text-emerald-600">farm</span>
+              Get the right loan for your{" "}
+              <span className="text-[#e8112d]">farm</span>
             </p>
 
             <div className="mt-6 space-y-4">
@@ -406,7 +412,7 @@ function Hero({ onStart }) {
                     setErr((p) => ({ ...p, name: undefined }));
                   }}
                   placeholder="Full Name (as on your PAN)"
-                  className={`w-full rounded-lg border px-4 py-3 outline-none focus:border-emerald-500 ${
+                  className={`w-full rounded-lg border px-4 py-3 outline-none focus:border-blue-500 ${
                     err.name ? "border-red-400" : "border-slate-300"
                   }`}
                 />
@@ -443,9 +449,9 @@ function Hero({ onStart }) {
 
               <button
                 onClick={handleStart}
-                className="flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-600 py-3.5 font-semibold text-white transition hover:bg-emerald-700"
+                className="flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 py-3.5 font-semibold text-white transition hover:bg-blue-700 active:bg-blue-800"
               >
-                Continue <ArrowRight className="h-4 w-4" />
+                Check Eligibility <ArrowRight className="h-4 w-4" />
               </button>
 
               <label className="flex items-start gap-2 text-xs text-slate-500">
@@ -456,7 +462,7 @@ function Hero({ onStart }) {
                     setAgree(e.target.checked);
                     setErr((p) => ({ ...p, agree: undefined }));
                   }}
-                  className="mt-0.5"
+                  className="mt-0.5 accent-blue-600"
                 />
                 <span>
                   By submitting this form, you agree to the Credit Report Terms
@@ -475,7 +481,7 @@ function Hero({ onStart }) {
 function Feature({ icon, title, text }) {
   return (
     <li className="flex gap-3">
-      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-emerald-50 text-emerald-600">
+      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-[#001f54] text-white">
         {icon}
       </span>
       <div>
@@ -531,7 +537,7 @@ function Wizard({
           {!isReview ? (
             <button
               onClick={next}
-              className="flex items-center gap-2 rounded-lg bg-emerald-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700"
+              className="flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-blue-700 active:bg-blue-800"
             >
               {step === 7 ? "Review details" : "Continue"}{" "}
               <ArrowRight className="h-4 w-4" />
@@ -539,7 +545,7 @@ function Wizard({
           ) : (
             <button
               onClick={onSubmit}
-              className="flex items-center gap-2 rounded-lg bg-emerald-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700"
+              className="flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-blue-700 active:bg-blue-800"
             >
               Submit application <Check className="h-4 w-4" />
             </button>
@@ -563,9 +569,9 @@ function Stepper({ step }) {
               <div
                 className={`grid h-8 w-8 place-items-center rounded-full text-xs font-semibold ${
                   done
-                    ? "bg-emerald-600 text-white"
+                    ? "bg-[#001f54] text-white"
                     : active
-                    ? "bg-emerald-600 text-white ring-4 ring-emerald-100"
+                    ? "bg-blue-600 text-white ring-4 ring-blue-100"
                     : "bg-slate-200 text-slate-500"
                 }`}
               >
@@ -578,7 +584,7 @@ function Stepper({ step }) {
             {n < STEP_LABELS.length && (
               <div
                 className={`mx-1 h-0.5 flex-1 ${
-                  n < step ? "bg-emerald-600" : "bg-slate-200"
+                  n < step ? "bg-[#001f54]" : "bg-slate-200"
                 }`}
               />
             )}
@@ -614,7 +620,7 @@ function Text({ value, onChange, error, ...rest }) {
     <input
       value={value}
       onChange={onChange}
-      className={`w-full rounded-lg border px-4 py-2.5 outline-none focus:border-emerald-500 ${
+      className={`w-full rounded-lg border px-4 py-2.5 outline-none focus:border-blue-500 ${
         error ? "border-red-400" : "border-slate-300"
       }`}
       {...rest}
@@ -627,7 +633,7 @@ function Select({ value, onChange, options, placeholder, error }) {
     <select
       value={value}
       onChange={onChange}
-      className={`w-full rounded-lg border bg-white px-4 py-2.5 outline-none focus:border-emerald-500 ${
+      className={`w-full rounded-lg border bg-white px-4 py-2.5 outline-none focus:border-blue-500 ${
         error ? "border-red-400" : "border-slate-300"
       }`}
     >
@@ -651,7 +657,7 @@ function Pills({ value, onSelect, options }) {
           onClick={() => onSelect(o)}
           className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
             value === o
-              ? "border-emerald-600 bg-emerald-50 text-emerald-700"
+              ? "border-blue-600 bg-blue-50 text-blue-700"
               : "border-slate-300 text-slate-600 hover:border-slate-400"
           }`}
         >
@@ -672,10 +678,10 @@ function FileRow({ label, required, name, onChange, error }) {
       >
         <div>
           <p className="text-sm font-medium text-slate-700">
-            {label} {required && <span className="text-red-500">*</span>}
+            {label} {required && <span className="text-[#e8112d]">*</span>}
           </p>
           {name ? (
-            <p className="text-xs text-emerald-600">{name}</p>
+            <p className="text-xs text-blue-600">{name}</p>
           ) : (
             <p className="text-xs text-slate-400">PDF, JPG or PNG</p>
           )}
@@ -738,7 +744,7 @@ function StepActivity({ form, setChoice, errors }) {
       )}
 
       {selectedGroup?.isCrop && (
-        <p className="rounded-lg bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+        <p className="rounded-lg bg-blue-50 px-4 py-3 text-sm text-[#001f54]">
           Since this is a crop activity, you'll also fill crop details later.
         </p>
       )}
@@ -913,8 +919,8 @@ function StepIncomeCrop({ form, set, setChoice, errors }) {
       </div>
 
       {cropLoan ? (
-        <div className="rounded-xl border border-emerald-200 bg-emerald-50/40 p-4">
-          <h3 className="mb-4 text-sm font-semibold text-emerald-800">Crop details</h3>
+        <div className="rounded-xl border border-blue-200 bg-blue-50/40 p-4">
+          <h3 className="mb-4 text-sm font-semibold text-[#001f54]">Crop details</h3>
           <div className="grid gap-5 sm:grid-cols-3">
             <Field label="Crop type" error={errors.cropType}>
               <Text value={form.cropType} onChange={set("cropType")} placeholder="e.g. Wheat" error={errors.cropType} />
@@ -977,7 +983,7 @@ function StepBankFetch({ form, setChoice, errors }) {
       {errors.bankConsent && <ErrorText>{errors.bankConsent}</ErrorText>}
 
       {form.bankConsent === "yes" && (
-        <div className="flex items-start gap-3 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+        <div className="flex items-start gap-3 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-[#001f54]">
           <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0" />
           <span>
             On submit, you'll be redirected to Accumn's secure OTP-based fetch
@@ -996,7 +1002,7 @@ function ConsentCard({ active, onClick, title, text }) {
       onClick={onClick}
       className={`rounded-xl border p-4 text-left transition ${
         active
-          ? "border-emerald-600 bg-emerald-50"
+          ? "border-blue-600 bg-blue-50"
           : "border-slate-200 hover:border-slate-300"
       }`}
     >
@@ -1004,7 +1010,7 @@ function ConsentCard({ active, onClick, title, text }) {
         <p className="font-semibold text-slate-800">{title}</p>
         <span
           className={`grid h-5 w-5 place-items-center rounded-full border ${
-            active ? "border-emerald-600 bg-emerald-600 text-white" : "border-slate-300"
+            active ? "border-blue-600 bg-blue-600 text-white" : "border-slate-300"
           }`}
         >
           {active && <Check className="h-3 w-3" />}
@@ -1025,7 +1031,7 @@ function ReviewBlock({ title, stepNo, goToStep, rows }) {
         <button
           type="button"
           onClick={() => goToStep(stepNo)}
-          className="flex items-center gap-1 text-sm font-medium text-emerald-600 hover:text-emerald-700"
+          className="flex items-center gap-1 text-sm font-medium text-blue-600 hover:text-blue-700"
         >
           <Pencil className="h-3.5 w-3.5" /> Edit
         </button>
@@ -1142,7 +1148,7 @@ function Success({ onReset }) {
   return (
     <section className="mx-auto grid min-h-screen max-w-xl place-items-center px-5 text-center">
       <div>
-        <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-emerald-100 text-emerald-600">
+        <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-blue-100 text-blue-600">
           <Check className="h-8 w-8" />
         </div>
         <h2 className="mt-6 text-2xl font-bold">Application submitted</h2>
@@ -1152,7 +1158,7 @@ function Success({ onReset }) {
         </p>
         <button
           onClick={onReset}
-          className="mt-8 rounded-lg bg-emerald-600 px-6 py-3 font-semibold text-white hover:bg-emerald-700"
+          className="mt-8 rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-700"
         >
           Start a new application
         </button>
