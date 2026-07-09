@@ -11,23 +11,38 @@ import LoanAplicationFlow from "../../components/loan-flow/LoanAplicationFlow";
 import { CheckCircle, ArrowRight, Zap, Clock, Search, Shield, Star } from "lucide-react";
 
 const features = [
-  { icon: Zap,    color: "bg-blue-50 text-blue-600",   title: "Compare 30+ Lenders Instantly",  desc: "Evaluate interest rates, tenure & more in one place." },
-  { icon: Clock,  color: "bg-blue-50 text-blue-600",   title: "Get Funds in 24 Hours",           desc: "Minimal documentation with super-fast approval." },
-  { icon: Search, color: "bg-blue-50 text-blue-600",   title: "Check Eligibility for Free",      desc: "No impact on credit score. 100% secure." },
-  { icon: Shield, color: "bg-blue-50 text-blue-600",   title: "Safe, Secure & Compliant",        desc: "RBI-compliant partners. Your data is always protected." },
+  { icon: Zap, color: "bg-blue-50 text-blue-600", title: "Compare 30+ Lenders Instantly", desc: "Evaluate interest rates, tenure & more in one place." },
+  { icon: Clock, color: "bg-blue-50 text-blue-600", title: "Get Funds in 24 Hours", desc: "Minimal documentation with super-fast approval." },
+  { icon: Search, color: "bg-blue-50 text-blue-600", title: "Check Eligibility for Free", desc: "No impact on credit score. 100% secure." },
+  { icon: Shield, color: "bg-blue-50 text-blue-600", title: "Safe, Secure & Compliant", desc: "RBI-compliant partners. Your data is always protected." },
 ];
 
 const tableData = [
-  { feature: "Loan Amount",           details: "₹10,000 – ₹50 Lakh" },
-  { feature: "Interest Rate",         details: "9.98% – 44% p.a." },
-  { feature: "Repayment Tenure",      details: "12 – 84 months" },
-  { feature: "Processing Fee",        details: "0% – 4% of loan amount" },
-  { feature: "Disbursal Time",        details: "Within 24 – 72 hours" },
-  { feature: "CIBIL Score Required",  details: "700+ (760+ for best rates)" },
-  { feature: "Collateral Required",   details: "None (Unsecured)" },
-  { feature: "Minimum Salary",        details: "₹15,000/month (varies by lender)" },
-  { feature: "Prepayment Charges",    details: "0% – 5% (lender-specific)" },
+  { feature: "Loan Type", details: "Personal Loan" },
+  { feature: "Loan Amount", details: "₹5,00,000" },
+  { feature: "Purpose", details: "Personal Expenses / Medical / Travel / Education " },
+  { feature: "Annual Interest Rate", details: "9.75% p.a." },
+  { feature: "Loan Tenure", details: "60 months" },
+  { feature: "Monthly Installment (EMI)", details: "₹10,562.12 (approx.) " },
+  { feature: "Total Amount Payable ", details: "₹6,33,727.20 (approx.)" },
+  { feature: "Total Interest Cost ", details: "₹1,33,727.20 (approx.)" },
+  { feature: "Processing Fee", details: "1% – 3% of loan amount" },
+  { feature: "Insurance Fee ", details: "1% - 2% of loan amount" },
+  { feature: "Collateral Required", details: "None (Unsecured)" },
+
 ];
+const eligibilityCriteria = [
+  "Age should fall under the range of 21 years to 60 years",
+  "Net monthly income should be ₹15,000/- for salaried and self-employed; yearly transactions should be a minimum of ₹20 lakhs",
+  "Credit score must be above 650",
+  "Debt-to-income ratio should be within acceptable limits",
+  "Employment stability",
+  "Maintained a good credit score",
+  "Clear repayment history",
+  "Must be a Resident Citizen of India",
+   
+];
+
 
 const useCases = [
   "Medical or emergency expenses",
@@ -39,10 +54,10 @@ const useCases = [
 ];
 
 export default function PersonalLoan() {
-  const [form, setForm]           = useState({ name: "", mobile: "" });
+  const [form, setForm] = useState({ name: "", mobile: "" });
   const [submitted, setSubmitted] = useState(false);
-  const [agreed, setAgreed]       = useState(true);
-  const [errors, setErrors]       = useState({});
+  const [agreed, setAgreed] = useState(true);
+  const [errors, setErrors] = useState({});
 
   // ── Loan flow modal must stay closed until the name + mobile form
   //    on THIS page is filled in and validated. It was wrongly
@@ -112,23 +127,23 @@ export default function PersonalLoan() {
               <div className="flex items-center gap-2">
                 <div className="w-9 h-9 bg-white rounded-lg border border-gray-200 flex items-center justify-center flex-shrink-0">
                   <svg viewBox="0 0 24 24" className="w-5 h-5">
-                    <path d="M3 20.5v-17c0-.83 1-.83 1.5-.5l15 8.5-15 8.5c-.5.33-1.5.33-1.5-.5z" fill="#4CAF50"/>
-                    <path d="M3 3.5l9.5 9.5L3 22.5V3.5z" fill="#8BC34A"/>
-                    <path d="M12.5 13l6 3.5-6-3.5z" fill="#FF9800"/>
-                    <path d="M12.5 11L3 3.5l9.5 7.5z" fill="#F44336"/>
+                    <path d="M3 20.5v-17c0-.83 1-.83 1.5-.5l15 8.5-15 8.5c-.5.33-1.5.33-1.5-.5z" fill="#4CAF50" />
+                    <path d="M3 3.5l9.5 9.5L3 22.5V3.5z" fill="#8BC34A" />
+                    <path d="M12.5 13l6 3.5-6-3.5z" fill="#FF9800" />
+                    <path d="M12.5 11L3 3.5l9.5 7.5z" fill="#F44336" />
                   </svg>
                 </div>
                 <div>
                   <div className="flex gap-0.5 mb-0.5">
-                    {[1,2,3,4,5].map(i => <Star key={i} size={9} className="fill-yellow-400 text-yellow-400" />)}
+                    {[1, 2, 3, 4, 5].map(i => <Star key={i} size={9} className="fill-yellow-400 text-yellow-400" />)}
                   </div>
                   <p className="text-xs font-bold text-gray-800">4.5/5</p>
                   <p className="text-xs text-gray-400">15 Reviews</p>
                 </div>
               </div>
               {[
-                { value: "5L",    sub: "Satisfied Customers" },
-                { value: "65+",       sub: "Lending Partners" },
+                { value: "5L", sub: "Satisfied Customers" },
+                { value: "65+", sub: "Lending Partners" },
                 { value: "₹65 Cr+", sub: "Loans Disbursed" },
               ].map(s => (
                 <div key={s.value} className="text-center">
@@ -306,11 +321,35 @@ export default function PersonalLoan() {
           </ul>
         </div>
       </section>
+      
+       
+
+      {/* ── ELIGIBILITY CRITERIA ── */}
+      <section className="max-w-7xl mx-auto px-4 md:px-8 py-10 border-t">
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">Personal Loan Eligibility Criteria</h2>
+        <div className="text-gray-600 text-sm leading-relaxed space-y-4">
+          <p>
+            To qualify for a personal loan, you have to meet certain criteria. Below are the important
+            factors that lenders take into consideration to decide your eligibility for a personal loan.
+          </p>
+          <ul className="space-y-2 pl-1">
+            {eligibilityCriteria.map(e => (
+              <li key={e} className="flex items-start gap-3">
+                <CheckCircle size={16} className="text-blue-500 mt-0.5 flex-shrink-0" />
+                {e}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* ── FEATURE TABLE ── */}
+
 
       {/* ── FEATURE TABLE ── */}
       <section className="max-w-7xl mx-auto px-4 md:px-8 py-10 border-t">
         <h2 className="text-2xl font-bold text-gray-800 mb-5">
-          Key Personal Loan Features at Direct Credit
+          Representative Example of Loan Cost
         </h2>
         <div className="rounded-2xl border border-gray-200 overflow-hidden">
           <table className="w-full text-sm">
@@ -380,7 +419,7 @@ export default function PersonalLoan() {
 
 
 
-// add image and form section same side eseme ye tha poora basic details ek hi file me show rha hai 
+// add image and form section same side eseme ye tha poora basic details ek hi file me show rha hai
 
 // es code se app direct utm link se bank ke page pe redirect ho jayega jo ki ye instantat personal loan ke liye hai
 // import { useState } from "react";

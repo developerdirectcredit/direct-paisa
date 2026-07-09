@@ -1,27 +1,56 @@
+
+
 // ─────────────────────────────────────────────────────────────────
-//  Loan Against Property — multi-step flow (Direct Credit)
-//  Steps:  Loan Amount → Pin Code → Property Type → Employment
-//          → Net Income → Work Experience → Quotes → Thank You
-//
-//  NOTE on the home icon:
-//  The left-panel icon is controlled by ONE variable — HERO_ICON.
-//  Change it to any image URL (or local /images/... path) and the
-//  whole flow updates. Set it to "" to fall back to the Home lucide icon.
+//  Loan Against Property — restructured to match Agri Loan's
+//  architecture: Hero (lead capture: Name + Mobile, navy/red/blue
+//  theme, image + feature list) -> Wizard (centered card, Stepper,
+//  Pills/Field/Select inputs) -> Review -> Success (lender offers).
 // ─────────────────────────────────────────────────────────────────
 
-import { useState } from "react";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
+
+import { useState } from "react";
 import {
-  ChevronLeft, Home, CheckCircle, ArrowRight, Download, Phone, Mail,
+  Landmark,
+  Clock3,
+  BadgeCheck,
+  ArrowRight,
+  ArrowLeft,
+  Check,
+  Pencil,
+  CheckCircle,
 } from "lucide-react";
 
-// ── CHANGEABLE HOME / HERO ICON ──────────────────────────────────
-//  👇 isko apni image se replace kar sakte ho (URL ya /images/xyz.png)
-//  agar "" rakhoge to default <Home/> lucide icon dikhega.
-const HERO_ICON = "/images/lap-illustration.png";
+/* ------------------------------------------------------------------ */
+/*  Static content                                                     */
+/* ------------------------------------------------------------------ */
 
-// ── Direct Credit lender quotes (Paisabazaar ki jagah Direct Credit) ──
+const LOAN_AMOUNTS = ["Upto ₹15 Lacs", "₹15 - ₹20 Lacs", "₹20 - ₹30 Lacs", "₹30 - ₹50 Lacs", "₹50 - ₹75 Lacs", "₹75 Lacs +"];
+const PROPERTY_TYPES = ["Residential", "Commercial", "Industrial", "Agricultural", "Gram panchayat", "Lal Dora", "Khasra/khtauni", "Others"];
+const EMPLOYMENT = [
+  { title: "Salaried", desc: "Receive fixed amount of income every month" },
+  { title: "Self-Employed Business", desc: "Run a business" },
+  { title: "Self-Employed Professional", desc: "Engage in a profession (Eg: Doctor, C.A., Lawyer, etc)" },
+];
+const INCOMES = ["Below 3 Lacs", "3 Lacs - 6 Lacs", "6 Lacs - 12 Lacs", "12 Lacs - 18 Lacs", "Over 18 Lacs"];
+const EXPERIENCE = ["0 - 1 years", "1 - 2 years", "2 - 3 years", "3+ years"];
+
+const STEP_LABELS = ["Loan Amount", "Pin Code", "Property Type", "Employment", "Income", "Experience", "Review"];
+
+const NAME_RE = /^[A-Za-z][A-Za-z\s]{2,}$/;
+const MOBILE_RE = /^[6-9]\d{9}$/;
+
+const initialForm = {
+  amount: "",
+  pin: "",
+  propertyType: "",
+  employment: "",
+  income: "",
+  experience: "",
+};
+
+// ── Direct Credit lender quotes ─────────────────────────────────
 const lenderQuotes = [
   {
     id: "lt",
@@ -43,441 +72,749 @@ const lenderQuotes = [
   },
 ];
 
-// ── Step option data ─────────────────────────────────────────────
-const LOAN_AMOUNTS  = ["Upto ₹15 Lacs", "₹15 - ₹20 Lacs", "₹20 - ₹30 Lacs", "₹30 - ₹50 Lacs", "₹50 - ₹75 Lacs", "₹75 Lacs +"];
-const PROPERTY_TYPES = ["Residential", "Commercial", "Industrial", "Agricultural", "Gram panchayat", "Lal Dora", "Khasra/khtauni", "Others"];
-const EMPLOYMENT = [
-  { title: "Salaried",                 desc: "Receive fixed amount of income every month" },
-  { title: "Self-Employed Business",   desc: "Run a business" },
-  { title: "Self-Employed Professional", desc: "Engage in a profession (Eg: Doctor, C.A., Lawyer, etc)" },
+// ── Eligibility criteria ───────────────────────────────────────────
+const eligibilityCriteria = [
+  "Nationality: You need to be a Citizen of India with documents to prove your claim.",
+  "Occupation and Income: Your lender will require you to furnish details regarding your occupation and income to prove your professional and financial stability to determine your creditworthiness.",
+  "Credit History: Your three-digit Credit Score, indicative of your track record in respect of repayment of loans, and other forms of credit will be a deciding factor to prove your eligibility for a LAP.",
+  "Banking Relationship: Should you have a healthy relationship with your lender, you will not be disapproved for a LAP. Additionally, your lender will offer you better terms and conditions in respect of loan value, interest rates, period of the loan, hidden charges, and processing fees.",
+  "Market Value of Property: Your lender retains the right to decide the loan amount and terms and conditions of your mortgage loan based on the market value of your collateral property. Besides, the market value of the mortgaged property must be higher than the loan amount calculated on the current value of your property.",
+  "Title of Property: Your lender will require you to be the current existent owner of the property, and in case of a co-application, you will require to prove multiple ownership clear title. Besides, the property must not be mortgaged with any other financial institution.",
 ];
-const INCOMES   = ["Below 3 Lacs", "3 Lacs - 6 Lacs", "6 Lacs - 12 Lacs", "12 Lacs - 18 Lacs", "Over 18 Lacs"];
-const EXPERIENCE = ["0 - 1 years", "1 - 2 years", "2 - 3 years", "3+ years"];
 
-const TOTAL_STEPS = 7;
+// ── Representative loan-cost example (feature table) ─────────────
+const loanCostDetails = [
+  { feature: "Loan Type", details: "Loan Against Property (LAP)" },
+  { feature: "Loan Amount (Sample)", details: "₹75,00,000" },
+  { feature: "Purpose", details: "Business Expansion / Financial Requirement" },
+  { feature: "Annual Interest Rate (Sample)", details: "10.50% p.a." },
+  { feature: "Loan Tenure", details: "180 months (15 years)" },
+  { feature: "Monthly Installment (EMI)", details: "₹82,900 (approx.)" },
+  { feature: "Total Amount Payable", details: "₹1,49,22,000 (approx.)" },
+  { feature: "Total Interest Cost", details: "₹74,22,000 (approx.)" },
+  { feature: "Processing Fee", details: "0.50% – 3% of loan amount" },
+  { feature: "Insurance Fee", details: "1% - 2% of loan amount" },
+  { feature: "Collateral Requirement", details: "Mortgage of residential/commercial property" },
+];
+
+
+
+// ── Why Choose Direct Credit ─────────────────────────────────────
+const whyChooseFeatures = [
+  "Get large loan amounts at low interest rates",
+  "Long tenures — up to 25 years",
+  "Ideal for business expansion, education, or medical needs",
+  "We cover all types of property including residential",
+];
+
+/* ------------------------------------------------------------------ */
+/*  Validation per step                                                */
+/* ------------------------------------------------------------------ */
+
+function validateStep(step, form) {
+  const e = {};
+  if (step === 1 && !form.amount) e.amount = "Select your desired loan amount.";
+  if (step === 2) {
+    if (!/^\d{6}$/.test(form.pin)) e.pin = "Enter a valid 6-digit pin code.";
+  }
+  if (step === 3 && !form.propertyType) e.propertyType = "Select the type of property.";
+  if (step === 4 && !form.employment) e.employment = "Select your employment type.";
+  if (step === 5 && !form.income) e.income = "Select your net annual income.";
+  if (step === 6 && !form.experience) e.experience = "Select your total years of work experience.";
+  return e;
+}
 
 export default function LoanAgainstProperty() {
-  // step: 0..5 = the 6 questions, "quotes" = offers list, "thankyou" = done
-  const [step, setStep] = useState(0);
-
-  const [data, setData] = useState({
-    mobile: "",
-    amount: "",
-    pin: "",
-    propertyType: "",
-    employment: "",
-    income: "",
-    experience: "",
-  });
-  const [error, setError] = useState("");
+  const [started, setStarted] = useState(false);
+  const [step, setStep] = useState(1);
+  const [form, setForm] = useState(initialForm);
+  const [errors, setErrors] = useState({});
+  const [submitted, setSubmitted] = useState(false);
   const [selectedLender, setSelectedLender] = useState(null);
   const [refNo] = useState(() => Math.floor(1000000000 + Math.random() * 8999999999));
 
-  const update = (key, val) => {
-    setData(d => ({ ...d, [key]: val }));
-    setError("");
+  const setChoice = (key) => (value) => {
+    setForm((f) => ({ ...f, [key]: value }));
+    setErrors((p) => ({ ...p, [key]: undefined }));
   };
 
-  const goNext = () => { setError(""); setStep(s => s + 1); };
-  const goBack = () => { setError(""); setStep(s => Math.max(0, s - 1)); };
-
-  // Auto-advance for single-select steps
-  const pickAndNext = (key, val) => {
-    update(key, val);
-    setTimeout(() => setStep(s => s + 1), 180);
+  const set = (key) => (e) => {
+    const value = e.target?.value ?? e;
+    setForm((f) => ({ ...f, [key]: value }));
+    setErrors((p) => ({ ...p, [key]: undefined }));
   };
 
-  // ── LEFT PANEL (shared across all steps) ───────────────────────
-  const LeftPanel = (
-    <div className="bg-blue-50 lg:w-1/2 px-6 md:px-12 py-10 flex flex-col">
-        {/*  ye left side me logo lga tha vhi hta diye hai */}
-      {/* {/* <img src="/images/direct-credit-logo.png" alt="Direct Credit"
-        className="h-14 w-auto mb-12" 
-       onError={(e) => { e.currentTarget.style.display = "none"; }} /> */}
+  const next = () => {
+    const e = validateStep(step, form);
+    if (Object.keys(e).length) {
+      setErrors(e);
+      return;
+    }
+    setErrors({});
+    setStep((s) => Math.min(s + 1, 7));
+  };
 
-      <h2 className="text-3xl md:text-4xl font-bold text-blue-900 mb-5">
-        Loan Against Property
-      </h2>
-      <p className="text-blue-900/70 text-base leading-relaxed max-w-md mb-10">
-        Let your property finance your business, education, health or other
-        personal requirements. Access to the best loan offers against property
-        at lowest interest rates from Direct Credit.
-      </p>
+  const back = () => {
+    setErrors({});
+    setStep((s) => Math.max(s - 1, 1));
+  };
 
-      {/* Changeable hero / home icon */}
-      <div className="mt-auto flex justify-center">
-        {HERO_ICON ? (
-          <img src={HERO_ICON} alt="Loan Against Property"
-            className="w-64 h-auto"
-            onError={(e) => { e.currentTarget.style.display = "none"; }} />
-        ) : (
-          <div className="w-40 h-40 rounded-3xl bg-white flex items-center justify-center shadow-lg">
-            <Home size={64} className="text-blue-500" />
-          </div>
-        )}
-      </div>
-    </div>
-  );
+  const goToStep = (target) => {
+    setErrors({});
+    setStep(target);
+  };
 
-  // ── Progress + back header (steps 0..5) ────────────────────────
-  const StepHeader = (
-    <div>
-      <div className="flex items-center justify-between mb-6">
-        {step > 0 ? (
-          <button onClick={goBack}
-            className="w-9 h-9 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition">
-            <ChevronLeft size={18} className="text-gray-600" />
-          </button>
-        ) : (
-          <div className="flex items-center gap-2">
-            {/* small home icon next to label — uses same changeable source */}
-            {HERO_ICON ? (
-              <img src={HERO_ICON} alt="" className="w-5 h-5 object-contain"
-                onError={(e) => { e.currentTarget.style.display = "none"; }} />
-            ) : (
-              <Home size={16} className="text-gray-500" />
-            )}
-            <span className="text-xs font-bold text-gray-500 tracking-wide uppercase">
-              Loan Against Property
-            </span>
-          </div>
-        )}
-        <span className="text-sm text-gray-500 font-medium">Step {step + 1}/{TOTAL_STEPS}</span>
-      </div>
+  const submit = () => {
+    for (let s = 1; s <= 6; s++) {
+      const e = validateStep(s, form);
+      if (Object.keys(e).length) {
+        setErrors(e);
+        setStep(s);
+        return;
+      }
+    }
+    setErrors({});
+    setSubmitted(true);
+  };
 
-      {/* thin progress bar */}
-      <div className="h-1 w-full bg-gray-100 rounded-full mb-6 overflow-hidden">
-        <div className="h-full bg-blue-600 transition-all duration-300"
-          style={{ width: `${((step + 1) / TOTAL_STEPS) * 100}%` }} />
-      </div>
-    </div>
-  );
+  const reset = () => {
+    setForm(initialForm);
+    setErrors({});
+    setStep(1);
+    setSubmitted(false);
+    setStarted(false);
+    setSelectedLender(null);
+  };
 
-  // reusable option card (single-select pill)
-  const OptionCard = ({ label, selected, onClick }) => (
-    <button onClick={onClick}
-      className={`flex items-center justify-between border rounded-xl px-4 py-3.5 text-sm font-medium transition text-left
-        ${selected
-          ? "border-blue-600 text-blue-700 bg-blue-50/40"
-          : "border-gray-200 text-gray-700 hover:border-blue-300"}`}>
-      <span>{label}</span>
-      <span className={`w-4 h-4 rounded-full border-2 flex-shrink-0 ml-2
-        ${selected ? "border-blue-600 bg-blue-600" : "border-gray-300"}`} />
-    </button>
-  );
-
-  // ── RIGHT PANEL CONTENT per step ───────────────────────────────
-  const renderStep = () => {
-    switch (step) {
-// == step- 1
-        case 0:
   return (
     <>
-      {/* Company Logo */}
-       <img
-        src="/images/direct-credit-logo.png"
-        alt="Direct Credit"
-        className="h-20 w-auto mb-8"
-      />
-      <h2 className="text-3xl font-bold text-blue-700 mb-4 leading-snug">
-        Unlock the Best Loan Offers Against Property
-      </h2>
-        <p className="text-3xl font-bold text-blue-700 mb-6">
-        from 20+ lenders, Anytime & Anywhere
-      </p>
-      <div className="space-y-3 mb-8">
-        <p>✓ Compare Offers from Top Banks & HFCs</p>
-        <p>✓ Interest Rates @ 7.90% onwards</p>
-        <p>✓ Loan Tenure up to 20 Years</p>
-      </div>
-
-      <label className="block text-sm mb-2">
-        Mobile Number
-      </label>
-
-      <input
-        type="tel"
-        maxLength={10}
-        value={data.mobile}
-        onChange={(e) =>
-          update(
-            "mobile",
-            e.target.value.replace(/\D/g, "")
-          )
-        }
-        placeholder="Enter Mobile Number"
-        className="w-full border-b-2 border-gray-300 py-3 focus:outline-none"
-      />
-
-      {error && (
-        <p className="text-red-500 text-xs mt-2">
-          {error}
-        </p>
-      )}
-
-      <button
-        onClick={() => {
-          if (!/^[6-9]\d{9}$/.test(data.mobile)) {
-            setError("Enter valid mobile number");
-            return;
-          }
-
-          setStep(1);
-        }}
-        className="w-full mt-8 bg-blue-700 text-white py-4 rounded-xl"
-      >
-        Proceed
-      </button>
-    </>
-  );
-      // STEP 2 — Loan Amount
-      case 1:
-        return (
-          <>
-            {StepHeader}
-            <h3 className="text-2xl font-bold text-blue-900 mb-1">Select your desired</h3>
-            <h3 className="text-2xl font-bold text-blue-900 border-b-2 border-pink-500 inline-block pb-1 mb-6">Loan Amount</h3>
-            <div className="grid grid-cols-2 gap-3">
-              {LOAN_AMOUNTS.map(a => (
-                <OptionCard key={a} label={a} selected={data.amount === a}
-                  onClick={() => pickAndNext("amount", a)} />
-              ))}
-            </div>
-            <p className="text-xs text-gray-500 mt-5 leading-relaxed">
-              I authorize Direct Credit to share details of my Property Loan enquiry
-              with Direct Credit affiliated lending partners
-            </p>
-          </>
-        );
-
-      // STEP 3 — Pin Code
-      case 2:
-        return (
-          <>
-            {StepHeader}
-            <h3 className="text-2xl font-bold text-blue-900 mb-1">Where is your</h3>
-            <h3 className="text-2xl font-bold text-blue-900 border-b-2 border-pink-500 inline-block pb-1 mb-8">Property Located?</h3>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">Pin Code</label>
-            <div className="relative border-b-2 border-gray-200 focus-within:border-blue-500 transition">
-              <input
-                type="tel"
-                maxLength={6}
-                placeholder="Enter your area postal code"
-                value={data.pin}
-                onChange={e => update("pin", e.target.value.replace(/\D/g, ""))}
-                className="w-full py-2 pr-20 text-sm focus:outline-none bg-transparent"
-              />
-              <span className="absolute right-0 top-2 text-xs text-gray-400">Digits Only</span>
-            </div>
-            {error && <p className="text-red-500 text-xs mt-2">{error}</p>}
-            <button
-              onClick={() => {
-                if (!/^\d{6}$/.test(data.pin)) { setError("Enter a valid 6-digit pin code"); return; }
-                goNext();
-              }}
-              className="mt-8 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl transition flex items-center justify-center gap-2 text-sm">
-              Continue <ArrowRight size={16} />
-            </button>
-          </>
-        );
-
-      // STEP 4 — Property Type
-      case 3:
-        return (
-          <>
-            {StepHeader}
-            <h3 className="text-2xl font-bold text-blue-900 border-b-2 border-pink-500 inline-block pb-1 mb-6">What is the type of property?</h3>
-            <div className="grid grid-cols-2 gap-3">
-              {PROPERTY_TYPES.map(t => (
-                <OptionCard key={t} label={t} selected={data.propertyType === t}
-                  onClick={() => pickAndNext("propertyType", t)} />
-              ))}
-            </div>
-          </>
-        );
-
-      // STEP 5 — Employment Type
-      case 4:
-        return (
-          <>
-            {StepHeader}
-            <h3 className="text-2xl font-bold text-blue-900 border-b-2 border-pink-500 inline-block pb-1 mb-6">Employment Type</h3>
-            <div className="space-y-3">
-              {EMPLOYMENT.map(({ title, desc }) => (
-                <button key={title} onClick={() => pickAndNext("employment", title)}
-                  className={`w-full flex items-center justify-between border rounded-xl px-5 py-4 text-left transition
-                    ${data.employment === title ? "border-blue-600 bg-blue-50/40" : "border-gray-200 hover:border-blue-300"}`}>
-                  <div>
-                    <p className="text-sm font-semibold text-blue-900">{title}</p>
-                    <p className="text-xs text-gray-500 mt-0.5">{desc}</p>
-                  </div>
-                  <span className={`w-4 h-4 rounded-full border-2 flex-shrink-0 ml-3
-                    ${data.employment === title ? "border-blue-600 bg-blue-600" : "border-gray-300"}`} />
-                </button>
-              ))}
-            </div>
-          </>
-        );
-
-      // STEP 6 — Net Annual Income
-      case 5:
-        return (
-          <>
-            {StepHeader}
-            <h3 className="text-2xl font-bold text-blue-900 border-b-2 border-pink-500 inline-block pb-1 mb-6">Select Your Net Annual Income</h3>
-            <div className="grid grid-cols-2 gap-3">
-              {INCOMES.map(i => (
-                <OptionCard key={i} label={i} selected={data.income === i}
-                  onClick={() => pickAndNext("income", i)} />
-              ))}
-            </div>
-          </>
-        );
-
-      // STEP 7 — Work Experience
-      case 6:
-        return (
-          <>
-            {StepHeader}
-            <h3 className="text-2xl font-bold text-blue-900 border-b-2 border-pink-500 inline-block pb-1 mb-6">Total Years of Work Experience</h3>
-            <div className="grid grid-cols-2 gap-3">
-              {EXPERIENCE.map(x => (
-                <OptionCard key={x} label={x} selected={data.experience === x}
-                  onClick={() => { update("experience", x); setTimeout(() => setStep("quotes"), 180); }} />
-              ))}
-            </div>
-          </>
-        );
-
-      default:
-        return null;
-    }
-  };
-
-  // ── QUOTES PAGE (full width, white) ────────────────────────────
-  if (step === "quotes") {
-    return (
-      <div className="min-h-screen bg-white flex flex-col">
-        <Navbar />
-        <div className="flex-1">
-          <div className="max-w-5xl mx-auto px-4 md:px-8 py-6">
-            {/* summary bar */}
-            <div className="bg-gray-50 border border-gray-100 rounded-xl px-6 py-4 flex flex-wrap items-center gap-8 mb-6">
-              <div>
-                <p className="text-xs text-gray-500">Required Amount</p>
-                <p className="text-sm font-bold text-gray-800">{data.amount || "₹40 Lacs"}</p>
-              </div>
-              <div>
-                <p className="text-xs text-gray-500">Loan Tenure</p>
-                <p className="text-sm font-bold text-gray-800">10 years</p>
-              </div>
-              <button onClick={() => setStep(0)}
-                className="ml-auto text-xs text-blue-600 font-semibold hover:underline">
-                ← Edit details
-              </button>
-            </div>
-
-            {/* lender cards */}
-            <div className="space-y-4">
-              {lenderQuotes.map(l => (
-                <div key={l.id}
-                  className="border border-gray-200 rounded-xl px-6 py-5 flex flex-col md:flex-row md:items-center gap-4 hover:shadow-md transition">
-                  <div className="w-32 flex-shrink-0">
-                    <img src={l.logo} alt={l.name} className="h-8 object-contain"
-                      onError={(e) => { e.currentTarget.replaceWith(Object.assign(document.createElement("span"), { className: "text-sm font-bold text-gray-700", innerText: l.name })); }} />
-                  </div>
-                  <div className="flex-1 grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div>
-                      <p className="text-xs text-gray-500">Max. Loan Amount</p>
-                      <p className="text-sm font-bold text-gray-800">{l.maxAmount}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Interest Rate</p>
-                      <p className="text-sm font-bold text-gray-800">{l.rate}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Processing Fee</p>
-                      <p className="text-sm font-bold text-gray-800">{l.fee}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">EMI</p>
-                      <p className="text-sm font-bold text-gray-800">{l.emi}</p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => { setSelectedLender(l); setStep("thankyou"); window.scrollTo({ top: 0 }); }}
-                    className="bg-blue-700 hover:bg-blue-800 text-white font-bold px-8 py-2.5 rounded-lg transition text-sm whitespace-nowrap">
-                    Apply
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-        <Footer />
-      </div>
-    );
-  }
-
-  // ── THANK YOU PAGE ─────────────────────────────────────────────
-  if (step === "thankyou") {
-    return (
-      <div className="min-h-screen bg-white flex flex-col">
-        <Navbar />
-        <div className="flex-1 flex flex-col lg:flex-row">
-          {LeftPanel}
-          <div className="lg:w-1/2 px-6 md:px-12 py-12 flex flex-col">
-            <div className="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center mb-6">
-              <CheckCircle size={32} className="text-green-500" />
-            </div>
-            <h2 className="text-3xl font-bold text-blue-900 mb-4">Thank You!</h2>
-            <p className="text-sm text-gray-700 leading-relaxed mb-5 max-w-md">
-              We have received your <strong>Loan Against Property</strong> application
-              {selectedLender ? <> for <strong>{selectedLender.name}</strong></> : null}.
-            </p>
-            <div className="bg-gray-50 border border-gray-100 rounded-lg px-4 py-3 inline-block mb-5 w-fit">
-              <span className="text-sm text-gray-600">Reference No. : </span>
-              <span className="text-sm font-bold text-gray-800">{refNo}</span>
-            </div>
-            <p className="text-sm text-gray-700 mb-2">
-              Our loan expert will get in touch within 24 hours to take your application forward.
-            </p>
-            <p className="text-sm text-gray-700 mb-8 max-w-md">
-              We thank you for choosing <strong>Direct Credit</strong> for your financial needs
-              and would be keen to serve you in future as well.
-            </p>
-
-            <div className="bg-gray-50 rounded-xl p-5 max-w-md">
-              <p className="text-sm text-gray-600 mb-3">For more credit needs</p>
-              <button className="bg-blue-700 hover:bg-blue-800 text-white font-semibold px-5 py-2.5 rounded-lg flex items-center gap-2 text-sm mb-4">
-                <Download size={16} /> Download App
-              </button>
-              <p className="text-xs text-gray-500 mb-2">In case of any queries, reach out to Direct Credit on:</p>
-              <div className="flex flex-wrap gap-5 text-xs text-gray-600">
-                <span className="flex items-center gap-1.5"><Phone size={13} /> 1800 - 200 - 3467</span>
-                <span className="flex items-center gap-1.5"><Mail size={13} /> support@directcredit.com</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <Footer />
-      </div>
-    );
-  }
-
-  // ── DEFAULT — split layout with current step ───────────────────
-  return (
-    <div className="min-h-screen bg-white flex flex-col">
       <Navbar />
-      <div className="flex-1 flex flex-col lg:flex-row">
-        {LeftPanel}
-        <div className="lg:w-1/2 px-6 md:px-12 py-10 flex flex-col">
-          <div className="max-w-md w-full">
-            {renderStep()}
-          </div>
-        </div>
+      <div className="min-h-screen bg-slate-50 text-slate-900">
+        {!started ? (
+          <Hero onStart={() => setStarted(true)} />
+        ) : submitted ? (
+          <Success
+            selectedLender={selectedLender}
+            onSelectLender={setSelectedLender}
+            refNo={refNo}
+            data={form}
+            onReset={reset}
+          />
+        ) : (
+          <Wizard
+            step={step}
+            form={form}
+            errors={errors}
+            set={set}
+            setChoice={setChoice}
+            next={next}
+            back={back}
+            goToStep={goToStep}
+            onSubmit={submit}
+          />
+        )}
       </div>
       <Footer />
+    </>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  HERO (Agri Loan color theme + Name & Mobile capture)               */
+/* ------------------------------------------------------------------ */
+
+function Hero({ onStart }) {
+  const [name, setName] = useState("");
+  const [mobile, setMobile] = useState("");
+  const [agree, setAgree] = useState(true);
+  const [err, setErr] = useState({});
+
+  const handleStart = () => {
+    const e = {};
+    if (!name.trim()) e.name = "Please enter your full name.";
+    else if (!NAME_RE.test(name.trim())) e.name = "Name can contain letters and spaces only.";
+    if (!mobile) e.mobile = "Please enter your mobile number.";
+    else if (!MOBILE_RE.test(mobile)) e.mobile = "Enter a valid 10-digit mobile number.";
+    if (!agree) e.agree = "Please accept the terms to continue.";
+    if (Object.keys(e).length) {
+      setErr(e);
+      return;
+    }
+    setErr({});
+    onStart();
+  };
+
+  return (
+    <section className="bg-gradient-to-b from-blue-50 to-white">
+      <div className="mx-auto max-w-6xl px-5 py-10 lg:py-16">
+        <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
+          {/* Left column */}
+          <div>
+            <h1 className="text-4xl font-extrabold leading-tight tracking-tight lg:text-5xl">
+              Unlock the Best{" "}
+              <span className="text-[#e8112d]">Loan Against Property</span>{" "}
+              <span className="text-[#001f54]">— Hassle-Free</span>
+            </h1>
+
+            {/* 👇 New hero image (replaces old HERO_ICON / lap-illustration.png) */}
+            <div className="mt-6 overflow-hidden rounded-2xl">
+              <img
+                src="/images/lap-house-money.jpg"
+                alt="Loan Against Property"
+                className="h-72 md:h-80 w-full object-cover"
+              />
+            </div>
+
+            <ul className="mt-8 space-y-5">
+              <Feature
+                icon={<Landmark className="h-5 w-5" />}
+                title="Compare Offers from Top Banks & HFCs"
+                text="Interest rates starting at 7.90% onwards, from 20+ lenders."
+              />
+              <Feature
+                icon={<Clock3 className="h-5 w-5" />}
+                title="Long Tenures — up to 20 Years"
+                text="Flexible repayment that fits your business or personal needs."
+              />
+              <Feature
+                icon={<BadgeCheck className="h-5 w-5" />}
+                title="Trusted by Thousands"
+                text="We cover all types of property, backed by a dedicated support team."
+              />
+            </ul>
+          </div>
+
+          {/* Right column — lead card */}
+          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm lg:p-8">
+            <div className="rounded-xl bg-[#001f54] px-4 py-3 text-sm text-white font-semibold text-center">
+              Start your Loan Against Property application — it only takes a minute.
+            </div>
+
+            <p className="mt-6 text-center text-sm uppercase tracking-widest text-slate-400">
+              Loan Against Property
+            </p>
+            <p className="mt-1 text-center text-2xl font-bold">
+              Get the right loan against your{" "}
+              <span className="text-[#e8112d]">property</span>
+            </p>
+
+            <div className="mt-6 space-y-4">
+              <div>
+                <label className="mb-1 block text-sm font-medium text-slate-700">Full Name</label>
+                <input
+                  value={name}
+                  onChange={(e) => {
+                    setName(e.target.value.replace(/[^A-Za-z\s]/g, ""));
+                    setErr((p) => ({ ...p, name: undefined }));
+                  }}
+                  placeholder="Full Name (as on your PAN)"
+                  className={`w-full rounded-lg border px-4 py-3 outline-none focus:border-blue-500 ${
+                    err.name ? "border-red-400" : "border-slate-300"
+                  }`}
+                />
+                {err.name && <ErrorText>{err.name}</ErrorText>}
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm font-medium text-slate-700">Mobile Number</label>
+                <div
+                  className={`flex items-center gap-2 rounded-lg border px-3 py-2.5 ${
+                    err.mobile ? "border-red-400" : "border-slate-300"
+                  }`}
+                >
+                  <span className="shrink-0 border-r border-slate-200 pr-2 text-slate-700">🇮🇳 +91</span>
+                  <input
+                    type="tel"
+                    value={mobile}
+                    onChange={(e) => {
+                      setMobile(e.target.value.replace(/\D/g, "").slice(0, 10));
+                      setErr((p) => ({ ...p, mobile: undefined }));
+                    }}
+                    placeholder="10-digit mobile number"
+                    className="w-full bg-transparent outline-none"
+                    inputMode="numeric"
+                    maxLength={10}
+                  />
+                </div>
+                {err.mobile && <ErrorText>{err.mobile}</ErrorText>}
+              </div>
+
+              <button
+                onClick={handleStart}
+                className="flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 py-3.5 font-semibold text-white transition hover:bg-blue-700 active:bg-blue-800"
+              >
+                Check Eligibility <ArrowRight className="h-4 w-4" />
+              </button>
+
+              <label className="flex items-start gap-2 text-xs text-slate-500">
+                <input
+                  type="checkbox"
+                  checked={agree}
+                  onChange={(e) => {
+                    setAgree(e.target.checked);
+                    setErr((p) => ({ ...p, agree: undefined }));
+                  }}
+                  className="mt-0.5 accent-blue-600"
+                />
+                <span>
+                  By submitting this form, you agree to the Credit Report Terms of Use, Terms of Use &amp; Privacy
+                  Policy.
+                </span>
+              </label>
+              {err.agree && <ErrorText>{err.agree}</ErrorText>}
+            </div>
+          </div>
+        </div>
+        
+   {/* ── ELIGIBILITY CRITERIA ── */}
+        <section className="py-10 border-t">
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">Eligibility Criteria for Loan against Property</h2>
+          <div className="text-gray-600 text-sm leading-relaxed space-y-4">
+            <ul className="space-y-3 pl-1">
+              {eligibilityCriteria.map((e) => (
+                <li key={e} className="flex items-start gap-3">
+                  <CheckCircle size={16} className="text-blue-500 mt-1 flex-shrink-0" />
+                  {e}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+        {/* ── FEATURE TABLE — Representative Example of Loan Cost ── */}
+        <section className="py-10 border-t mt-10">
+          <h2 className="text-2xl font-bold text-gray-800 mb-5">Representative Example of Loan Cost</h2>
+          <div className="rounded-2xl border border-gray-200 overflow-hidden">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-blue-50">
+                  <th className="text-left px-6 py-3 font-semibold text-blue-700 w-1/2">Particulars</th>
+                  <th className="text-left px-6 py-3 font-semibold text-blue-700">Details</th>
+                </tr>
+              </thead>
+              <tbody>
+                {loanCostDetails.map((row, i) => (
+                  <tr key={row.feature} className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                    <td className="px-6 py-3.5 text-gray-700 font-medium border-t border-gray-100">{row.feature}</td>
+                    <td className="px-6 py-3.5 text-gray-600 border-t border-gray-100">{row.details}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+     
+
+        {/* ── WHY CHOOSE DIRECT CREDIT ── */}
+        <section className="py-10 border-t">
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">Why Choose Direct Credit</h2>
+          <ul className="space-y-2 pl-1">
+            {whyChooseFeatures.map((f) => (
+              <li key={f} className="flex items-start gap-3 text-gray-600 text-sm leading-relaxed">
+                <CheckCircle size={16} className="text-blue-500 mt-0.5 flex-shrink-0" />
+                {f}
+              </li>
+            ))}
+          </ul>
+        </section>
+      </div>
+    </section>
+  );
+}
+
+function Feature({ icon, title, text }) {
+  return (
+    <li className="flex gap-3">
+      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-[#001f54] text-white">{icon}</span>
+      <div>
+        <p className="font-semibold">{title}</p>
+        <p className="text-sm text-slate-500">{text}</p>
+      </div>
+    </li>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  WIZARD                                                             */
+/* ------------------------------------------------------------------ */
+
+function Wizard({ step, form, errors, set, setChoice, next, back, goToStep, onSubmit }) {
+  const isReview = step === 7;
+  return (
+    <section className="mx-auto max-w-3xl px-5 py-10">
+      <Stepper step={step} />
+
+      <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm lg:p-8">
+        {step === 1 && <StepAmount form={form} setChoice={setChoice} errors={errors} />}
+        {step === 2 && <StepPin form={form} set={set} errors={errors} />}
+        {step === 3 && <StepPropertyType form={form} setChoice={setChoice} errors={errors} />}
+        {step === 4 && <StepEmployment form={form} setChoice={setChoice} errors={errors} />}
+        {step === 5 && <StepIncome form={form} setChoice={setChoice} errors={errors} />}
+        {step === 6 && <StepExperience form={form} setChoice={setChoice} errors={errors} />}
+        {step === 7 && <StepReview form={form} goToStep={goToStep} />}
+
+        <div className="mt-8 flex items-center justify-between">
+          <button
+            onClick={back}
+            disabled={step === 1}
+            className="flex items-center gap-2 rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-600 disabled:opacity-40"
+          >
+            <ArrowLeft className="h-4 w-4" /> Back
+          </button>
+
+          {!isReview ? (
+            <button
+              onClick={next}
+              className="flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-blue-700 active:bg-blue-800"
+            >
+              {step === 6 ? "Review details" : "Continue"} <ArrowRight className="h-4 w-4" />
+            </button>
+          ) : (
+            <button
+              onClick={onSubmit}
+              className="flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-blue-700 active:bg-blue-800"
+            >
+              View my offers <Check className="h-4 w-4" />
+            </button>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Stepper({ step }) {
+  return (
+    <div className="flex items-center justify-between overflow-x-auto">
+      {STEP_LABELS.map((label, i) => {
+        const n = i + 1;
+        const active = n === step;
+        const done = n < step;
+        return (
+          <div key={label} className="flex flex-1 items-center">
+            <div className="flex flex-col items-center">
+              <div
+                className={`grid h-8 w-8 place-items-center rounded-full text-xs font-semibold ${
+                  done ? "bg-[#001f54] text-white" : active ? "bg-blue-600 text-white ring-4 ring-blue-100" : "bg-slate-200 text-slate-500"
+                }`}
+              >
+                {done ? <Check className="h-4 w-4" /> : n}
+              </div>
+              <span className="mt-2 hidden whitespace-nowrap text-[11px] text-slate-500 sm:block">{label}</span>
+            </div>
+            {n < STEP_LABELS.length && (
+              <div className={`mx-1 h-0.5 flex-1 ${n < step ? "bg-[#001f54]" : "bg-slate-200"}`} />
+            )}
+          </div>
+        );
+      })}
     </div>
+  );
+}
+
+/* ---------- Field primitives ---------- */
+
+function ErrorText({ children }) {
+  return <p className="mt-1 text-xs text-red-500">{children}</p>;
+}
+
+function Field({ label, children, error }) {
+  return (
+    <label className="block">
+      <span className="mb-1.5 block text-sm font-medium text-slate-700">{label}</span>
+      {children}
+      {error && <ErrorText>{error}</ErrorText>}
+    </label>
+  );
+}
+
+function Text({ value, onChange, error, ...rest }) {
+  return (
+    <input
+      value={value}
+      onChange={onChange}
+      className={`w-full rounded-lg border px-4 py-2.5 outline-none focus:border-blue-500 ${
+        error ? "border-red-400" : "border-slate-300"
+      }`}
+      {...rest}
+    />
+  );
+}
+
+function Pills({ value, onSelect, options }) {
+  return (
+    <div className="flex flex-wrap gap-2">
+      {options.map((o) => (
+        <button
+          key={o}
+          type="button"
+          onClick={() => onSelect(o)}
+          className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
+            value === o ? "border-blue-600 bg-blue-50 text-blue-700" : "border-slate-300 text-slate-600 hover:border-slate-400"
+          }`}
+        >
+          {o}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+const onlyDigits = (setter) => (e) => setter({ target: { value: e.target.value.replace(/\D/g, "") } });
+
+/* ---------- Step 1: Loan Amount ---------- */
+
+function StepAmount({ form, setChoice, errors }) {
+  return (
+    <div className="space-y-5">
+      <h2 className="text-lg font-semibold">Select your desired loan amount</h2>
+      <Field error={errors.amount}>
+        <Pills value={form.amount} onSelect={setChoice("amount")} options={LOAN_AMOUNTS} />
+      </Field>
+      <p className="text-xs text-gray-500 leading-relaxed">
+        I authorize Direct Credit to share details of my Property Loan enquiry with Direct Credit affiliated lending
+        partners.
+      </p>
+    </div>
+  );
+}
+
+/* ---------- Step 2: Pin Code ---------- */
+
+function StepPin({ form, set, errors }) {
+  return (
+    <div className="space-y-5">
+      <h2 className="text-lg font-semibold">Where is your property located?</h2>
+      <Field label="Pin Code" error={errors.pin}>
+        <Text
+          value={form.pin}
+          onChange={onlyDigits(set("pin"))}
+          placeholder="Enter your area postal code"
+          inputMode="numeric"
+          maxLength={6}
+          error={errors.pin}
+        />
+      </Field>
+    </div>
+  );
+}
+
+/* ---------- Step 3: Property Type ---------- */
+
+function StepPropertyType({ form, setChoice, errors }) {
+  return (
+    <div className="space-y-5">
+      <h2 className="text-lg font-semibold">What is the type of property?</h2>
+      <Field error={errors.propertyType}>
+        <Pills value={form.propertyType} onSelect={setChoice("propertyType")} options={PROPERTY_TYPES} />
+      </Field>
+    </div>
+  );
+}
+
+/* ---------- Step 4: Employment Type ---------- */
+
+function StepEmployment({ form, setChoice, errors }) {
+  return (
+    <div className="space-y-5">
+      <h2 className="text-lg font-semibold">Employment Type</h2>
+      <div className="space-y-3">
+        {EMPLOYMENT.map(({ title, desc }) => (
+          <button
+            key={title}
+            type="button"
+            onClick={() => setChoice("employment")(title)}
+            className={`w-full flex items-center justify-between rounded-xl border px-5 py-4 text-left transition ${
+              form.employment === title ? "border-blue-600 bg-blue-50" : "border-slate-200 hover:border-slate-300"
+            }`}
+          >
+            <div>
+              <p className="text-sm font-semibold text-slate-800">{title}</p>
+              <p className="text-xs text-slate-500 mt-0.5">{desc}</p>
+            </div>
+            <span
+              className={`grid h-5 w-5 place-items-center rounded-full border flex-shrink-0 ml-3 ${
+                form.employment === title ? "border-blue-600 bg-blue-600 text-white" : "border-slate-300"
+              }`}
+            >
+              {form.employment === title && <Check className="h-3 w-3" />}
+            </span>
+          </button>
+        ))}
+      </div>
+      {errors.employment && <ErrorText>{errors.employment}</ErrorText>}
+    </div>
+  );
+}
+
+/* ---------- Step 5: Net Annual Income ---------- */
+
+function StepIncome({ form, setChoice, errors }) {
+  return (
+    <div className="space-y-5">
+      <h2 className="text-lg font-semibold">Select Your Net Annual Income</h2>
+      <Field error={errors.income}>
+        <Pills value={form.income} onSelect={setChoice("income")} options={INCOMES} />
+      </Field>
+    </div>
+  );
+}
+
+/* ---------- Step 6: Work Experience ---------- */
+
+function StepExperience({ form, setChoice, errors }) {
+  return (
+    <div className="space-y-5">
+      <h2 className="text-lg font-semibold">Total Years of Work Experience</h2>
+      <Field error={errors.experience}>
+        <Pills value={form.experience} onSelect={setChoice("experience")} options={EXPERIENCE} />
+      </Field>
+    </div>
+  );
+}
+
+/* ---------- Step 7: Review ---------- */
+
+function ReviewBlock({ title, stepNo, goToStep, rows }) {
+  return (
+    <div className="rounded-xl border border-slate-200">
+      <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3">
+        <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
+        <button
+          type="button"
+          onClick={() => goToStep(stepNo)}
+          className="flex items-center gap-1 text-sm font-medium text-blue-600 hover:text-blue-700"
+        >
+          <Pencil className="h-3.5 w-3.5" /> Edit
+        </button>
+      </div>
+      <dl className="divide-y divide-slate-50">
+        {rows.map(([label, value]) => (
+          <div key={label} className="flex gap-4 px-4 py-2.5 text-sm">
+            <dt className="w-44 shrink-0 text-slate-500">{label}</dt>
+            <dd className="text-slate-800">{value || <span className="text-slate-400">—</span>}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  );
+}
+
+function StepReview({ form, goToStep }) {
+  return (
+    <div className="space-y-5">
+      <div>
+        <h2 className="text-lg font-semibold">Review your application</h2>
+        <p className="mt-1 text-sm text-slate-500">
+          Check everything below. Use "Edit" on any section to go back — your other answers stay saved.
+        </p>
+      </div>
+
+      <ReviewBlock title="Loan Amount" stepNo={1} goToStep={goToStep} rows={[["Desired amount", form.amount]]} />
+      <ReviewBlock title="Property Location" stepNo={2} goToStep={goToStep} rows={[["Pin Code", form.pin]]} />
+      <ReviewBlock title="Property Type" stepNo={3} goToStep={goToStep} rows={[["Type", form.propertyType]]} />
+      <ReviewBlock title="Employment" stepNo={4} goToStep={goToStep} rows={[["Employment type", form.employment]]} />
+      <ReviewBlock title="Income" stepNo={5} goToStep={goToStep} rows={[["Net annual income", form.income]]} />
+      <ReviewBlock title="Experience" stepNo={6} goToStep={goToStep} rows={[["Work experience", form.experience]]} />
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  SUCCESS — lender offers, then thank-you once one is picked         */
+/* ------------------------------------------------------------------ */
+
+function Success({ selectedLender, onSelectLender, refNo, data, onReset }) {
+  if (!selectedLender) {
+    return (
+      <section className="mx-auto max-w-5xl px-5 py-10">
+        <div className="bg-gray-50 border border-gray-100 rounded-xl px-6 py-4 flex flex-wrap items-center gap-8 mb-6">
+          <div>
+            <p className="text-xs text-gray-500">Required Amount</p>
+            <p className="text-sm font-bold text-gray-800">{data.amount || "₹40 Lacs"}</p>
+          </div>
+          <div>
+            <p className="text-xs text-gray-500">Loan Tenure</p>
+            <p className="text-sm font-bold text-gray-800">10 years</p>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          {lenderQuotes.map((l) => (
+            <div
+              key={l.id}
+              className="border border-gray-200 rounded-xl px-6 py-5 flex flex-col md:flex-row md:items-center gap-4 hover:shadow-md transition"
+            >
+              <div className="w-32 flex-shrink-0">
+                <img
+                  src={l.logo}
+                  alt={l.name}
+                  className="h-8 object-contain"
+                  onError={(e) => {
+                    e.currentTarget.replaceWith(
+                      Object.assign(document.createElement("span"), {
+                        className: "text-sm font-bold text-gray-700",
+                        innerText: l.name,
+                      })
+                    );
+                  }}
+                />
+              </div>
+              <div className="flex-1 grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div>
+                  <p className="text-xs text-gray-500">Max. Loan Amount</p>
+                  <p className="text-sm font-bold text-gray-800">{l.maxAmount}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500">Interest Rate</p>
+                  <p className="text-sm font-bold text-gray-800">{l.rate}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500">Processing Fee</p>
+                  <p className="text-sm font-bold text-gray-800">{l.fee}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500">EMI</p>
+                  <p className="text-sm font-bold text-gray-800">{l.emi}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => onSelectLender(l)}
+                className="bg-blue-700 hover:bg-blue-800 text-white font-bold px-8 py-2.5 rounded-lg transition text-sm whitespace-nowrap"
+              >
+                Apply
+              </button>
+            </div>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className="mx-auto grid min-h-[70vh] max-w-xl place-items-center px-5 text-center">
+      <div>
+        <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-green-100 text-green-600">
+          <CheckCircle className="h-8 w-8" />
+        </div>
+        <h2 className="mt-6 text-2xl font-bold text-blue-900">Thank You!</h2>
+        <p className="mt-2 text-slate-600">
+          We have received your Loan Against Property application for <strong>{selectedLender.name}</strong>.
+        </p>
+        <div className="mt-4 inline-block rounded-lg bg-gray-50 border border-gray-100 px-4 py-3">
+          <span className="text-sm text-gray-600">Reference No. : </span>
+          <span className="text-sm font-bold text-gray-800">{refNo}</span>
+        </div>
+        <p className="mt-4 text-sm text-slate-600">
+          Our loan expert will get in touch within 24 hours to take your application forward.
+        </p>
+        <button
+          onClick={onReset}
+          className="mt-8 rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-700"
+        >
+          Start a new application
+        </button>
+      </div>
+    </section>
   );
 }
