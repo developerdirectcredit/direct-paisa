@@ -18,15 +18,18 @@ const features = [
 ];
 
 const tableData = [
-  { feature: "Loan Amount", details: "₹1 Lakh – ₹50 Lakh" },
-  { feature: "Interest Rate", details: "10.5% – 36% p.a." },
-  { feature: "Repayment Tenure", details: "12 – 60 months" },
-  { feature: "Processing Fee", details: "0% – 3% of loan amount" },
-  { feature: "Disbursal Time", details: "Within 24 – 48 hours" },
-  { feature: "CIBIL Score Required", details: "700+ preferred" },
-  { feature: "Collateral", details: "Not required upto ₹10L" },
-  { feature: "Business Vintage", details: "Minimum 2 years" },
-  { feature: "Min Annual Turnover", details: "₹10 Lakh+" },
+   { feature: "Loan Type ", details: "Business Loan " },
+  { feature: "Loan Amount", details: "₹25,00,000 " },
+  {feature:"Purpose ",details:"Business Expansion/ Working Capital/ Machinery Purchase"},
+  { feature: "Annual Interest Rate(Indicative)", details: "12.50% p.a." },
+  { feature: "Loan Tenure", details: "84 months(7 years)" },
+  { feature: "Monthly Installment(EMI)", details: "₹44,803 (approx.)" },
+  { feature: "Total Amount Payable", details: "₹37,63,460 (approx.)" },
+  {feature:"Total Interest Cost", details:"₹12,63,460 (approx.) "},
+  { feature: "Processing Fee", details: "1% – 2% of loan amount" },
+  {feature:"Insurance Fee", details:"1% - 2% of loan amount"},
+  {feature:"Collateral Requirement ", details:"Unsecured (Depending upon lender policy) "}
+ 
 ];
 
 const useCases = [
@@ -759,7 +762,7 @@ export default function BusinessLoan() {
 
       {/* ── TABLE ── */}
       <section className="max-w-7xl mx-auto px-4 md:px-8 py-10 border-t">
-        <h2 className="text-2xl font-bold text-gray-800 mb-5">Key Business Loan Features at Direct Paisa</h2>
+        <h2 className="text-2xl font-bold text-gray-800 mb-5"> Representative Example of Loan Cost </h2>
         <div className="rounded-2xl border border-gray-200 overflow-hidden">
           <table className="w-full text-sm">
             <thead>

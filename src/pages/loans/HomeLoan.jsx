@@ -45,14 +45,17 @@ const posterHighlights = [
 ];
 
 const tableData = [
-  { feature: "Loan Amount", details: "₹5 Lakh – ₹15 Crore" },
-  { feature: "Interest Rate", details: "8.35% – 12% p.a." },
-  { feature: "Repayment Tenure", details: "Up to 30 years" },
-  { feature: "Processing Fee", details: "0% – 1% of loan amount" },
-  { feature: "Disbursal Time", details: "Within 2 days of final approval" },
-  { feature: "Loan Types", details: "New Purchase, Balance Transfer, Top-up" },
-  { feature: "LTV Ratio", details: "Up to 90% of property value" },
-  { feature: "CIBIL Score Required", details: "700+ preferred" },
+  {feature:"Loan Type",details:"Home Loan"},
+  { feature: "Loan Amount", details: "₹50,00,000" },
+  {feature:"Purpose",details:"Purchase / Construction / Renovation of Residential Property /Balance Transfer of Existing Housing Loan"},
+  { feature: "Annual Interest Rate (Indicative)", details: "7.50% p.a." },
+  { feature: "Loan Tenure", details: "120 months (10 Years) / 360 months (30 Years)" },
+  {feature:"Monthly Installment (EMI)",details:"₹59,351/ ₹40,289 (approx)"},
+  { feature: "Total Amount Payable", details: "₹71,22,106 / ₹96,67,118 (approx) " },
+  {feature:"Total Interest Cost",details:"₹21,22,106 / 46,67,118 (approx.)"},
+  { feature: "Processing Fee", details: "0.25% – 1% of loan amount " },
+  { feature: "Insurance Fee", details: "1% - 2% of loan amount" },
+  { feature: "Collateral Requirement", details: "Mortgage of residential property" },
 ];
 
 const useCases = [
@@ -1066,7 +1069,7 @@ export default function HomeLoan() {
 
       {/* ── TABLE ── */}
       <section className="max-w-7xl mx-auto px-4 md:px-8 py-10 border-t">
-        <h2 className="text-2xl font-bold text-gray-800 mb-5">Key Home Loan Features at Direct Credit</h2>
+        <h2 className="text-2xl font-bold text-gray-800 mb-5">Representative Example of Loan Cost</h2>
         <div className="rounded-2xl border border-gray-200 overflow-hidden">
           <table className="w-full text-sm">
             <thead>

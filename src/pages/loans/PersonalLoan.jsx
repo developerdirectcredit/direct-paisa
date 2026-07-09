@@ -288,9 +288,8 @@ export default function PersonalLoan() {
         <h2 className="text-2xl font-bold text-gray-800 mb-4">What is a Personal Loan?</h2>
         <div className="text-gray-600 text-sm leading-relaxed space-y-4">
           <p>
-            A Personal Loan gives you quick access to funds for your urgent as well as planned needs
-            without pledging any security. With a fully digital online personal loan process, you can
-            complete your application in just a few clicks and get a quick approval.
+           A Personal Loan gives you quick access to funds for both your urgent and planned financial needs without the need to pledge any security.
+            With a fully digital online personal loan process, you can complete your application in just a few clicks and get quick approval.
           </p>
           <p>
             Most lenders in India use automated systems to assess your credit profile, income, and basic

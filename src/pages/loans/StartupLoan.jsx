@@ -21,15 +21,18 @@ const features = [
 ];
 
 const tableData = [
-  { feature: "Loan Amount",          details: "₹50,000 – ₹2 Crore" },
-  { feature: "Interest Rate",        details: "11% – 30% p.a." },
-  { feature: "Repayment Tenure",     details: "12 – 84 months" },
-  { feature: "Processing Fee",       details: "0% – 3% of loan amount" },
-  { feature: "Disbursal Time",       details: "Within 24 – 48 hours" },
-  { feature: "CIBIL Score Required", details: "685+ preferred" },
-  { feature: "Collateral",           details: "Not required upto ₹15L" },
-  { feature: "Business Vintage",     details: "0 – 3 years (early stage)" },
-  { feature: "Eligible Entities",    details: "DPIIT-recognised startups, Pvt Ltd, LLP" },
+  {feature:"Loan Type",details:"Startup Loan"},
+  { feature: "Loan Amount", details: "₹20,00,000" },
+  {feature:"Purpose",details:"Higher Education in India / Abroad"},
+  { feature: "Annual Interest Rate (Indicative)", details: "9.50% p.a." },
+  { feature: "Loan Tenure", details: "120 months (10 Years)" },
+  {feature:"Moratarium Period",details:"Course Period + 12 Months (if applicable)"},
+  {feature:"Monthly Installment (EMI)",details:"₹25,900 (approx.)"},
+  { feature: "Total Amount Payable", details: "₹31,08,000 (approx.) " },
+  {feature:"Total Interest Cost",details:"₹11,08,000 (approx.) "},
+  { feature: "Processing Fee", details: "0% - 1% of loan amount " },
+  //{ feature: "Insurance Fee", details: "1% - 2% of loan amount" },
+  { feature: "Collateral Requirement", details: "Depending upon loan amount and lender policy " },
 ];
 
 const useCases = [
@@ -665,7 +668,7 @@ export default function StartupLoan() {
 
       {/* ── TABLE ── */}
       <section className="max-w-7xl mx-auto px-4 md:px-8 py-10 border-t">
-        <h2 className="text-2xl font-bold text-gray-800 mb-5">Key Startup Loan Features at Direct Credit</h2>
+        <h2 className="text-2xl font-bold text-gray-800 mb-5"> Representative Example of Loan Cost </h2>
         <div className="rounded-2xl border border-gray-200 overflow-hidden">
           <table className="w-full text-sm">
             <thead>

@@ -35,15 +35,17 @@ const posterHighlights = [
 ];
 
 const tableData = [
-  { feature: "Loan Amount", details: "₹10,000 – ₹40 Lakh" },
-  { feature: "Interest Rate", details: "11% – 44% p.a." },
-  { feature: "Repayment Tenure", details: "12 – 84 months" },
-  { feature: "Processing Fee", details: "Up to 3.93% of loan amount" },
-  { feature: "Disbursal Time", details: "Within minutes to 24 hours" },
-  { feature: "CIBIL Score Required", details: "685+ (750+ for best rates)" },
-  { feature: "Collateral Required", details: "None (Unsecured)" },
-  { feature: "Minimum Salary", details: "₹15,000/month (varies by lender)" },
-  { feature: "Prepayment Charges", details: "0% – 5% (lender-specific)" },
+  {feature:"Loan Type",details:"Instant Personal Loan"},
+  { feature: "Loan Amount", details: "₹5,00,000" },
+  {feature:"Purpose",details:"Personal Expenses / Medical / Travel / Education"},
+  { feature: "Annual Interest Rate (Indicative)", details: "9.75% p.a." },
+  { feature: "Loan Tenure", details: "60 months (5 Years)" },
+  {feature:"Monthly Installment (EMI)",details:"₹10,562.12  (approx.)"},
+  { feature: "Total Amount Payable", details: "₹6,33,727.31  (approx.) " },
+  {feature:"Total Interest Cost",details:"₹1,33,727.31  (approx.) "},
+  { feature: "Processing Fee", details: "1% – 3% of loan amount " },
+  { feature: "Insurance Fee", details: "1% - 2% of loan amount" },
+  { feature: "Collateral Requirement", details: "Not Required(Unsecured Loan)" },
 ];
 
 const useCases = [
@@ -450,7 +452,7 @@ export default function InstantPersonalLoan() {
       {/* ── FEATURE TABLE ── */}
       <section className="max-w-7xl mx-auto px-4 md:px-8 py-10 border-t">
         <h2 className="text-2xl font-bold text-gray-800 mb-5">
-          Key Instant Personal Loan Features at Direct Paisa
+           Representative Example of Loan Cost 
         </h2>
         <div className="rounded-2xl border border-gray-200 overflow-hidden">
           <table className="w-full text-sm">
