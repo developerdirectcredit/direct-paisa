@@ -41,6 +41,25 @@ const useCases = [
   "Inventory purchase or raw material",
 ];
 
+const eligibilityCriteria = [
+  "Business Type: Loans available for sole proprietorships, partnerships, LLCs, corporations, and more",
+  "Credit Score: 700 or above (preferred by most private and public sector banks)",
+  "Business Age / Vintage: Minimum 1 year of operational history (business location must remain same)",
+  "Annual Turnover: Minimum revenue as defined by the Bank/NBFC",
+  "Collateral: Secured loans may require assets like real estate, equipment, or inventory",
+  "Cash Flow: Evaluated to assess your ability to repay the loan",
+  "Age Criteria: Min. 21 years at application & Max. 65 years at loan maturity",
+  "Eligible Entities: Individuals, MSMEs, Sole Proprietorships, Partnership Firms, Public & Private Limited Companies, LLPs, retailers, traders, manufacturers, and other non-farm business entities",
+  "Nationality: Indian citizens only",
+  "Additional Criteria: Applicant must own a residence, office, shop, or Godown",
+];
+
+const repaymentDetails = [
+  { feature: "Minimum Repayment Period", details: "12 months" },
+  { feature: "Maximum Repayment Period", details: "120 months (10 years)" },
+  { feature: "Annual Interest Rate (AIR)", details: "10% – 30% per annum" },
+];
+
 /* ════════════════════════════════════════════════════════════
    APPLICATION-FLOW STATIC DATA
    (GST → Turnover → Personal → Business → Loan → CIBIL → OTP → Score → Lenders)
@@ -759,6 +778,45 @@ export default function BusinessLoan() {
           </ul>
         </div>
       </section>
+
+
+      {/* ── ELIGIBILITY CRITERIA ── */}
+      <section className="max-w-7xl mx-auto px-4 md:px-8 py-10 border-t">
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">Eligibility Criteria & Eligible Entities</h2>
+        <div className="text-gray-600 text-sm leading-relaxed space-y-4">
+          <ul className="space-y-2 pl-1">
+            {eligibilityCriteria.map(e => (
+              <li key={e} className="flex items-start gap-3">
+                <CheckCircle size={16} className="text-green-500 mt-0.5 flex-shrink-0" />
+                {e}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Repayment period & interest rate */}
+        <h3 className="text-lg font-bold text-gray-800 mt-8 mb-4">Repayment Period & Interest Rate</h3>
+        <div className="rounded-2xl border border-gray-200 overflow-hidden">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="bg-green-50">
+                <th className="text-left px-6 py-3 font-semibold text-green-700 w-1/2">Feature</th>
+                <th className="text-left px-6 py-3 font-semibold text-green-700">Details</th>
+              </tr>
+            </thead>
+            <tbody>
+              {repaymentDetails.map((row, i) => (
+                <tr key={row.feature} className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                  <td className="px-6 py-3.5 text-gray-700 font-medium border-t border-gray-100">{row.feature}</td>
+                  <td className="px-6 py-3.5 text-gray-600 border-t border-gray-100">{row.details}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+
 
       {/* ── TABLE ── */}
       <section className="max-w-7xl mx-auto px-4 md:px-8 py-10 border-t">

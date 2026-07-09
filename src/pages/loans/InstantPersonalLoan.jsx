@@ -57,6 +57,13 @@ const useCases = [
   "Debt consolidation and balance transfer",
 ];
 
+const eligibilityCriteria = [
+  "CIBIL score of 750+ & internal risk parameters",
+  "Salary should be ₹30,000 or more",
+  "Minimum age 25 years & maximum age 57 years",
+  "Loan eligibility up to ₹35 Lakh — however, you can select an amount as desired",
+];
+
 // ── Bank offers shown after eligibility check ────────────────────
 //    Add more objects here later to show multiple banks.
 const bankOffers = [
@@ -448,7 +455,22 @@ export default function InstantPersonalLoan() {
           </ul>
         </div>
       </section>
+    {/* ── ELIGIBILITY CRITERIA ── */}
+      <section className="max-w-7xl mx-auto px-4 md:px-8 py-10 border-t">
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">Personal Loan Eligibility</h2>
+        <div className="text-gray-600 text-sm leading-relaxed space-y-4">
+          <ul className="space-y-2 pl-1">
+            {eligibilityCriteria.map(e => (
+              <li key={e} className="flex items-start gap-3">
+                <CheckCircle size={16} className="text-blue-500 mt-0.5 flex-shrink-0" />
+                {e}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
 
+      
       {/* ── FEATURE TABLE ── */}
       <section className="max-w-7xl mx-auto px-4 md:px-8 py-10 border-t">
         <h2 className="text-2xl font-bold text-gray-800 mb-5">
