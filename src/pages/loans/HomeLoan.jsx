@@ -969,10 +969,10 @@ export default function HomeLoan() {
 
                 <p className="text-center text-xl font-extrabold text-gray-900 mb-5 leading-snug">
                   Get up to{" "}
-                  <span className="text-blue-600">₹5 Crore</span>{" "}
+                  <span className="text-blue-600">₹15 Crore</span>{" "}
                   starting at{" "}
                   <span className="text-blue-600 underline decoration-blue-400 decoration-2 underline-offset-2">
-                    8.35%
+                    7.10%
                   </span>
                 </p>
 
@@ -1069,7 +1069,7 @@ export default function HomeLoan() {
 
       {/* ── TABLE ── */}
       <section className="max-w-7xl mx-auto px-4 md:px-8 py-10 border-t">
-        <h2 className="text-2xl font-bold text-gray-800 mb-5">Representative Example of Loan Cost</h2>
+        <h2 className="text-2xl font-bold text-gray-800 mb-5">Representative Example </h2>
         <div className="rounded-2xl border border-gray-200 overflow-hidden">
           <table className="w-full text-sm">
             <thead>

@@ -12,7 +12,7 @@ import {
 ════════════════════════════════════════════════════════════ */
 const features = [
   { icon: Zap, title: "Compare 25+ Lenders Instantly", desc: "Evaluate interest rates, tenure & more in one place." },
-  { icon: Clock, title: "Quick Funds in 24-48 Hours", desc: "Minimal documentation with super-fast approval." },
+  { icon: Clock, title: "Quick Funds in 24-96 Hours", desc: "Minimal documentation with super-fast approval." },
   { icon: Search, title: "Check Eligibility for Free", desc: "No impact on credit score. 100% secure." },
   { icon: Shield, title: "Safe, Secure & Compliant", desc: "RBI-compliant partners. Your data is always protected." },
 ];
@@ -57,7 +57,7 @@ const eligibilityCriteria = [
 const repaymentDetails = [
   { feature: "Minimum Repayment Period", details: "12 months" },
   { feature: "Maximum Repayment Period", details: "120 months (10 years)" },
-  { feature: "Annual Interest Rate (AIR)", details: "10% – 30% per annum" },
+  { feature: "Annual Interest Rate (AIR)", details: "9.20% – 35% per annum" },
 ];
 
 /* ════════════════════════════════════════════════════════════
@@ -625,7 +625,7 @@ export default function BusinessLoan() {
                   <Clock3 className="h-5 w-5" />
                 </span>
                 <div>
-                  <p className="font-semibold">Quick Funds in 24-48 Hours</p>
+                  <p className="font-semibold">Quick Funds in 24-96 Hours</p>
                   <p className="text-sm text-slate-500">Minimal documentation with super-fast approval.</p>
                 </div>
               </li>
@@ -663,7 +663,7 @@ export default function BusinessLoan() {
               {[
                 { value: "6.2L+", sub: "Happy Customers" },
                 { value: "50+", sub: "Banking Partners" },
-                { value: "₹10,000 Cr+", sub: "Loans Disbursed" },
+                { value: "₹50 Cr+", sub: "Loans Disbursed" },
               ].map(s => (
                 <div key={s.value} className="text-center">
                   <p className="text-lg font-bold text-[#001f54]">{s.value}</p>
@@ -820,7 +820,7 @@ export default function BusinessLoan() {
 
       {/* ── TABLE ── */}
       <section className="max-w-7xl mx-auto px-4 md:px-8 py-10 border-t">
-        <h2 className="text-2xl font-bold text-gray-800 mb-5"> Representative Example of Loan Cost </h2>
+        <h2 className="text-2xl font-bold text-gray-800 mb-5"> Representative Example </h2>
         <div className="rounded-2xl border border-gray-200 overflow-hidden">
           <table className="w-full text-sm">
             <thead>
