@@ -158,16 +158,16 @@ export default function PersonalLoan() {
           <div className="w-full lg:w-[400px] flex-shrink-0 lg:sticky lg:top-24">
             <div className="border border-gray-200 rounded-2xl shadow-xl overflow-hidden">
 
-              {/* Cashback banner */}
-              <div className="bg-amber-50 border-b border-amber-100 px-5 py-3 flex items-center gap-3">
+              {/* Cashback banner \*/}
+               {/* <div className="bg-amber-50 border-b border-amber-100 px-5 py-3 flex items-center gap-3">
                 <span className="text-2xl">💰</span>
                 <div>
                   <p className="text-sm font-semibold text-gray-800">
                     Get Cashback of <span className="text-blue-600 font-bold">₹1,000*</span> on Loan Disbursal
                   </p>
                   <p className="text-xs text-gray-400">Valid till 30th June '26 &nbsp;·&nbsp; *T&C Apply</p>
-                </div>
-              </div>
+                </div> 
+              </div> */}
 
               <div className="px-6 py-6">
                 {!submitted ? (
