@@ -144,7 +144,7 @@ export default function PersonalLoan() {
               {[
                 { value: "5L", sub: "Satisfied Customers" },
                 { value: "65+", sub: "Lending Partners" },
-                { value: "₹65 Cr+", sub: "Loans Disbursed" },
+                { value: "₹10 Cr+", sub: "Loans Disbursed" },
               ].map(s => (
                 <div key={s.value} className="text-center">
                   <p className="text-lg font-bold text-blue-600">{s.value}</p>
@@ -348,7 +348,7 @@ export default function PersonalLoan() {
       {/* ── FEATURE TABLE ── */}
       <section className="max-w-7xl mx-auto px-4 md:px-8 py-10 border-t">
         <h2 className="text-2xl font-bold text-gray-800 mb-5">
-          Representative Example of Loan Cost
+          Representative Example 
         </h2>
         <div className="rounded-2xl border border-gray-200 overflow-hidden">
           <table className="w-full text-sm">
@@ -376,11 +376,11 @@ export default function PersonalLoan() {
           Why Apply for a Personal Loan on Direct Credit?
         </h2>
         <p className="text-gray-600 text-sm leading-relaxed max-w-3xl">
-          Direct Credit provides personal loan offers from 30+ banks & NBFCs, enabling you to compare,
-          choose and apply for the personal loan that suits your requirements the best, with the highest
-          chances of approval. Through deep integrations with India's leading Banks and NBFCs, you can
-          apply for a personal loan with ease on the Direct Credit platform, through end-to-end digital
-          processes.
+         Direct Credit provides personal loan offers from 30+ banks and NBFCs,
+          allowing you to compare, choose, and apply for a loan that best suits
+          your requirements with higher chances of approval. Through seamless 
+          integrations with India’s leading banks and NBFCs, Direct Paisa enables
+          you to apply for a personal loan easily through a fully digital, end-to-end process.
         </p>
       </section>
 

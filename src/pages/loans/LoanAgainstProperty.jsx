@@ -382,7 +382,7 @@ function Hero({ onStart }) {
         </section>
         {/* ── FEATURE TABLE — Representative Example of Loan Cost ── */}
         <section className="py-10 border-t mt-10">
-          <h2 className="text-2xl font-bold text-gray-800 mb-5">Representative Example of Loan Cost</h2>
+          <h2 className="text-2xl font-bold text-gray-800 mb-5">Representative Example</h2>
           <div className="rounded-2xl border border-gray-200 overflow-hidden">
             <table className="w-full text-sm">
               <thead>

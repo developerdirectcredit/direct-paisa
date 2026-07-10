@@ -1689,7 +1689,7 @@ function Feature({ icon, title, text }) {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Representative Example of Loan Cost                                 */
+/*  Representative Example                              */
 /* ------------------------------------------------------------------ */
 
 const tableData = [
@@ -1708,7 +1708,7 @@ function LoanCostTable() {
   return (
     <section className="mx-auto max-w-6xl px-5 py-10 border-t border-slate-100">
       <h2 className="text-2xl font-bold text-slate-800 mb-5">
-        Representative Example of Loan Cost
+        Representative Example
       </h2>
       <div className="rounded-2xl border border-slate-200 overflow-hidden">
         <table className="w-full text-sm">
