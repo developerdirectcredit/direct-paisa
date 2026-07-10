@@ -1,3 +1,6 @@
+
+
+
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 
@@ -10,13 +13,18 @@ import {
   ArrowLeft,
   Check,
   Pencil,
+  CheckCircle,
+  Calendar,
+  Percent,
 } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
 /*  Bank Guarantee (BG) Page                                           */
-/*  Hero = lead capture (Name + Mobile), styled like the Agri loan     */
-/*         hero, with the bank guarantee image.                        */
-/*  Wizard = the full Bank Guarantee flow.                             */
+/*  Hero = lead capture (Name + Mobile), restyled to Agri Loan's       */
+/*         navy (#001f54) / red (#e8112d) theme, with the bank         */
+/*         guarantee image + new What-Is / Key-Features / Repayment    */
+/*         stats / Representative-cost-table content below it.        */
+/*  Wizard = the full Bank Guarantee flow (unchanged).                 */
 /* ------------------------------------------------------------------ */
 
 const ENTITY_TYPES = ["Proprietor", "Partnership", "Pvt Ltd", "LLP", "Others"];
@@ -58,6 +66,34 @@ const STEP_LABELS = [
   "Collateral",
   "Documents",
   "Review",
+];
+
+// ── Key Details & Process ─────────────────────────────────────────
+const keyDetails = [
+  "How It Works: Since a Bank Guarantee is a secure, highly liquid instrument, lenders consider this a low-risk loan. The bank holds the guarantee as security and disburses funds to improve your business cash flow.",
+  "Eligibility: Any business or individual with a strong financial record, good credit history, and a legitimate, active Bank Guarantee can apply.",
+  "Collateral & Margin: In most cases, the BG itself serves as the primary security, though the bank may deduct a margin (e.g., 10-25%) when determining the exact loan amount.",
+  "Processing Time: These loans can often be processed and disbursed relatively quickly, generally between 3 to 5 working days depending on the financial institution.",
+];
+
+// ── Repayment period & BG commission ────────────────────────────────
+const repaymentStats = [
+  { icon: Calendar, title: "Minimum Repayment Period", desc: "03 months" },
+  { icon: Calendar, title: "Maximum Repayment Period", desc: "36 months" },
+  { icon: Percent, title: "Maximum Annual Charges (BG Commission)", desc: "Up to 3.00% per annum" },
+];
+
+// ── Representative example of loan cost ─────────────────────────────
+const loanCostDetails = [
+  { feature: "Facility Type", details: "Bank Guarantee (Financial / Performance BG)" },
+  { feature: "Guarantee Amount", details: "₹5,00,00,000" },
+  { feature: "Purpose", details: "Contract / Tender / Performance Obligation" },
+  { feature: "BG Tenure", details: "12 months" },
+  { feature: "BG Commission", details: "1.50% p.a." },
+  { feature: "Annual BG Cost", details: "₹75,000 (approx.)" },
+  { feature: "Margin Requirement", details: "0% – 30% (FD / Collateral based)" },
+  { feature: "Processing / Issuance Fee", details: "As per bank policy (nominal / one time)" },
+  { feature: "Collateral Requirement", details: "FD / Property / Corporate Guarantee (as applicable)" },
 ];
 
 const NAME_RE = /^[A-Za-z][A-Za-z\s]{2,}$/;
@@ -289,7 +325,7 @@ export default function BankGuarantee() {
 }
 
 /* ------------------------------------------------------------------ */
-/*  HERO (Name & Mobile capture) — Step 1 image                        */
+/*  HERO (Agri Loan navy/red theme + Name & Mobile capture)            */
 /* ------------------------------------------------------------------ */
 
 function Hero({ onStart }) {
@@ -322,13 +358,16 @@ function Hero({ onStart }) {
           {/* Left column */}
           <div>
             <h1 className="text-4xl font-extrabold leading-tight tracking-tight lg:text-5xl">
-              Get a <span className="text-blue-600">Bank Guarantee</span> — Fast &amp;
-              Hassle-Free
+              Get a{" "}
+              <span className="text-[#e8112d]">Bank Guarantee</span>{" "}
+              <span className="text-[#001f54]">— Fast &amp; Hassle-Free</span>
             </h1>
             <p className="mt-4 max-w-xl text-slate-600">
-              Financial, Performance, Advance Payment, Bid Bond, EMD &amp; Customs
-              guarantees from leading banks. Secured &amp; unsecured options with
-              expert support at every step.
+             Bank Guarantee
+             Expand business opportunities with trusted Bank Guarantee solutions.
+              Access Financial, Performance, Advance Payment, Bid Bond, EMD, and Customs Guarantees from leading Banks,
+               with secured and unsecured options, expert advisory, quick processing, and end-to-end support. 
+
             </p>
 
             <div className="mt-6 overflow-hidden rounded-2xl">
@@ -360,7 +399,7 @@ function Hero({ onStart }) {
 
           {/* Right column — lead card */}
           <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm lg:p-8">
-            <div className="rounded-xl bg-blue-50 px-4 py-3 text-sm text-blue-800">
+            <div className="rounded-xl bg-[#001f54] px-4 py-3 text-sm text-white font-semibold text-center">
               Start your Bank Guarantee application — it only takes a minute.
             </div>
 
@@ -368,7 +407,8 @@ function Hero({ onStart }) {
               Bank Guarantee
             </p>
             <p className="mt-1 text-center text-2xl font-bold">
-              Get the right <span className="text-blue-600">guarantee</span> for your
+              Get the right{" "}
+              <span className="text-[#e8112d]">guarantee</span> for your
               business
             </p>
 
@@ -434,7 +474,7 @@ function Hero({ onStart }) {
                     setAgree(e.target.checked);
                     setErr((p) => ({ ...p, agree: undefined }));
                   }}
-                  className="mt-0.5"
+                  className="mt-0.5 accent-blue-600"
                 />
                 <span>
                   By submitting this form, you agree to the Credit Report Terms
@@ -445,6 +485,76 @@ function Hero({ onStart }) {
             </div>
           </div>
         </div>
+
+        {/* ── WHAT IS A BANK GUARANTEE LOAN? ── */}
+        <section className="py-10 border-t mt-10">
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">
+            What is a Loan Against Bank Guarantee?
+          </h2>
+          <p className="text-gray-600 text-sm leading-relaxed">
+            A Loan Against a Bank Guarantee allows you to secure immediate working
+            capital or a line of credit from a financial institution using an
+            existing Bank Guarantee (BG) as collateral. The bank typically offers a
+            funding limit (often a specific percentage of the BG value) to help
+            manage business or operational expenses efficiently.
+          </p>
+        </section>
+
+        {/* ── KEY DETAILS & PROCESS ── */}
+        <section className="py-10 border-t">
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">Key Details &amp; Process</h2>
+          <ul className="space-y-3 pl-1">
+            {keyDetails.map((k) => (
+              <li key={k} className="flex items-start gap-3 text-gray-600 text-sm leading-relaxed">
+                <CheckCircle size={16} className="text-[#001f54] mt-1 flex-shrink-0" />
+                {k}
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        {/* ── REPAYMENT PERIOD & BG COMMISSION ── */}
+        <section className="py-10 border-t">
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">
+            Repayment Period &amp; BG Commission
+          </h2>
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {repaymentStats.map(({ icon: Icon, title, desc }) => (
+              <div key={title} className="flex items-start gap-4 rounded-2xl border border-gray-200 p-5">
+                <div className="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
+                  <Icon size={20} className="text-[#001f54]" />
+                </div>
+                <div>
+                  <p className="font-bold text-gray-800 text-sm">{title}</p>
+                  <p className="text-gray-500 text-sm mt-0.5">{desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ── REPRESENTATIVE EXAMPLE OF LOAN COST ── */}
+        <section className="py-10 border-t">
+          <h2 className="text-2xl font-bold text-gray-800 mb-5">Representative Example </h2>
+          <div className="rounded-2xl border border-gray-200 overflow-hidden">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-blue-50">
+                  <th className="text-left px-6 py-3 font-semibold text-[#001f54] w-1/2">Particulars</th>
+                  <th className="text-left px-6 py-3 font-semibold text-[#001f54]">Details</th>
+                </tr>
+              </thead>
+              <tbody>
+                {loanCostDetails.map((row, i) => (
+                  <tr key={row.feature} className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                    <td className="px-6 py-3.5 text-gray-700 font-medium border-t border-gray-100">{row.feature}</td>
+                    <td className="px-6 py-3.5 text-gray-600 border-t border-gray-100">{row.details}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
       </div>
     </section>
   );
@@ -453,7 +563,7 @@ function Hero({ onStart }) {
 function Feature({ icon, title, text }) {
   return (
     <li className="flex gap-3">
-      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-blue-50 text-blue-600">
+      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-[#001f54] text-white">
         {icon}
       </span>
       <div>
@@ -465,7 +575,7 @@ function Feature({ icon, title, text }) {
 }
 
 /* ------------------------------------------------------------------ */
-/*  WIZARD                                                             */
+/*  WIZARD (unchanged flow, recolored to navy)                         */
 /* ------------------------------------------------------------------ */
 
 function Wizard({
@@ -539,7 +649,7 @@ function Stepper({ step }) {
               <div
                 className={`grid h-8 w-8 place-items-center rounded-full text-xs font-semibold ${
                   done
-                    ? "bg-blue-600 text-white"
+                    ? "bg-[#001f54] text-white"
                     : active
                     ? "bg-blue-600 text-white ring-4 ring-blue-100"
                     : "bg-slate-200 text-slate-500"
@@ -554,7 +664,7 @@ function Stepper({ step }) {
             {n < STEP_LABELS.length && (
               <div
                 className={`mx-1 h-0.5 flex-1 ${
-                  n < step ? "bg-blue-600" : "bg-slate-200"
+                  n < step ? "bg-[#001f54]" : "bg-slate-200"
                 }`}
               />
             )}
@@ -662,7 +772,7 @@ function FileRow({ label, required, name, onChange, error }) {
       >
         <div>
           <p className="text-sm font-medium text-slate-700">
-            {label} {required && <span className="text-red-500">*</span>}
+            {label} {required && <span className="text-[#e8112d]">*</span>}
           </p>
           {name ? (
             <p className="text-xs text-blue-600">{name}</p>

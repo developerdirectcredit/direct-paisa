@@ -1,3 +1,4 @@
+
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 
@@ -12,93 +13,122 @@ import {
   Pencil,
   ShieldCheck,
   XCircle,
+  CheckCircle,
+  Calendar,
+  IndianRupee,
+  Percent,
 } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
-/*  Rupee / Foreign Currency Term Loan Page                            */
-/*  Hero = lead capture (Name + Mobile), styled like the Bank          */
-/*         Guarantee hero, with the foreign-currency term loan image.  */
-/*  Wizard = the full term loan flow (steps combined into sections).   */
+/*  Foreign Currency Term Loan (FCTL)                                  */
+/*  Hero = lead capture (Name + Mobile), restyled to Agri Loan's       */
+/*         navy (#001f54) / red (#e8112d) theme, with new Repayment    */
+/*         Stats / Representative-example content below it.           */
+/*  Wizard = the full FCTL flow (unchanged).                           */
 /* ------------------------------------------------------------------ */
 
-const TURNOVER_BANDS = [
-  "Below ₹1 Cr",
-  "₹1–10 Cr",
-  "₹10–50 Cr",
-  "₹50–250 Cr",
-  "Above ₹250 Cr",
-];
-const INDUSTRIES = [
-  "Manufacturing",
-  "Trading",
-  "Services",
-  "IT / ITeS",
-  "Pharma",
-  "Textiles",
-  "Engineering",
+const ENTITY_TYPES = ["Proprietorship", "Partnership", "Pvt Ltd", "LLP", "Others"];
+const CURRENCIES = ["USD", "EUR", "GBP", "JPY", "Others"];
+const PURPOSES = [
+  "Capital Expenditure",
+  "Machinery Import",
+  "Overseas Investment",
+  "Refinancing",
+  "Working Capital",
   "Others",
 ];
-const PURPOSES = [
-  "Financial Capital Expenditure",
-  "Refinance",
-  "Overseas Investment",
-  "Working Capital Requirement",
-];
-const CURRENCIES = ["INR", "USD", "EUR", "GBP", "JPY"];
-const DOC_METHODS = ["Fetch securely via Accumn (OTP)", "Upload manually"];
+const TENURES = ["1 year", "3 years", "5 years", "7 years", "10 years", "Custom"];
+const COLLATERAL_TYPES = ["Residential", "Commercial", "Industrial", "Corporate Guarantee"];
 
 // CIBIL threshold below which the journey ends with a rejection.
 const CIBIL_THRESHOLD = 700;
 
 const STEP_LABELS = [
   "Basic",
-  "KYC",
+  "PAN",
+  "Entity PAN",
   "CIBIL",
-  "GST",
+  "Loan Details",
+  "Turnover",
+  "Collateral",
   "Documents",
   "Review",
+];
+
+// ── Repayment period, loan amount range & interest rate ─────
+const repaymentStats = [
+  { icon: Calendar, title: "Minimum Repayment Period", desc: "12 months (1 year)" },
+  { icon: Calendar, title: "Maximum Repayment Period", desc: "120 months (10 years)" },
+  { icon: IndianRupee, title: "Minimum Loan Amount", desc: "₹50,00,000" },
+  { icon: IndianRupee, title: "Maximum Loan Amount", desc: "₹250,00,00,000" },
+  { icon: Percent, title: "Annual Interest Rate (AIR)", desc: "5.75% per annum" },
+];
+
+// ── Representative example ───────────────────────────────────────────
+const loanCostDetails = [
+  { feature: "Loan Type", details: "Foreign Currency Term Loan (FCTL)" },
+  { feature: "Loan Amount", details: "USD 500,000 (or equivalent)" },
+  { feature: "Purpose", details: "Capital Expenditure, Machinery Import, Overseas Investment, Refinancing & Working Capital" },
+  { feature: "Annual Interest Rate (Indicative)", details: "SOFR + 5.00% p.a. (approx.)" },
+  { feature: "Loan Tenure", details: "60 months (5 years)" },
+  { feature: "Monthly Installment (EMI)", details: "As per foreign currency repayment schedule" },
+  { feature: "Total Amount Payable", details: "Based on applicable exchange rate and interest during the loan tenure" },
+  { feature: "Processing Fee", details: "0.25% – 1% of loan amount" },
+  { feature: "Collateral Requirement", details: "Property / Business Assets / Corporate Guarantee, as applicable" },
+  { feature: "Repayment", details: "Monthly / Quarterly installments in foreign currency or equivalent, subject to lender terms" },
 ];
 
 const NAME_RE = /^[A-Za-z][A-Za-z\s]{2,}$/;
 const MOBILE_RE = /^[6-9]\d{9}$/;
 const PAN_RE = /^[A-Z]{5}[0-9]{4}[A-Z]$/;
-const AADHAAR_RE = /^\d{12}$/;
 const GST_RE = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][0-9A-Z]Z[0-9A-Z]$/;
 
 const initialForm = {
-  // 1 — basic details (single combined form)
-  companyName: "",
-  companyPan: "",
-  turnoverBand: "",
-  industry: "",
-  purpose: "",
-  currency: "",
-  exportPct: "",
-  loanAmount: "",
-  // 2 — KYC (company + individual PAN & Aadhaar)
+  // 1 — basic
+  entity: "",
+  entityOther: "",
+  incorpDate: "",
+  // 2 — PAN (Individual)
   individualPan: "",
-  aadhaar: "",
-  aadhaarAddress: "",
-  // 3 — CIBIL
+  // 3 — PAN (Entity) — only if non-proprietorship
+  entityPan: "",
+  // 4 — CIBIL
   cibilConsent: false,
-  // 4 — GST
+  // 5 — loan details
   gst: "",
-  gstAddressConfirmed: "", // "Yes" | "No"
-  manualAddress: "",
-  // 5 — financial documents
-  docMethod: "",
-  accumnOtpConsent: false,
+  loanFcyAmount: "",
+  currency: "",
+  currencyOther: "",
+  purpose: "",
+  purposeOther: "",
+  tenure: "",
+  tenureCustom: "",
+  // 6 — turnover
+  prevTurnover: "",
+  currentTurnover: "",
+  projectedTurnover: "",
+  // 7 — collateral (only if secured)
+  collateralRequired: "", // "Secured" | "Unsecured"
+  collateralType: "",
+  ownershipDetails: "",
+  marketValue: "",
+  freeFromCharge: "",
+  // 8 — documents
   docBankStatement: "",
   docFinancials: "",
-  docGstReturns: "",
+  docItr: "",
+  docImportOrder: "",
 };
 
 /* ------------------------------------------------------------------ */
 /*  Helpers                                                            */
 /* ------------------------------------------------------------------ */
 
-function isManualUpload(form) {
-  return form.docMethod === "Upload manually";
+function isProprietor(form) {
+  return form.entity === "Proprietorship";
+}
+function isSecured(form) {
+  return form.collateralRequired === "Secured";
 }
 
 /* ------------------------------------------------------------------ */
@@ -109,75 +139,104 @@ function validateStep(step, form) {
   const e = {};
 
   if (step === 1) {
-    if (!form.companyName.trim()) e.companyName = "Company name is required.";
-    if (!form.companyPan.trim()) e.companyPan = "Company PAN is required.";
-    else if (!PAN_RE.test(form.companyPan.trim().toUpperCase()))
-      e.companyPan = "Enter a valid PAN (e.g. AAAAA0000A).";
-    if (!form.turnoverBand) e.turnoverBand = "Select a turnover band.";
-    if (!form.industry) e.industry = "Select a primary industry.";
-    if (!form.purpose) e.purpose = "Select the purpose of the loan.";
-    if (!form.currency) e.currency = "Select a preferred currency.";
-    if (!form.exportPct.trim()) e.exportPct = "Export % of revenue is required.";
-    else if (
-      !/^\d+(\.\d+)?$/.test(form.exportPct) ||
-      +form.exportPct < 0 ||
-      +form.exportPct > 100
-    )
-      e.exportPct = "Enter a value between 0 and 100.";
-    if (!form.loanAmount.trim()) e.loanAmount = "Loan amount is required.";
-    else if (!/^\d+$/.test(form.loanAmount))
-      e.loanAmount = "Enter a valid amount in numbers.";
+    if (!form.entity) e.entity = "Select the type of entity.";
+    if (form.entity === "Others" && !form.entityOther.trim())
+      e.entityOther = "Please specify the entity type.";
+    if (!form.incorpDate) e.incorpDate = "Date of incorporation is required.";
+    else if (new Date(form.incorpDate) > new Date())
+      e.incorpDate = "Date cannot be in the future.";
   }
 
   if (step === 2) {
-    if (!form.individualPan.trim()) e.individualPan = "Individual PAN is required.";
+    if (!form.individualPan.trim()) e.individualPan = "PAN is required for CIBIL fetch.";
     else if (!PAN_RE.test(form.individualPan.trim().toUpperCase()))
       e.individualPan = "Enter a valid PAN (e.g. ABCDE1234F).";
-    if (!form.aadhaar.trim()) e.aadhaar = "Aadhaar number is required.";
-    else if (!AADHAAR_RE.test(form.aadhaar))
-      e.aadhaar = "Enter a valid 12-digit Aadhaar number.";
-    if (!form.aadhaarAddress.trim())
-      e.aadhaarAddress = "Current residence address (from Aadhaar) is required.";
   }
 
   if (step === 3) {
+    if (!isProprietor(form)) {
+      if (!form.entityPan.trim()) e.entityPan = "Entity PAN is required.";
+      else if (!PAN_RE.test(form.entityPan.trim().toUpperCase()))
+        e.entityPan = "Enter a valid PAN (e.g. AAAAA0000A).";
+    }
+  }
+
+  if (step === 4) {
     if (!form.cibilConsent)
       e.cibilConsent = "Consent is required to fetch your CIBIL score.";
   }
 
-  if (step === 4) {
+  if (step === 5) {
     if (!form.gst.trim()) e.gst = "GST number is required.";
     else if (!GST_RE.test(form.gst.trim().toUpperCase()))
       e.gst = "Enter a valid 15-digit GST number.";
-    if (form.gst.trim() && !form.gstAddressConfirmed)
-      e.gstAddressConfirmed = "Please confirm your business address.";
-    if (form.gstAddressConfirmed === "No" && !form.manualAddress.trim())
-      e.manualAddress = "Enter your current business address.";
+    if (!form.loanFcyAmount.trim())
+      e.loanFcyAmount = "Loan amount (foreign currency) is required.";
+    else if (!/^\d+(\.\d+)?$/.test(form.loanFcyAmount))
+      e.loanFcyAmount = "Enter a valid amount.";
+    if (!form.currency) e.currency = "Select a currency.";
+    if (form.currency === "Others" && !form.currencyOther.trim())
+      e.currencyOther = "Please specify the currency.";
+    if (!form.purpose) e.purpose = "Select the purpose of the loan.";
+    if (form.purpose === "Others" && !form.purposeOther.trim())
+      e.purposeOther = "Please specify the purpose.";
+    if (!form.tenure) e.tenure = "Select a tenure.";
+    if (form.tenure === "Custom") {
+      if (!form.tenureCustom.trim()) e.tenureCustom = "Enter tenure in months.";
+      else if (!/^\d+$/.test(form.tenureCustom))
+        e.tenureCustom = "Enter a valid number of months.";
+    }
   }
 
-  if (step === 5) {
-    if (!form.docMethod) e.docMethod = "Select how to share your documents.";
-    if (form.docMethod === "Fetch securely via Accumn (OTP)" && !form.accumnOtpConsent)
-      e.accumnOtpConsent = "OTP / Accumn consent is required.";
-    if (isManualUpload(form)) {
-      if (!form.docBankStatement) e.docBankStatement = "Upload bank statements.";
-      if (!form.docFinancials) e.docFinancials = "Upload financials.";
-      if (!form.docGstReturns) e.docGstReturns = "Upload GST returns.";
+  if (step === 6) {
+    if (!form.prevTurnover.trim())
+      e.prevTurnover = "Previous FY turnover is required.";
+    else if (!/^\d+$/.test(form.prevTurnover))
+      e.prevTurnover = "Enter a valid amount.";
+    if (!form.currentTurnover.trim())
+      e.currentTurnover = "Current FY turnover is required.";
+    else if (!/^\d+$/.test(form.currentTurnover))
+      e.currentTurnover = "Enter a valid amount.";
+    if (!form.projectedTurnover.trim())
+      e.projectedTurnover = "Projected turnover is required.";
+    else if (!/^\d+$/.test(form.projectedTurnover))
+      e.projectedTurnover = "Enter a valid amount.";
+  }
+
+  if (step === 7) {
+    if (!form.collateralRequired)
+      e.collateralRequired = "Select secured or unsecured.";
+    if (isSecured(form)) {
+      if (!form.collateralType) e.collateralType = "Select collateral type.";
+      if (!form.ownershipDetails.trim())
+        e.ownershipDetails = "Ownership details are required.";
+      if (!form.marketValue.trim()) e.marketValue = "Market value is required.";
+      else if (!/^\d+$/.test(form.marketValue))
+        e.marketValue = "Enter a valid amount.";
+      if (!form.freeFromCharge)
+        e.freeFromCharge = "Select whether the property is free from charge.";
     }
+  }
+
+  if (step === 8) {
+    if (!form.docBankStatement)
+      e.docBankStatement = "Bank statements (12 months) are required.";
+    if (!form.docFinancials)
+      e.docFinancials = "Financials (Balance Sheet, P&L) are required.";
+    if (!form.docItr) e.docItr = "ITR is required.";
   }
 
   return e;
 }
 
-/* Simulated CIBIL fetch. Replace with real API in production.            */
-/* Returns a deterministic score from the PAN so the demo is consistent.  */
+/* Simulated CIBIL fetch (consistent demo score from PAN).               */
 function fetchCibilScore(pan) {
   let sum = 0;
   for (const ch of pan.toUpperCase()) sum += ch.charCodeAt(0);
   return 600 + (sum % 250); // range 600–849
 }
 
-export default function ForeignCurrencyLoan() {
+export default function ForeignCurrencyTermLoan() {
   const [started, setStarted] = useState(false);
   const [step, setStep] = useState(1);
   const [form, setForm] = useState(initialForm);
@@ -203,6 +262,7 @@ export default function ForeignCurrencyLoan() {
     setErrors((p) => ({ ...p, [key]: undefined }));
   };
 
+  // Move forward; skip Entity PAN (3) when proprietor.
   const next = () => {
     const e = validateStep(step, form);
     if (Object.keys(e).length) {
@@ -211,8 +271,8 @@ export default function ForeignCurrencyLoan() {
     }
     setErrors({});
 
-    // After CIBIL consent (step 3): fetch score and gate the journey.
-    if (step === 3) {
+    // After CIBIL consent (step 4): fetch score and gate the journey.
+    if (step === 4) {
       const score = fetchCibilScore(form.individualPan);
       setCibilScore(score);
       if (score < CIBIL_THRESHOLD) {
@@ -221,12 +281,18 @@ export default function ForeignCurrencyLoan() {
       }
     }
 
-    setStep((s) => Math.min(s + 1, 6));
+    setStep((s) => {
+      if (s === 2 && isProprietor(form)) return 4; // skip entity PAN
+      return Math.min(s + 1, 9);
+    });
   };
 
   const back = () => {
     setErrors({});
-    setStep((s) => Math.max(s - 1, 1));
+    setStep((s) => {
+      if (s === 4 && isProprietor(form)) return 2; // skip entity PAN
+      return Math.max(s - 1, 1);
+    });
   };
 
   const goToStep = (target) => {
@@ -235,7 +301,8 @@ export default function ForeignCurrencyLoan() {
   };
 
   const submit = () => {
-    for (let s = 1; s <= 5; s++) {
+    for (let s = 1; s <= 8; s++) {
+      if (s === 3 && isProprietor(form)) continue; // entity PAN skipped
       const e = validateStep(s, form);
       if (Object.keys(e).length) {
         setErrors(e);
@@ -288,7 +355,7 @@ export default function ForeignCurrencyLoan() {
 }
 
 /* ------------------------------------------------------------------ */
-/*  HERO (Name & Mobile capture) — Step 1 image                        */
+/*  HERO (Agri Loan navy/red theme + Name & Mobile capture)            */
 /* ------------------------------------------------------------------ */
 
 function Hero({ onStart }) {
@@ -321,19 +388,20 @@ function Hero({ onStart }) {
           {/* Left column */}
           <div>
             <h1 className="text-4xl font-extrabold leading-tight tracking-tight lg:text-5xl">
-              Rupee / Foreign Currency{" "}
-              <span className="text-blue-600">Term Loans</span>
+              Foreign Currency{" "}
+              <span className="text-[#e8112d]">Term Loan</span>{" "}
+              <span className="text-[#001f54]">(FCTL)</span>
             </h1>
             <p className="mt-4 max-w-xl text-slate-600">
-              Term loans to meet your various capex requirements — in INR or
-              foreign currency. For capital expenditure, refinance, overseas
-              investment and working capital, with expert support at every step.
+              Fund capital expenditure, machinery imports, overseas investment,
+              refinancing and working capital in foreign currency — at
+              competitive rates linked to international benchmarks.
             </p>
 
             <div className="mt-6 overflow-hidden rounded-2xl">
               <img
-                src="/foreign-currency-loan.jpg"
-                alt="Rupee / Foreign Currency Term Loans"
+                src="/fctl-loan.jpg"
+                alt="Foreign Currency Term Loan"
                 className="h-56 w-full object-cover"
               />
             </div>
@@ -341,8 +409,8 @@ function Hero({ onStart }) {
             <ul className="mt-8 space-y-5">
               <Feature
                 icon={<Landmark className="h-5 w-5" />}
-                title="INR & Foreign Currency"
-                text="Choose the currency that best suits your capex and trade needs."
+                title="Foreign Currency Funding"
+                text="Competitive FCY term loans linked to international benchmarks."
               />
               <Feature
                 icon={<Clock3 className="h-5 w-5" />}
@@ -359,16 +427,16 @@ function Hero({ onStart }) {
 
           {/* Right column — lead card */}
           <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm lg:p-8">
-            <div className="rounded-xl bg-blue-50 px-4 py-3 text-sm text-blue-800">
-              Start your Term Loan application — it only takes a minute.
+            <div className="rounded-xl bg-[#001f54] px-4 py-3 text-sm text-white font-semibold text-center">
+              Start your FCTL application — it only takes a minute.
             </div>
 
             <p className="mt-6 text-center text-sm uppercase tracking-widest text-slate-400">
-              Term Loan
+              FCTL — Foreign Currency Loan
             </p>
             <p className="mt-1 text-center text-2xl font-bold">
-              Fund your <span className="text-blue-600">capex</span> with the right
-              term loan
+              Fund your{" "}
+              <span className="text-[#e8112d]">expansion</span> in FCY
             </p>
 
             <div className="mt-6 space-y-4">
@@ -433,7 +501,7 @@ function Hero({ onStart }) {
                     setAgree(e.target.checked);
                     setErr((p) => ({ ...p, agree: undefined }));
                   }}
-                  className="mt-0.5"
+                  className="mt-0.5 accent-blue-600"
                 />
                 <span>
                   By submitting this form, you agree to the Credit Report Terms
@@ -444,6 +512,49 @@ function Hero({ onStart }) {
             </div>
           </div>
         </div>
+
+        {/* ── REPAYMENT PERIOD, LOAN AMOUNT & INTEREST RATE ── */}
+        <section className="py-10 border-t mt-10">
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">
+            Repayment Period, Loan Amount &amp; Interest Rate
+          </h2>
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {repaymentStats.map(({ icon: Icon, title, desc }) => (
+              <div key={title} className="flex items-start gap-4 rounded-2xl border border-gray-200 p-5">
+                <div className="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
+                  <Icon size={20} className="text-[#001f54]" />
+                </div>
+                <div>
+                  <p className="font-bold text-gray-800 text-sm">{title}</p>
+                  <p className="text-gray-500 text-sm mt-0.5">{desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ── REPRESENTATIVE EXAMPLE ── */}
+        <section className="py-10 border-t">
+          <h2 className="text-2xl font-bold text-gray-800 mb-5">Representative Example</h2>
+          <div className="rounded-2xl border border-gray-200 overflow-hidden">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-blue-50">
+                  <th className="text-left px-6 py-3 font-semibold text-[#001f54] w-1/2">Particulars</th>
+                  <th className="text-left px-6 py-3 font-semibold text-[#001f54]">Details</th>
+                </tr>
+              </thead>
+              <tbody>
+                {loanCostDetails.map((row, i) => (
+                  <tr key={row.feature} className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                    <td className="px-6 py-3.5 text-gray-700 font-medium border-t border-gray-100">{row.feature}</td>
+                    <td className="px-6 py-3.5 text-gray-600 border-t border-gray-100">{row.details}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
       </div>
     </section>
   );
@@ -452,7 +563,7 @@ function Hero({ onStart }) {
 function Feature({ icon, title, text }) {
   return (
     <li className="flex gap-3">
-      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-blue-50 text-blue-600">
+      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-[#001f54] text-white">
         {icon}
       </span>
       <div>
@@ -464,7 +575,7 @@ function Feature({ icon, title, text }) {
 }
 
 /* ------------------------------------------------------------------ */
-/*  WIZARD                                                             */
+/*  WIZARD (unchanged flow, recolored to navy)                         */
 /* ------------------------------------------------------------------ */
 
 function Wizard({
@@ -479,18 +590,21 @@ function Wizard({
   goToStep,
   onSubmit,
 }) {
-  const isReview = step === 6;
+  const isReview = step === 9;
   return (
     <section className="mx-auto max-w-3xl px-5 py-10">
       <Stepper step={step} />
 
       <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm lg:p-8">
         {step === 1 && <StepBasic form={form} set={set} setChoice={setChoice} errors={errors} />}
-        {step === 2 && <StepKyc form={form} set={set} errors={errors} />}
-        {step === 3 && <StepCibil form={form} setChoice={setChoice} errors={errors} />}
-        {step === 4 && <StepGst form={form} set={set} setChoice={setChoice} errors={errors} />}
-        {step === 5 && <StepDocuments form={form} set={set} setChoice={setChoice} setFile={setFile} errors={errors} />}
-        {step === 6 && <StepReview form={form} goToStep={goToStep} />}
+        {step === 2 && <StepPanIndividual form={form} set={set} errors={errors} />}
+        {step === 3 && <StepPanEntity form={form} set={set} errors={errors} />}
+        {step === 4 && <StepCibil form={form} setChoice={setChoice} errors={errors} />}
+        {step === 5 && <StepLoanDetails form={form} set={set} setChoice={setChoice} errors={errors} />}
+        {step === 6 && <StepTurnover form={form} set={set} errors={errors} />}
+        {step === 7 && <StepCollateral form={form} set={set} setChoice={setChoice} errors={errors} />}
+        {step === 8 && <StepDocuments form={form} setFile={setFile} errors={errors} />}
+        {step === 9 && <StepReview form={form} goToStep={goToStep} />}
 
         <div className="mt-8 flex items-center justify-between">
           <button
@@ -506,7 +620,7 @@ function Wizard({
               onClick={next}
               className="flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-blue-700"
             >
-              {step === 5 ? "Review details" : step === 3 ? "Check CIBIL & continue" : "Continue"}{" "}
+              {step === 8 ? "Review details" : step === 4 ? "Check CIBIL & continue" : "Continue"}{" "}
               <ArrowRight className="h-4 w-4" />
             </button>
           ) : (
@@ -536,7 +650,7 @@ function Stepper({ step }) {
               <div
                 className={`grid h-8 w-8 place-items-center rounded-full text-xs font-semibold ${
                   done
-                    ? "bg-blue-600 text-white"
+                    ? "bg-[#001f54] text-white"
                     : active
                     ? "bg-blue-600 text-white ring-4 ring-blue-100"
                     : "bg-slate-200 text-slate-500"
@@ -551,7 +665,7 @@ function Stepper({ step }) {
             {n < STEP_LABELS.length && (
               <div
                 className={`mx-1 h-0.5 flex-1 ${
-                  n < step ? "bg-blue-600" : "bg-slate-200"
+                  n < step ? "bg-[#001f54]" : "bg-slate-200"
                 }`}
               />
             )}
@@ -587,20 +701,6 @@ function Text({ value, onChange, error, ...rest }) {
     <input
       value={value}
       onChange={onChange}
-      className={`w-full rounded-lg border px-4 py-2.5 outline-none focus:border-blue-500 ${
-        error ? "border-red-400" : "border-slate-300"
-      }`}
-      {...rest}
-    />
-  );
-}
-
-function TextArea({ value, onChange, error, ...rest }) {
-  return (
-    <textarea
-      value={value}
-      onChange={onChange}
-      rows={3}
       className={`w-full rounded-lg border px-4 py-2.5 outline-none focus:border-blue-500 ${
         error ? "border-red-400" : "border-slate-300"
       }`}
@@ -659,7 +759,7 @@ function FileRow({ label, required, name, onChange, error }) {
       >
         <div>
           <p className="text-sm font-medium text-slate-700">
-            {label} {required && <span className="text-red-500">*</span>}
+            {label} {required && <span className="text-[#e8112d]">*</span>}
           </p>
           {name ? (
             <p className="text-xs text-blue-600">{name}</p>
@@ -682,152 +782,93 @@ const onlyDigits = (setter) => (e) =>
 const onlyDecimal = (setter) => (e) =>
   setter({ target: { value: e.target.value.replace(/[^\d.]/g, "") } });
 
-/* ---------- Step 1: Basic details (single combined form) ---------- */
+/* ---------- Step 1: Basic ---------- */
 
 function StepBasic({ form, set, setChoice, errors }) {
   return (
     <div className="space-y-5">
       <h2 className="text-lg font-semibold">Basic details</h2>
 
-      <div className="grid gap-5 sm:grid-cols-2">
-        <Field label="Company name" error={errors.companyName}>
-          <Text
-            value={form.companyName}
-            onChange={set("companyName")}
-            placeholder="Company name"
-            error={errors.companyName}
-          />
-        </Field>
-        <Field label="Company PAN" error={errors.companyPan}>
-          <Text
-            value={form.companyPan}
-            onChange={(e) =>
-              set("companyPan")({
-                target: {
-                  value: e.target.value
-                    .toUpperCase()
-                    .replace(/[^A-Z0-9]/g, "")
-                    .slice(0, 10),
-                },
-              })
-            }
-            placeholder="AAAAA0000A"
-            error={errors.companyPan}
-          />
-        </Field>
-      </div>
+      <Field label="Type of entity" error={errors.entity}>
+        <Pills value={form.entity} onSelect={setChoice("entity")} options={ENTITY_TYPES} />
+      </Field>
 
-      <Field label="Turnover band" error={errors.turnoverBand}>
-        <Pills
-          value={form.turnoverBand}
-          onSelect={setChoice("turnoverBand")}
-          options={TURNOVER_BANDS}
+      {form.entity === "Others" && (
+        <Field label="Please specify entity type" error={errors.entityOther}>
+          <Text
+            value={form.entityOther}
+            onChange={set("entityOther")}
+            placeholder="Specify entity type"
+            error={errors.entityOther}
+          />
+        </Field>
+      )}
+
+      <Field label="Date of incorporation" error={errors.incorpDate}>
+        <Text
+          type="date"
+          value={form.incorpDate}
+          onChange={set("incorpDate")}
+          max={new Date().toISOString().split("T")[0]}
+          error={errors.incorpDate}
         />
       </Field>
-
-      <Field label="Primary industry" error={errors.industry}>
-        <Select
-          value={form.industry}
-          onChange={set("industry")}
-          options={INDUSTRIES}
-          placeholder="Select industry"
-          error={errors.industry}
-        />
-      </Field>
-
-      <Field label="Purpose" error={errors.purpose}>
-        <Pills value={form.purpose} onSelect={setChoice("purpose")} options={PURPOSES} />
-      </Field>
-
-      <div className="grid gap-5 sm:grid-cols-3">
-        <Field label="Preferred currency" error={errors.currency}>
-          <Select
-            value={form.currency}
-            onChange={set("currency")}
-            options={CURRENCIES}
-            placeholder="Select"
-            error={errors.currency}
-          />
-        </Field>
-        <Field label="Export % of revenue" error={errors.exportPct}>
-          <Text
-            value={form.exportPct}
-            onChange={onlyDecimal(set("exportPct"))}
-            placeholder="e.g. 40"
-            inputMode="decimal"
-            error={errors.exportPct}
-          />
-        </Field>
-        <Field label="Loan amount" error={errors.loanAmount}>
-          <Text
-            value={form.loanAmount}
-            onChange={onlyDigits(set("loanAmount"))}
-            placeholder="₹ / amount"
-            inputMode="numeric"
-            error={errors.loanAmount}
-          />
-        </Field>
-      </div>
     </div>
   );
 }
 
-/* ---------- Step 2: KYC (Company + Individual PAN & Aadhaar) ---------- */
+/* ---------- Step 2: PAN (Individual) ---------- */
 
-function StepKyc({ form, set, errors }) {
+function StepPanIndividual({ form, set, errors }) {
   return (
     <div className="space-y-5">
-      <h2 className="text-lg font-semibold">KYC — PAN &amp; Aadhaar</h2>
-      <p className="text-sm text-slate-500">
-        Aadhaar must carry your current residence address.
-      </p>
-
-      <div className="grid gap-5 sm:grid-cols-2">
-        <Field label="Individual PAN" hint="Used for CIBIL fetch" error={errors.individualPan}>
-          <Text
-            value={form.individualPan}
-            onChange={(e) =>
-              set("individualPan")({
-                target: {
-                  value: e.target.value
-                    .toUpperCase()
-                    .replace(/[^A-Z0-9]/g, "")
-                    .slice(0, 10),
-                },
-              })
-            }
-            placeholder="ABCDE1234F"
-            error={errors.individualPan}
-          />
-        </Field>
-        <Field label="Aadhaar number" error={errors.aadhaar}>
-          <Text
-            value={form.aadhaar}
-            onChange={onlyDigits(set("aadhaar"))}
-            placeholder="12-digit Aadhaar"
-            inputMode="numeric"
-            maxLength={12}
-            error={errors.aadhaar}
-          />
-        </Field>
-      </div>
-
-      <Field
-        label="Current residence address (from Aadhaar)"
-        error={errors.aadhaarAddress}
-      >
-        <TextArea
-          value={form.aadhaarAddress}
-          onChange={set("aadhaarAddress")}
-          placeholder="Address as on Aadhaar"
-          error={errors.aadhaarAddress}
+      <h2 className="text-lg font-semibold">PAN (Individual)</h2>
+      <Field label="PAN Number" hint="Used for CIBIL fetch" error={errors.individualPan}>
+        <Text
+          value={form.individualPan}
+          onChange={(e) =>
+            set("individualPan")({
+              target: {
+                value: e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 10),
+              },
+            })
+          }
+          placeholder="ABCDE1234F"
+          error={errors.individualPan}
         />
       </Field>
     </div>
   );
 }
 
-/* ---------- Step 3: CIBIL consent ---------- */
+/* ---------- Step 3: PAN (Entity) — only if non-proprietorship ---------- */
+
+function StepPanEntity({ form, set, errors }) {
+  return (
+    <div className="space-y-5">
+      <h2 className="text-lg font-semibold">PAN (Entity)</h2>
+      <p className="rounded-lg bg-blue-50 px-4 py-3 text-sm text-blue-800">
+        Entity PAN is required for non-proprietorship firms.
+      </p>
+      <Field label="Entity PAN Number" error={errors.entityPan}>
+        <Text
+          value={form.entityPan}
+          onChange={(e) =>
+            set("entityPan")({
+              target: {
+                value: e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 10),
+              },
+            })
+          }
+          placeholder="AAAAA0000A"
+          error={errors.entityPan}
+        />
+      </Field>
+    </div>
+  );
+}
+
+/* ---------- Step 4: CIBIL consent ---------- */
 
 function StepCibil({ form, setChoice, errors }) {
   return (
@@ -835,7 +876,7 @@ function StepCibil({ form, setChoice, errors }) {
       <h2 className="text-lg font-semibold">Credit Bureau Check (CIBIL)</h2>
       <p className="text-sm text-slate-600">
         We use your Individual PAN to fetch your CIBIL score. A minimum score is
-        required to proceed to financial documentation.
+        required to proceed.
       </p>
 
       <label
@@ -859,26 +900,20 @@ function StepCibil({ form, setChoice, errors }) {
   );
 }
 
-/* ---------- Step 4: GST ---------- */
+/* ---------- Step 5: Loan details ---------- */
 
-function StepGst({ form, set, setChoice, errors }) {
+function StepLoanDetails({ form, set, setChoice, errors }) {
   return (
     <div className="space-y-5">
-      <h2 className="text-lg font-semibold">GST details</h2>
-      <Field
-        label="GST Number"
-        hint="Business details are verified against your GST"
-        error={errors.gst}
-      >
+      <h2 className="text-lg font-semibold">Loan details</h2>
+
+      <Field label="GST Number" error={errors.gst}>
         <Text
           value={form.gst}
           onChange={(e) =>
             set("gst")({
               target: {
-                value: e.target.value
-                  .toUpperCase()
-                  .replace(/[^A-Z0-9]/g, "")
-                  .slice(0, 15),
+                value: e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 15),
               },
             })
           }
@@ -887,24 +922,65 @@ function StepGst({ form, set, setChoice, errors }) {
         />
       </Field>
 
-      <Field
-        label="Is this GST registered address your current business location?"
-        error={errors.gstAddressConfirmed}
-      >
-        <Pills
-          value={form.gstAddressConfirmed}
-          onSelect={setChoice("gstAddressConfirmed")}
-          options={["Yes", "No"]}
-        />
+      <div className="grid gap-5 sm:grid-cols-2">
+        <Field label="Loan amount required (foreign currency)" error={errors.loanFcyAmount}>
+          <Text
+            value={form.loanFcyAmount}
+            onChange={onlyDecimal(set("loanFcyAmount"))}
+            placeholder="e.g. 500000"
+            inputMode="decimal"
+            error={errors.loanFcyAmount}
+          />
+        </Field>
+        <Field label="Currency" error={errors.currency}>
+          <Select
+            value={form.currency}
+            onChange={set("currency")}
+            options={CURRENCIES}
+            placeholder="Select currency"
+            error={errors.currency}
+          />
+        </Field>
+      </div>
+
+      {form.currency === "Others" && (
+        <Field label="Please specify currency" error={errors.currencyOther}>
+          <Text
+            value={form.currencyOther}
+            onChange={set("currencyOther")}
+            placeholder="Specify currency (e.g. AED, SGD)"
+            error={errors.currencyOther}
+          />
+        </Field>
+      )}
+
+      <Field label="Purpose of loan" error={errors.purpose}>
+        <Pills value={form.purpose} onSelect={setChoice("purpose")} options={PURPOSES} />
       </Field>
 
-      {form.gstAddressConfirmed === "No" && (
-        <Field label="Current business address" error={errors.manualAddress}>
-          <TextArea
-            value={form.manualAddress}
-            onChange={set("manualAddress")}
-            placeholder="Enter current business address"
-            error={errors.manualAddress}
+      {form.purpose === "Others" && (
+        <Field label="Please specify purpose" error={errors.purposeOther}>
+          <Text
+            value={form.purposeOther}
+            onChange={set("purposeOther")}
+            placeholder="Specify purpose"
+            error={errors.purposeOther}
+          />
+        </Field>
+      )}
+
+      <Field label="Tenure required" error={errors.tenure}>
+        <Pills value={form.tenure} onSelect={setChoice("tenure")} options={TENURES} />
+      </Field>
+
+      {form.tenure === "Custom" && (
+        <Field label="Custom tenure (months)" error={errors.tenureCustom}>
+          <Text
+            value={form.tenureCustom}
+            onChange={onlyDigits(set("tenureCustom"))}
+            placeholder="e.g. 84"
+            inputMode="numeric"
+            error={errors.tenureCustom}
           />
         </Field>
       )}
@@ -912,82 +988,129 @@ function StepGst({ form, set, setChoice, errors }) {
   );
 }
 
-/* ---------- Step 5: Financial document collection ---------- */
+/* ---------- Step 6: Turnover ---------- */
 
-function StepDocuments({ form, set, setChoice, setFile, errors }) {
-  const manual = isManualUpload(form);
-  const accumn = form.docMethod === "Fetch securely via Accumn (OTP)";
+function StepTurnover({ form, set, errors }) {
   return (
     <div className="space-y-5">
-      <h2 className="text-lg font-semibold">Financial document collection</h2>
+      <h2 className="text-lg font-semibold">Turnover details</h2>
+      <div className="grid gap-5 sm:grid-cols-3">
+        <Field label="Previous FY turnover" error={errors.prevTurnover}>
+          <Text
+            value={form.prevTurnover}
+            onChange={onlyDigits(set("prevTurnover"))}
+            placeholder="₹"
+            inputMode="numeric"
+            error={errors.prevTurnover}
+          />
+        </Field>
+        <Field label="Current FY turnover (till date)" error={errors.currentTurnover}>
+          <Text
+            value={form.currentTurnover}
+            onChange={onlyDigits(set("currentTurnover"))}
+            placeholder="₹"
+            inputMode="numeric"
+            error={errors.currentTurnover}
+          />
+        </Field>
+        <Field label="Projected turnover (current FY)" error={errors.projectedTurnover}>
+          <Text
+            value={form.projectedTurnover}
+            onChange={onlyDigits(set("projectedTurnover"))}
+            placeholder="₹"
+            inputMode="numeric"
+            error={errors.projectedTurnover}
+          />
+        </Field>
+      </div>
+    </div>
+  );
+}
 
-      <Field label="How would you like to share your documents?" error={errors.docMethod}>
-        <Pills value={form.docMethod} onSelect={setChoice("docMethod")} options={DOC_METHODS} />
+/* ---------- Step 7: Collateral (choose secured / unsecured) ---------- */
+
+function StepCollateral({ form, set, setChoice, errors }) {
+  return (
+    <div className="space-y-5">
+      <h2 className="text-lg font-semibold">Collateral</h2>
+      <p className="text-sm text-slate-600">
+        Depending on lender rules, FCTL may be secured or unsecured. Select your
+        applicable option.
+      </p>
+
+      <Field label="Loan type" error={errors.collateralRequired}>
+        <Pills
+          value={form.collateralRequired}
+          onSelect={setChoice("collateralRequired")}
+          options={["Secured", "Unsecured"]}
+        />
       </Field>
 
-      {accumn && (
+      {isSecured(form) && (
         <>
-          <label
-            className={`flex items-start gap-3 rounded-xl border p-4 cursor-pointer transition ${
-              form.accumnOtpConsent ? "border-blue-600 bg-blue-50" : "border-slate-200"
-            }`}
-          >
-            <input
-              type="checkbox"
-              checked={form.accumnOtpConsent}
-              onChange={(e) => setChoice("accumnOtpConsent")(e.target.checked)}
-              className="mt-0.5"
-            />
-            <span className="text-sm text-slate-700">
-              I consent to a secure, OTP-based fetch of my bank statements and
-              financials via Accumn.
-            </span>
-          </label>
-          {errors.accumnOtpConsent && <ErrorText>{errors.accumnOtpConsent}</ErrorText>}
-
-          {form.accumnOtpConsent && (
-            <div className="flex items-start gap-3 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-800">
-              <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0" />
-              <span>
-                On submit, you'll be redirected to Accumn's secure OTP-based
-                fetch to auto-import your documents.
-              </span>
-            </div>
-          )}
+          <Field label="Collateral type" error={errors.collateralType}>
+            <Pills value={form.collateralType} onSelect={setChoice("collateralType")} options={COLLATERAL_TYPES} />
+          </Field>
+          <Field label="Ownership details" error={errors.ownershipDetails}>
+            <Text value={form.ownershipDetails} onChange={set("ownershipDetails")} placeholder="e.g. Self-owned / Co-owned" error={errors.ownershipDetails} />
+          </Field>
+          <Field label="Market value" error={errors.marketValue}>
+            <Text value={form.marketValue} onChange={onlyDigits(set("marketValue"))} placeholder="₹ in INR" inputMode="numeric" error={errors.marketValue} />
+          </Field>
+          <Field label="Property free from charge?" error={errors.freeFromCharge}>
+            <Pills value={form.freeFromCharge} onSelect={setChoice("freeFromCharge")} options={["Yes", "No"]} />
+          </Field>
         </>
       )}
 
-      {manual && (
-        <div className="space-y-4">
-          <p className="text-sm text-slate-500">Upload the documents below.</p>
-          <FileRow
-            label="Bank statements"
-            required
-            name={form.docBankStatement}
-            onChange={setFile("docBankStatement")}
-            error={errors.docBankStatement}
-          />
-          <FileRow
-            label="Financials"
-            required
-            name={form.docFinancials}
-            onChange={setFile("docFinancials")}
-            error={errors.docFinancials}
-          />
-          <FileRow
-            label="GST Returns"
-            required
-            name={form.docGstReturns}
-            onChange={setFile("docGstReturns")}
-            error={errors.docGstReturns}
-          />
-        </div>
+      {form.collateralRequired === "Unsecured" && (
+        <p className="rounded-lg bg-blue-50 px-4 py-3 text-sm text-blue-800">
+          Unsecured FCTL selected — no collateral details needed.
+        </p>
       )}
     </div>
   );
 }
 
-/* ---------- Step 6: Review ---------- */
+/* ---------- Step 8: Documents ---------- */
+
+function StepDocuments({ form, setFile, errors }) {
+  return (
+    <div className="space-y-4">
+      <h2 className="text-lg font-semibold">Financial documents</h2>
+      <p className="text-sm text-slate-500">Upload the documents below (manual upload).</p>
+
+      <FileRow
+        label="Bank Statements (12 months)"
+        required
+        name={form.docBankStatement}
+        onChange={setFile("docBankStatement")}
+        error={errors.docBankStatement}
+      />
+      <FileRow
+        label="Financials (Balance Sheet, P&L)"
+        required
+        name={form.docFinancials}
+        onChange={setFile("docFinancials")}
+        error={errors.docFinancials}
+      />
+      <FileRow
+        label="ITR"
+        required
+        name={form.docItr}
+        onChange={setFile("docItr")}
+        error={errors.docItr}
+      />
+      <FileRow
+        label="Import order / overseas invoice (if applicable)"
+        name={form.docImportOrder}
+        onChange={setFile("docImportOrder")}
+      />
+    </div>
+  );
+}
+
+/* ---------- Step 9: Review ---------- */
 
 function ReviewBlock({ title, stepNo, goToStep, rows }) {
   return (
@@ -1017,6 +1140,25 @@ function ReviewBlock({ title, stepNo, goToStep, rows }) {
 }
 
 function StepReview({ form, goToStep }) {
+  const proprietor = isProprietor(form);
+  const secured = isSecured(form);
+  const entityLabel =
+    form.entity === "Others" && form.entityOther
+      ? `Others — ${form.entityOther}`
+      : form.entity;
+  const currencyLabel =
+    form.currency === "Others" && form.currencyOther
+      ? `Others — ${form.currencyOther}`
+      : form.currency;
+  const purposeLabel =
+    form.purpose === "Others" && form.purposeOther
+      ? `Others — ${form.purposeOther}`
+      : form.purpose;
+  const tenureLabel =
+    form.tenure === "Custom"
+      ? form.tenureCustom && `${form.tenureCustom} months`
+      : form.tenure;
+
   return (
     <div className="space-y-5">
       <div>
@@ -1032,57 +1174,76 @@ function StepReview({ form, goToStep }) {
         stepNo={1}
         goToStep={goToStep}
         rows={[
-          ["Company name", form.companyName],
-          ["Company PAN", form.companyPan],
-          ["Turnover band", form.turnoverBand],
-          ["Primary industry", form.industry],
-          ["Purpose", form.purpose],
-          ["Preferred currency", form.currency],
-          ["Export % of revenue", form.exportPct && `${form.exportPct}%`],
-          ["Loan amount", form.loanAmount && `₹ ${form.loanAmount}`],
+          ["Type of entity", entityLabel],
+          ["Date of incorporation", form.incorpDate],
         ]}
       />
       <ReviewBlock
-        title="KYC — PAN & Aadhaar"
+        title="PAN (Individual)"
         stepNo={2}
         goToStep={goToStep}
-        rows={[
-          ["Individual PAN", form.individualPan],
-          ["Aadhaar", form.aadhaar],
-          ["Residence address", form.aadhaarAddress],
-        ]}
+        rows={[["PAN", form.individualPan]]}
       />
+      {!proprietor && (
+        <ReviewBlock
+          title="PAN (Entity)"
+          stepNo={3}
+          goToStep={goToStep}
+          rows={[["Entity PAN", form.entityPan]]}
+        />
+      )}
       <ReviewBlock
         title="CIBIL"
-        stepNo={3}
+        stepNo={4}
         goToStep={goToStep}
         rows={[["Consent", form.cibilConsent ? "Given" : "Not given"]]}
       />
       <ReviewBlock
-        title="GST"
-        stepNo={4}
+        title="Loan details"
+        stepNo={5}
         goToStep={goToStep}
         rows={[
           ["GST Number", form.gst],
-          ["Address confirmed?", form.gstAddressConfirmed],
-          ...(form.gstAddressConfirmed === "No"
-            ? [["Current address", form.manualAddress]]
+          ["Loan amount (FCY)", form.loanFcyAmount && `${form.loanFcyAmount} ${form.currency}`],
+          ["Purpose", purposeLabel],
+          ["Tenure", tenureLabel],
+        ]}
+      />
+      <ReviewBlock
+        title="Turnover"
+        stepNo={6}
+        goToStep={goToStep}
+        rows={[
+          ["Previous FY turnover", form.prevTurnover && `₹ ${form.prevTurnover}`],
+          ["Current FY turnover", form.currentTurnover && `₹ ${form.currentTurnover}`],
+          ["Projected turnover", form.projectedTurnover && `₹ ${form.projectedTurnover}`],
+        ]}
+      />
+      <ReviewBlock
+        title="Collateral"
+        stepNo={7}
+        goToStep={goToStep}
+        rows={[
+          ["Loan type", form.collateralRequired],
+          ...(secured
+            ? [
+                ["Collateral type", form.collateralType],
+                ["Ownership details", form.ownershipDetails],
+                ["Market value", form.marketValue && `₹ ${form.marketValue}`],
+                ["Free from charge?", form.freeFromCharge],
+              ]
             : []),
         ]}
       />
       <ReviewBlock
         title="Financial documents"
-        stepNo={5}
+        stepNo={8}
         goToStep={goToStep}
         rows={[
-          ["Method", form.docMethod],
-          ...(form.docMethod === "Fetch securely via Accumn (OTP)"
-            ? [["Accumn / OTP consent", form.accumnOtpConsent ? "Given" : "Not given"]]
-            : [
-                ["Bank statements", form.docBankStatement],
-                ["Financials", form.docFinancials],
-                ["GST Returns", form.docGstReturns],
-              ]),
+          ["Bank statements", form.docBankStatement],
+          ["Financials", form.docFinancials],
+          ["ITR", form.docItr],
+          ["Import order", form.docImportOrder],
         ]}
       />
     </div>
@@ -1103,8 +1264,8 @@ function Rejected({ score, onReset }) {
         <h2 className="mt-6 text-2xl font-bold">Application not eligible</h2>
         <p className="mt-2 text-slate-600">
           Based on the credit bureau check{score ? ` (score: ${score})` : ""}, we
-          are unable to proceed with your term loan application at this time. You
-          can re-apply once your credit profile improves.
+          are unable to proceed with your FCTL application at this time. You can
+          re-apply once your credit profile improves.
         </p>
         <button
           onClick={onReset}
@@ -1130,8 +1291,8 @@ function Success({ onReset }) {
         </div>
         <h2 className="mt-6 text-2xl font-bold">Application submitted</h2>
         <p className="mt-2 text-slate-600">
-          Our team will review your Term Loan application and reach out within 24
-          hours.
+          Our team will review your Foreign Currency Term Loan application and
+          reach out within 24 hours.
         </p>
         <button
           onClick={onReset}

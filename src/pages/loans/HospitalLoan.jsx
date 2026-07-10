@@ -1,3 +1,6 @@
+
+
+
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 
@@ -11,13 +14,19 @@ import {
   Check,
   Pencil,
   XCircle,
+  CheckCircle,
+  Calendar,
+  IndianRupee,
+  Percent,
 } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
 /*  Hospital Loan Page                                                 */
-/*  Hero = lead capture (Name + Mobile), styled like the previous      */
-/*         loan heroes, with the hospital image.                       */
-/*  Wizard = the full Hospital Loan flow (steps combined into sections)*/
+/*  Hero = lead capture (Name + Mobile), restyled to Agri Loan's       */
+/*         navy (#001f54) / red (#e8112d) theme, with the hospital     */
+/*         image + new Repayment Stats / Representative-cost-table     */
+/*         content below it.                                          */
+/*  Wizard = the full Hospital Loan flow (unchanged).                  */
 /* ------------------------------------------------------------------ */
 
 const LOAN_TYPES = [
@@ -38,6 +47,29 @@ const GST_RE = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][0-9A-Z]Z[0-9A-Z]$/;
 
 // CIBIL threshold below which the journey ends with a rejection.
 const CIBIL_THRESHOLD = 700;
+
+// ── Repayment period, loan amount range & interest rate ─────
+const repaymentStats = [
+  { icon: Calendar, title: "Minimum Repayment Period", desc: "24 months (2 years)" },
+  { icon: Calendar, title: "Maximum Repayment Period", desc: "180 months (15 years)" },
+  { icon: IndianRupee, title: "Minimum Loan Amount", desc: "₹50,00,000" },
+  { icon: IndianRupee, title: "Maximum Loan Amount", desc: "₹2,50,00,00,000" },
+  { icon: Percent, title: "Annual Interest Rate (AIR)", desc: "Up to 20% per annum" },
+];
+
+// ── Representative example of loan cost ────────────────────────────
+const loanCostDetails = [
+  { feature: "Loan Type", details: "Hospital Loan" },
+  { feature: "Loan Amount", details: "₹2,00,00,000" },
+  { feature: "Purpose", details: "Hospital Setup / Expansion / Medical Equipment Purchase" },
+  { feature: "Annual Interest Rate (Indicative)", details: "10.00% p.a." },
+  { feature: "Loan Tenure", details: "120 months (10 years)" },
+  { feature: "Monthly Installment (EMI)", details: "₹2,64,000 (approx.)" },
+  { feature: "Total Amount Payable", details: "₹3,16,80,000 (approx.)" },
+  { feature: "Total Interest Cost", details: "₹1,16,80,000 (approx.)" },
+  { feature: "Processing Fee", details: "0.50% – 1.50% of loan amount" },
+  { feature: "Collateral Requirement", details: "Mortgage of Hospital Property / Medical Equipment / Additional Security" },
+];
 
 const initialForm = {
   // 1 — basic
@@ -321,7 +353,7 @@ export default function HospitalLoan() {
 }
 
 /* ------------------------------------------------------------------ */
-/*  HERO (Name & Mobile capture) — Step 1 image                        */
+/*  HERO (Agri Loan navy/red theme + Name & Mobile capture)            */
 /* ------------------------------------------------------------------ */
 
 function Hero({ onStart }) {
@@ -354,12 +386,15 @@ function Hero({ onStart }) {
           {/* Left column */}
           <div>
             <h1 className="text-4xl font-extrabold leading-tight tracking-tight lg:text-5xl">
-              Grow Your <span className="text-blue-600">Hospital</span> with the Right
-              Loan
+              Grow Your{" "}
+              <span className="text-[#e8112d]">Hospital</span>{" "}
+              <span className="text-[#001f54]">with the Right Loan</span>
             </h1>
             <p className="mt-4 max-w-xl text-slate-600">
-              Funding for construction, medical equipment, property (LAP) and
-              working capital. Apply once and get expert support at every step.
+              Accelerate your healthcare infrastructure with financing tailored to your needs.
+               Whether you're constructing a new hospital, upgrading medical technology, purchasing property, or managing working capital, 
+               receive expert guidance and competitive loan offers from 30+ trusted Banks and NBFCs. 
+
             </p>
 
             <div className="mt-6 overflow-hidden rounded-2xl">
@@ -391,7 +426,7 @@ function Hero({ onStart }) {
 
           {/* Right column — lead card */}
           <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm lg:p-8">
-            <div className="rounded-xl bg-blue-50 px-4 py-3 text-sm text-blue-800">
+            <div className="rounded-xl bg-[#001f54] px-4 py-3 text-sm text-white font-semibold text-center">
               Start your Hospital Loan application — it only takes a minute.
             </div>
 
@@ -399,7 +434,8 @@ function Hero({ onStart }) {
               Hospital Loan
             </p>
             <p className="mt-1 text-center text-2xl font-bold">
-              Fund your <span className="text-blue-600">healthcare</span> business
+              Fund your{" "}
+              <span className="text-[#e8112d]">healthcare</span> business
             </p>
 
             <div className="mt-6 space-y-4">
@@ -464,7 +500,7 @@ function Hero({ onStart }) {
                     setAgree(e.target.checked);
                     setErr((p) => ({ ...p, agree: undefined }));
                   }}
-                  className="mt-0.5"
+                  className="mt-0.5 accent-blue-600"
                 />
                 <span>
                   By submitting this form, you agree to the Credit Report Terms
@@ -475,6 +511,49 @@ function Hero({ onStart }) {
             </div>
           </div>
         </div>
+
+        {/* ── REPAYMENT PERIOD, LOAN AMOUNT & INTEREST RATE ── */}
+        <section className="py-10 border-t mt-10">
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">
+            Repayment Period, Loan Amount &amp; Interest Rate
+          </h2>
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {repaymentStats.map(({ icon: Icon, title, desc }) => (
+              <div key={title} className="flex items-start gap-4 rounded-2xl border border-gray-200 p-5">
+                <div className="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
+                  <Icon size={20} className="text-[#001f54]" />
+                </div>
+                <div>
+                  <p className="font-bold text-gray-800 text-sm">{title}</p>
+                  <p className="text-gray-500 text-sm mt-0.5">{desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ── REPRESENTATIVE EXAMPLE OF LOAN COST ── */}
+        <section className="py-10 border-t">
+          <h2 className="text-2xl font-bold text-gray-800 mb-5">Representative Example of Loan Cost</h2>
+          <div className="rounded-2xl border border-gray-200 overflow-hidden">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-blue-50">
+                  <th className="text-left px-6 py-3 font-semibold text-[#001f54] w-1/2">Particulars</th>
+                  <th className="text-left px-6 py-3 font-semibold text-[#001f54]">Details</th>
+                </tr>
+              </thead>
+              <tbody>
+                {loanCostDetails.map((row, i) => (
+                  <tr key={row.feature} className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                    <td className="px-6 py-3.5 text-gray-700 font-medium border-t border-gray-100">{row.feature}</td>
+                    <td className="px-6 py-3.5 text-gray-600 border-t border-gray-100">{row.details}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
       </div>
     </section>
   );
@@ -483,7 +562,7 @@ function Hero({ onStart }) {
 function Feature({ icon, title, text }) {
   return (
     <li className="flex gap-3">
-      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-blue-50 text-blue-600">
+      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-[#001f54] text-white">
         {icon}
       </span>
       <div>
@@ -495,7 +574,7 @@ function Feature({ icon, title, text }) {
 }
 
 /* ------------------------------------------------------------------ */
-/*  WIZARD                                                             */
+/*  WIZARD (unchanged flow, recolored to navy)                         */
 /* ------------------------------------------------------------------ */
 
 function Wizard({
@@ -568,7 +647,7 @@ function Stepper({ step }) {
               <div
                 className={`grid h-8 w-8 place-items-center rounded-full text-xs font-semibold ${
                   done
-                    ? "bg-blue-600 text-white"
+                    ? "bg-[#001f54] text-white"
                     : active
                     ? "bg-blue-600 text-white ring-4 ring-blue-100"
                     : "bg-slate-200 text-slate-500"
@@ -583,7 +662,7 @@ function Stepper({ step }) {
             {n < STEP_LABELS.length && (
               <div
                 className={`mx-1 h-0.5 flex-1 ${
-                  n < step ? "bg-blue-600" : "bg-slate-200"
+                  n < step ? "bg-[#001f54]" : "bg-slate-200"
                 }`}
               />
             )}
@@ -691,7 +770,7 @@ function FileRow({ label, required, name, onChange, error }) {
       >
         <div>
           <p className="text-sm font-medium text-slate-700">
-            {label} {required && <span className="text-red-500">*</span>}
+            {label} {required && <span className="text-[#e8112d]">*</span>}
           </p>
           {name ? (
             <p className="text-xs text-blue-600">{name}</p>

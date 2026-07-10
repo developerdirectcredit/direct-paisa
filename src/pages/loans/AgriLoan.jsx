@@ -1,4 +1,5 @@
 
+
 // add another image match to the left column of the agri loan section, below the existing image, with a caption that reads "Empowering Farmers for a Sustainable Future".
 
 import Navbar from "../../components/Navbar";
@@ -14,13 +15,18 @@ import {
   Check,
   Pencil,
   ShieldCheck,
+  CheckCircle,
+  Calendar,
+  IndianRupee,
+  Percent,
 } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
 /*  Agri Loan Page                                                     */
 /*  Hero = lead capture (Name + Mobile), styled like the Instant       */
 /*         Personal Loan page (navy #001f54 / red #e8112d / blue-600   */
-/*         CTA), with the agri family image.                           */
+/*         CTA), with the agri family image, plus new Repayment Stats  */
+/*         / Representative-example content below it.                 */
 /*  Wizard = the full Agri Loan flow, recolored to match.              */
 /* ------------------------------------------------------------------ */
 
@@ -88,6 +94,30 @@ const STEP_LABELS = [
   "Income & Crop",
   "Bank Fetch",
   "Review",
+];
+
+// ── Repayment period, loan amount range & interest rate ─────
+const repaymentStats = [
+  { icon: Calendar, title: "Minimum Repayment Period", desc: "12 months (1 year)" },
+  { icon: Calendar, title: "Maximum Repayment Period", desc: "180 months (15 years)" },
+  { icon: IndianRupee, title: "Minimum Loan Amount", desc: "₹50,00,000" },
+  { icon: IndianRupee, title: "Maximum Loan Amount", desc: "₹250,00,00,000" },
+  { icon: Percent, title: "Annual Interest Rate (AIR)", desc: "7% per annum" },
+];
+
+// ── Representative example of loan cost ────────────────────────────
+const loanCostDetails = [
+  { feature: "Loan Type", details: "Agri Business Loan" },
+  { feature: "Loan Amount", details: "₹2,00,00,000" },
+  { feature: "Purpose", details: "Agri Infrastructure, Food Processing, Dairy, Poultry, Fisheries, Cold Storage, Warehousing & Working Capital" },
+  { feature: "Annual Interest Rate (Indicative)", details: "7.25% p.a." },
+  { feature: "Loan Tenure", details: "120 months (10 years)" },
+  { feature: "Moratorium Period", details: "Up to 12 months (if applicable)" },
+  { feature: "Monthly Installment (EMI)", details: "₹2,70,000 (approx.)" },
+  { feature: "Total Amount Payable", details: "₹3,24,00,000 (approx.)" },
+  { feature: "Total Interest Cost", details: "₹1,24,00,000 (approx.)" },
+  { feature: "Processing Fee", details: "0.50% – 1.50% of loan amount" },
+  { feature: "Collateral Requirement", details: "Property / Agri Assets / Additional Security as per lender policy" },
 ];
 
 const NAME_RE = /^[A-Za-z][A-Za-z\s]{2,}$/;
@@ -473,6 +503,49 @@ function Hero({ onStart }) {
             </div>
           </div>
         </div>
+
+        {/* ── REPAYMENT PERIOD, LOAN AMOUNT & INTEREST RATE ── */}
+        <section className="py-10 border-t mt-10">
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">
+            Repayment Period, Loan Amount &amp; Interest Rate
+          </h2>
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {repaymentStats.map(({ icon: Icon, title, desc }) => (
+              <div key={title} className="flex items-start gap-4 rounded-2xl border border-gray-200 p-5">
+                <div className="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
+                  <Icon size={20} className="text-[#001f54]" />
+                </div>
+                <div>
+                  <p className="font-bold text-gray-800 text-sm">{title}</p>
+                  <p className="text-gray-500 text-sm mt-0.5">{desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ── REPRESENTATIVE EXAMPLE ── */}
+        <section className="py-10 border-t">
+          <h2 className="text-2xl font-bold text-gray-800 mb-5">Representative Example</h2>
+          <div className="rounded-2xl border border-gray-200 overflow-hidden">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-blue-50">
+                  <th className="text-left px-6 py-3 font-semibold text-[#001f54] w-1/2">Particulars</th>
+                  <th className="text-left px-6 py-3 font-semibold text-[#001f54]">Details</th>
+                </tr>
+              </thead>
+              <tbody>
+                {loanCostDetails.map((row, i) => (
+                  <tr key={row.feature} className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                    <td className="px-6 py-3.5 text-gray-700 font-medium border-t border-gray-100">{row.feature}</td>
+                    <td className="px-6 py-3.5 text-gray-600 border-t border-gray-100">{row.details}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
       </div>
     </section>
   );

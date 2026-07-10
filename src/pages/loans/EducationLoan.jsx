@@ -178,12 +178,12 @@ export default function EducationLoan() {
       <div className="flex flex-col md:flex-row">
         {/* ── Left panel — restyled to Agri Loan's navy/red/blue theme ── */}
         <div className="md:w-2/5 bg-[#001f54] px-8 md:px-10 py-10 md:py-14">
-          <p className="text-white/70 font-semibold text-sm md:text-base">
+          {/* <p className="text-white/70 font-semibold text-sm md:text-base">
             35,000+ Education Loans Sanctioned!
           </p>
           <p className="text-white/70 font-semibold text-sm md:text-base mb-3">
             ₹11,000+ Crore Disbursed!
-          </p>
+          </p> */}
           <h1 className="text-3xl md:text-4xl font-extrabold leading-tight mb-6">
             <span className="text-white">Secure an</span>{" "}
             <span className="text-[#e8112d]">Education Loan</span>{" "}

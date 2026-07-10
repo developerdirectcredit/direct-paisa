@@ -1,3 +1,5 @@
+
+
 // src/pages/loans/StartupLoan.jsx
 // ─────────────────────────────────────────────────────────────────
 //  Startup Loan — restructured to match Agri Loan's architecture:
@@ -22,6 +24,7 @@ import {
   Calendar,
   Percent,
   FileText,
+  IndianRupee,
 } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
@@ -29,8 +32,8 @@ import {
 /* ------------------------------------------------------------------ */
 
 const tableData = [
-  { feature: "Loan Amount", details: "₹50,000 – ₹2 Crore" },
-  { feature: "Interest Rate", details: "11% – 30% p.a." },
+  { feature: "Loan Amount", details: "₹50,00,000 – ₹50 Crore" },
+  { feature: "Interest Rate", details: "8% – 30% p.a." },
   { feature: "Repayment Tenure", details: "12 – 84 months" },
   { feature: "Processing Fee", details: "0% – 3% of loan amount" },
   { feature: "Disbursal Time", details: "Within 24 – 48 hours" },
@@ -49,10 +52,12 @@ const useCases = [
   "Office setup or co-working space",
 ];
 
-// ── Repayment period & interest rate ─────
+// ── Repayment period, loan amount range & interest rate ─────
 const repaymentStats = [
   { icon: Calendar, title: "Minimum Repayment Period", desc: "12 months" },
   { icon: Calendar, title: "Maximum Repayment Period", desc: "120 months (10 years)" },
+  { icon: IndianRupee, title: "Minimum Loan Amount", desc: "₹5,00,000" },
+  { icon: IndianRupee, title: "Maximum Loan Amount", desc: "₹50,00,00,000" },
   { icon: Percent, title: "Annual Interest Rate (AIR)", desc: "24% per annum" },
 ];
 
@@ -75,6 +80,21 @@ const documentsRequired = [
   "Business Incorporation Certificate",
   "Proof of business address",
   "Any other document required by the lender",
+];
+
+// ── Representative example of loan cost ───────────────────────────
+const loanCostDetails = [
+  { feature: "Loan Type", details: "Startup Loan" },
+  { feature: "Loan Amount", details: "₹20,00,000" },
+  { feature: "Purpose", details: "Business Expansion / Working Capital" },
+  { feature: "Annual Interest Rate (Indicative)", details: "9.50% p.a." },
+  { feature: "Loan Tenure", details: "120 months (10 years)" },
+  { feature: "Moratorium Period", details: "Up to 12 months (if applicable)" },
+  { feature: "Monthly Installment (EMI)", details: "₹25,900 (approx.)" },
+  { feature: "Total Amount Payable", details: "₹31,08,000 (approx.)" },
+  { feature: "Total Interest Cost", details: "₹11,08,000 (approx.)" },
+  { feature: "Processing Fee", details: "0% – 1% of loan amount" },
+  { feature: "Collateral Requirement", details: "Depending upon loan amount and lender policy" },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -451,12 +471,12 @@ function Hero({ onStart }) {
           </div>
         </section>
 
-        {/* ── REPAYMENT PERIOD & INTEREST RATE ── */}
+        {/* ── REPAYMENT PERIOD, LOAN AMOUNT & INTEREST RATE ── */}
         <section className="py-10 border-t">
           <h2 className="text-2xl font-bold text-gray-800 mb-4">
-            Minimum & Maximum Repayment Period, Interest Rate
+            Repayment Period, Loan Amount &amp; Interest Rate
           </h2>
-          <div className="grid gap-5 sm:grid-cols-3">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {repaymentStats.map(({ icon: Icon, title, desc }) => (
               <div key={title} className="flex items-start gap-4 rounded-2xl border border-gray-200 p-5">
                 <div className="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
@@ -500,6 +520,29 @@ function Hero({ onStart }) {
                 </li>
               ))}
             </ul>
+          </div>
+        </section>
+
+        {/* ── REPRESENTATIVE EXAMPLE OF LOAN COST ── */}
+        <section className="py-10 border-t">
+          <h2 className="text-2xl font-bold text-gray-800 mb-5">Representative Example of Loan Cost</h2>
+          <div className="rounded-2xl border border-gray-200 overflow-hidden">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-blue-50">
+                  <th className="text-left px-6 py-3 font-semibold text-blue-700 w-1/2">Particulars</th>
+                  <th className="text-left px-6 py-3 font-semibold text-blue-700">Details</th>
+                </tr>
+              </thead>
+              <tbody>
+                {loanCostDetails.map((row, i) => (
+                  <tr key={row.feature} className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                    <td className="px-6 py-3.5 text-gray-700 font-medium border-t border-gray-100">{row.feature}</td>
+                    <td className="px-6 py-3.5 text-gray-600 border-t border-gray-100">{row.details}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </section>
 

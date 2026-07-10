@@ -27,7 +27,7 @@ const features = [
 // Poster-style highlight strips (navy on white, red accents).
 const posterHighlights = [
   "Best Rate of Interest",
-  "Min Salary 20k (All Salaried Employee)",
+  "Min Salary 15k (All Salaried Employee)",
   "No Security or Collateral",
   "Simple documentation & Easy Process",
   "Flexible repayment plans",
@@ -59,9 +59,9 @@ const useCases = [
 
 const eligibilityCriteria = [
   "CIBIL score of 750+ & internal risk parameters",
-  "Salary should be ₹30,000 or more",
-  "Minimum age 25 years & maximum age 57 years",
-  "Loan eligibility up to ₹35 Lakh — however, you can select an amount as desired",
+  "Salary should be ₹15,000 or more",
+  "Minimum age 21 years & maximum age 57 years",
+  "Loan eligibility up to ₹2CR Lakh — however, you can select an amount as desired",
 ];
 
 // ── Bank offers shown after eligibility check ────────────────────
@@ -126,7 +126,7 @@ export default function InstantPersonalLoan() {
               <span className="text-[#001f54]">PERSONAL LOAN</span>
             </h1>
             <p className="text-lg md:text-xl font-extrabold text-[#e8112d] mb-5">
-              Up to 30 Lakhs
+              Up to 2CR
             </p>
 
             {/* Poster highlight strips (navy) */}
@@ -191,9 +191,9 @@ export default function InstantPersonalLoan() {
                 </div>
               </div>
               {[
-                { value: "5.7cr+", sub: "Satisfied Customers" },
-                { value: "65+", sub: "Lending Partners" },
-                { value: "₹65k Cr+", sub: "Loans Disbursed" },
+               // { value: "5.7cr+", sub: "Satisfied Customers" },
+                //{ value: "65+", sub: "Lending Partners" },
+                //{ value: "₹65k Cr+", sub: "Loans Disbursed" },
               ].map(s => (
                 <div key={s.value} className="text-center">
                   <p className="text-lg font-bold text-blue-600">{s.value}</p>
@@ -233,10 +233,10 @@ export default function InstantPersonalLoan() {
                     {/* Headline */}
                     <p className="text-center text-xl font-extrabold text-gray-900 mb-5 leading-snug">
                       Get up to{" "}
-                      <span className="text-blue-600">₹40 Lakhs</span>{" "}
+                      <span className="text-blue-600">₹1.5CR</span>{" "}
                       starting at{" "}
                       <span className="text-blue-600 underline decoration-blue-400 decoration-2 underline-offset-2">
-                        11%
+                        9.49%
                       </span>
                     </p>
 

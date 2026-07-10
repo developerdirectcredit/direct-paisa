@@ -269,7 +269,7 @@ function Hero({ onStart }) {
               <Feature
                 icon={<Landmark className="h-5 w-5" />}
                 title="Compare Offers from Top Banks & HFCs"
-                text="Interest rates starting at 7.90% onwards, from 20+ lenders."
+                text="Interest rates starting at 8.55% onwards, from 20+ lenders."
               />
               <Feature
                 icon={<Clock3 className="h-5 w-5" />}
